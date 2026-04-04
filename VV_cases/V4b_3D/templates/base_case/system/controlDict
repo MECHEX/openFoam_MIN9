@@ -1,0 +1,170 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// V4b: buoyantPimpleFoam, 3-D production case
+// D=0.012, Pt=0.032, Lz=0.00286, Re=100, U_in=0.1263 m/s, Tw=343.15 K
+// f_shed ~ 2 Hz  =>  T_shed ~ 0.5 s
+// Plan: 50 cycles total, 20 spinup + 30 for statistics  => endTime = 25 s
+
+application     buoyantPimpleFoam;
+
+startFrom       latestTime;
+startTime       0;
+stopAt          endTime;
+endTime         25;
+
+deltaT          5e-4;           // CFL ~ 0.1 in wake (check after first run)
+adjustTimeStep  no;             // fixed dt for V&V
+maxCo           1.0;            // monitor, do not use to control dt
+
+writeControl    runTime;
+writeInterval   0.5;            // during spinup (first 10 s): 1 write/s
+                                // switch to 0.05 after spinup for POD/DMD
+purgeWrite      0;
+writeFormat     binary;         // binary for 3-D field data
+writePrecision  8;
+writeCompression off;
+timeFormat      general;
+timePrecision   8;
+runTimeModifiable true;
+
+functions
+{
+    // ----------------------------------------------------------
+    // Force and lift/drag coefficients on cylinder
+    // ----------------------------------------------------------
+    forceCoeffs
+    {
+        type            forceCoeffs;
+        libs            (forces);
+        executeControl  timeStep;
+        executeInterval 1;
+        writeControl    timeStep;
+        writeInterval   1;
+        log             yes;
+
+        patches         (cylinder);
+        rho             rho;            // computed density (compressible solver)
+        CofR            (0 0 0);
+        liftDir         (0 1 0);
+        dragDir         (1 0 0);
+        pitchAxis       (0 0 1);
+        magUInf         0.1263;
+        lRef            0.012;
+        // Aref = D * Lz = 0.012 * 0.00286
+        Aref            3.432e-5;
+    }
+
+    // ----------------------------------------------------------
+    // Wall heat flux on cylinder and fin surfaces
+    // ----------------------------------------------------------
+    wallHeatFlux_cylinder
+    {
+        type            wallHeatFlux;
+        libs            (fieldFunctionObjects);
+        executeControl  timeStep;
+        writeControl    timeStep;
+        writeInterval   1;
+        patches         (cylinder);
+        qr              none;
+    }
+
+    wallHeatFlux_fins
+    {
+        type            wallHeatFlux;
+        libs            (fieldFunctionObjects);
+        executeControl  timeStep;
+        writeControl    timeStep;
+        writeInterval   1;
+        patches         (finTop finBottom);
+        qr              none;
+    }
+
+    // ----------------------------------------------------------
+    // Velocity / pressure / T probes in the wake
+    // x = 1D, 2D, 3D, 5D, 10D from cylinder centre
+    // z = Lz/2 = 0.00143 m (channel midplane)
+    // ----------------------------------------------------------
+    probes
+    {
+        type            probes;
+        libs            (sampling);
+        executeControl  timeStep;
+        writeControl    timeStep;
+        writeInterval   1;
+
+        fields          (U p T);
+
+        probeLocations
+        (
+            ( 0.012  0  0.00143)   // 1D downstream
+            ( 0.024  0  0.00143)   // 2D
+            ( 0.036  0  0.00143)   // 3D
+            ( 0.060  0  0.00143)   // 5D
+            ( 0.120  0  0.00143)   // 10D
+            (-0.006  0  0.00143)   // 0.5D upstream (inlet check)
+        );
+    }
+
+    // ----------------------------------------------------------
+    // y+ on heated surfaces (run every 100 steps, write at end)
+    // ----------------------------------------------------------
+    yPlus
+    {
+        type            yPlus;
+        libs            (fieldFunctionObjects);
+        executeControl  timeStep;
+        executeInterval 100;
+        writeControl    writeTime;
+        patches         (cylinder finTop finBottom);
+    }
+
+    // ----------------------------------------------------------
+    // Global Courant number
+    // ----------------------------------------------------------
+    CourantNo
+    {
+        type            CourantNo;
+        libs            (fieldFunctionObjects);
+        executeControl  timeStep;
+        writeControl    writeTime;
+    }
+
+    // ----------------------------------------------------------
+    // Residuals
+    // ----------------------------------------------------------
+    residuals
+    {
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        fields          (U p_rgh T);
+        executeControl  timeStep;
+        writeControl    timeStep;
+        writeInterval   1;
+    }
+
+    // ----------------------------------------------------------
+    // Field averaging — activate AFTER spinup by setting timeStart
+    // Uncomment and set timeStart = t_spinup (typically ~10 s)
+    // ----------------------------------------------------------
+    /*
+    fieldAverage
+    {
+        type            fieldAverage;
+        libs            (fieldFunctionObjects);
+        executeControl  timeStep;
+        writeControl    writeTime;
+        timeStart       10;         // set after confirming spinup from Cl(t)
+        fields
+        (
+            U { mean on; prime2Mean on; base time; }
+            T { mean on; prime2Mean on; base time; }
+            p { mean on; prime2Mean on; base time; }
+        );
+    }
+    */
+}

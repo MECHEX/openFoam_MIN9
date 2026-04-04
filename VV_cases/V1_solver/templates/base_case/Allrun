@@ -1,0 +1,26 @@
+#!/bin/bash
+# V1 — 2-D solver verification vs Sahin & Owens (2004), beta=0.5
+set -euo pipefail
+cd "$(dirname "$0")"
+
+# 1. Background mesh
+blockMesh
+
+# 2. Surface features (needed even with implicitFeatureSnap)
+surfaceFeatureExtract 2>/dev/null || true
+
+# 3. Castellated + snap + layers
+snappyHexMesh -overwrite
+
+# 4. Check mesh
+checkMesh | tee checkMesh.log
+echo "Max non-ortho and skewness from checkMesh:"
+grep -E "Max skewness|non-orthogonality" checkMesh.log | tail -6
+
+# 5. Set initial fields from 0/ (after snappy may renumber patches)
+restore0Dir 2>/dev/null || true
+
+# 6. Run solver
+pimpleFoam 2>&1 | tee run.log
+
+echo "V1 done. Check postProcessing/forceCoeffs/ for Cd, Cl, St."

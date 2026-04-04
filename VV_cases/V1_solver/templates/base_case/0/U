@@ -1,0 +1,46 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// V1: pimpleFoam, 2-D channel, beta=0.5, no-slip top/bottom walls
+// Re=100: U_in = Re * nu / D = 100 * 1.516e-5 / 0.012 = 0.1263 m/s
+
+dimensions      [0 1 -1 0 0 0 0];
+internalField   uniform (0.1263 0 0);
+
+boundaryField
+{
+    inlet
+    {
+        type        fixedValue;
+        value       uniform (0.1263 0 0);
+    }
+    outlet
+    {
+        type        zeroGradient;
+    }
+    // no-slip walls — KEY difference vs V3/V4a which use symmetryPlane
+    top
+    {
+        type        noSlip;
+    }
+    bottom
+    {
+        type        noSlip;
+    }
+    cylinder
+    {
+        type        noSlip;
+    }
+    front
+    {
+        type        empty;
+    }
+    back
+    {
+        type        empty;
+    }
+}

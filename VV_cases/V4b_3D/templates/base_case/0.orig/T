@@ -1,0 +1,56 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      T;
+}
+// V4b: 3-D heated cylinder between fin plates
+// T_in = 293.15 K (20 C),  T_w = 343.15 K (70 C) on cylinder AND fins
+
+dimensions      [0 0 0 1 0 0 0];
+internalField   uniform 293.15;
+
+boundaryField
+{
+    inlet
+    {
+        type        fixedValue;
+        value       uniform 293.15;
+    }
+    outlet
+    {
+        // inletOutlet prevents cold-air reverse-flow instability
+        type        inletOutlet;
+        inletValue  uniform 293.15;
+        value       uniform 293.15;
+    }
+    topWall
+    {
+        type        symmetryPlane;
+    }
+    bottomWall
+    {
+        type        symmetryPlane;
+    }
+    finTop
+    {
+        // Isothermal fin surface at Tw = 343.15 K
+        type        fixedValue;
+        value       uniform 343.15;
+    }
+    finBottom
+    {
+        type        fixedValue;
+        value       uniform 343.15;
+    }
+    cylinder
+    {
+        type        fixedValue;
+        value       uniform 343.15;
+    }
+    defaultFaces
+    {
+        type        empty;
+    }
+}

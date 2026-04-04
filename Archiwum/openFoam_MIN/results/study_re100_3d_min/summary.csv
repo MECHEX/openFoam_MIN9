@@ -1,0 +1,2 @@
+case,length_m,height_m,span_m,base_nx,base_ny,base_nz,cells,Re,span_bc,startup_perturbation,status,analysis_start_s,time_max_s,frequency_hz,frequency_peak_hz,frequency_fft_hz,selection_method,St,St_error_pct
+min3d_u12_d30_h15_z0p5D_nz2,0.504,0.36,0.006,158,112,2,119128,100.0,cyclic,setExprFields asymmetric Uy bump + small antisymmetric Uz,ok,3.9995396721529284,7.999539672152928,1.7537313243622974,1.7391300405432408,1.7537313243622974,fft,0.16835820713878055,2.0352770538063907

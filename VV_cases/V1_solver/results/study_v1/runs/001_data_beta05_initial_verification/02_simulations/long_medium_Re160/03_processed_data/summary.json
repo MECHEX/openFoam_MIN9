@@ -1,0 +1,47 @@
+{
+  "case": "long_medium_Re160",
+  "metadata": {
+    "case": "long_medium_Re160",
+    "purpose": "streamwise-domain-check",
+    "mesh": "medium",
+    "reynolds": 160.0,
+    "u_centerline_m_per_s": 0.20213333333333333,
+    "u_bulk_m_per_s": 0.13475555555555555,
+    "upstream_D": 10.0,
+    "downstream_D": 30.0,
+    "beta": 0.5,
+    "diameter_m": 0.012,
+    "channel_height_m": 0.024,
+    "span_m": 0.01,
+    "base_dx_m": 0.0025,
+    "base_nx": 192,
+    "base_ny": 12,
+    "surface_level": 3,
+    "near_level": 2,
+    "wake_level": 1,
+    "cylinder_layers": 6,
+    "wall_layers": 2,
+    "end_time_s": 3.0,
+    "x_min_m": -0.12,
+    "x_max_m": 0.36,
+    "length_m": 0.48
+  },
+  "mesh": {
+    "status": "warn",
+    "cells": 46040,
+    "points": 61265,
+    "faces": 152862,
+    "max_non_ortho": 62.2589883
+  },
+  "metrics": {
+    "status": "ok",
+    "regime": "periodic",
+    "analysis_start_s": 1.1998927899833165,
+    "time_max_s": 2.999731974958291,
+    "Cd_mean": 2.5763303578392858,
+    "Cd_std": 0.00018597989286776346,
+    "Cl_rms": 0.002937950541988483,
+    "frequency_hz": 5.7644300864504485,
+    "St": 0.34221550645154375
+  }
+}

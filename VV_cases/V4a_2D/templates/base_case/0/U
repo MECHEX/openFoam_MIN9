@@ -1,0 +1,47 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// V4a: buoyantPimpleFoam, 2-D, Pt/D=2.667, symmetryPlane top/bottom
+// Re=100: U_in = 0.1263 m/s
+// This is the 2-D baseline of the production geometry (compare vs V4b to
+// quantify how much the fin end-walls change Cd, St, Nu).
+
+dimensions      [0 1 -1 0 0 0 0];
+internalField   uniform (0.1263 0 0);
+
+boundaryField
+{
+    inlet
+    {
+        type        fixedValue;
+        value       uniform (0.1263 0 0);
+    }
+    outlet
+    {
+        type        zeroGradient;
+    }
+    top
+    {
+        type        symmetryPlane;
+    }
+    bottom
+    {
+        type        symmetryPlane;
+    }
+    cylinder
+    {
+        type        noSlip;
+    }
+    front
+    {
+        type        empty;
+    }
+    back
+    {
+        type        empty;
+    }
+}

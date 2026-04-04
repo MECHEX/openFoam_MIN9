@@ -1,0 +1,36 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      thermophysicalProperties;
+}
+
+thermoType
+{
+    type            hePsiThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;
+    equationOfState perfectGas;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+mixture
+{
+    specie
+    {
+        molWeight       28.966;         // air [g/mol]
+    }
+    thermodynamics
+    {
+        Cp              1005;           // J/(kg.K)  @ 20 C
+        Hf              0;
+    }
+    transport
+    {
+        mu              1.825e-5;       // Pa.s  @ 20 C
+        Pr              0.713;          // => kappa = mu*Cp/Pr = 0.02576 W/(m.K)
+    }
+}

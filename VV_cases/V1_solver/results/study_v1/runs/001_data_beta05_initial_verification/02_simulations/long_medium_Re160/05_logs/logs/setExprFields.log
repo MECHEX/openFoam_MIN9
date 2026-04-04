@@ -1,0 +1,64 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2512                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _87ed40d256-20251219 OPENFOAM=2512 version=v2512
+Arch   : "LSB;label=32;scalar=64"
+Exec   : setExprFields
+Date   : Apr 03 2026
+Time   : 14:52:55
+Host   : DESKTOP-EJKBDEA
+PID    : 1743
+I/O    : uncollated
+Case   : /mnt/c/openfoam-case/VV_cases/V1_solver/long_medium_Re160
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+memory pool : not available
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+
+Time = 0
+    Reading U (volVectorField)
+--> FOAM Warning : 
+>>> DEPRECATED after version 2212. This is about 36 months old. <<<
+
+    From Foam::exprFixedValueFvPatchField<Type>::exprFixedValueFvPatchField(const Foam::fvPatch&, const Foam::DimensionedField<Type, Foam::volMesh>&, const Foam::dictionary&, Foam::IOobjectOption::readOption) [with Type = Foam::Vector<double>]
+    in file expressions/fields/fvPatchFields/exprFixedValueFvPatchField.C at line 110
+    Use uniformFixedValue with an expression Function1 instead.
+    This boundary condition will be removed in the future
+Modify field: U (type: volVectorField) time=0
+Expression:
+>>>>
+ vector
+            (
+                0.202133333*(1.0 - pow(2.0*pos().y()/0.024000000, 2.0)),
+                0.0025*exp(-pow((pos().x()-0.012)/0.010, 2.0) - pow((pos().y()-0.0035)/0.0035, 2.0)),
+                0
+            )
+        
+<<<<
+
+Dispatch ... volVectorField
+setField(U): volVectorField
+--> FOAM Warning : 
+>>> DEPRECATED after version 2212. This is about 36 months old. <<<
+
+    From Foam::exprFixedValueFvPatchField<Type>::exprFixedValueFvPatchField(const Foam::fvPatch&, const Foam::DimensionedField<Type, Foam::volMesh>&, const Foam::dictionary&, Foam::IOobjectOption::readOption) [with Type = Foam::Vector<double>]
+    in file expressions/fields/fvPatchFields/exprFixedValueFvPatchField.C at line 110
+    Use uniformFixedValue with an expression Function1 instead.
+    This boundary condition will be removed in the future
+Set all 46040 values
+Setting dimensions to [0 1 -1 0 0 0 0]
+Writing to U
+
+End
+

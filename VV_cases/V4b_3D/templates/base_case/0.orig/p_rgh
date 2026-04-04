@@ -1,0 +1,55 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      p_rgh;
+}
+// V4b: buoyantPimpleFoam
+// p_rgh = p - rho*g.h   (g=0  =>  p_rgh = p)
+// Gauge pressure: zero reference at outlet.
+// fixedFluxPressure on all walls/inlet ensures consistency with prescribed U.
+
+dimensions      [1 -1 -2 0 0 0 0];
+internalField   uniform 0;
+
+boundaryField
+{
+    inlet
+    {
+        type        fixedFluxPressure;
+        value       uniform 0;
+    }
+    outlet
+    {
+        type        fixedValue;
+        value       uniform 0;
+    }
+    topWall
+    {
+        type        symmetryPlane;
+    }
+    bottomWall
+    {
+        type        symmetryPlane;
+    }
+    finTop
+    {
+        type        fixedFluxPressure;
+        value       uniform 0;
+    }
+    finBottom
+    {
+        type        fixedFluxPressure;
+        value       uniform 0;
+    }
+    cylinder
+    {
+        type        fixedFluxPressure;
+        value       uniform 0;
+    }
+    defaultFaces
+    {
+        type        empty;
+    }
+}

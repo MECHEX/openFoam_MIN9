@@ -1,0 +1,16 @@
+{
+  "name": "v2_u12_d30_h15",
+  "upstream_D": 12.0,
+  "downstream_D": 30.0,
+  "half_height_D": 15.0,
+  "base_dx": 0.0032,
+  "diameter_m": 0.012,
+  "radius_m": 0.006,
+  "u_inf_m_per_s": 0.125,
+  "nu_m2_per_s": 1.5e-05,
+  "reynolds": 100.0,
+  "span_m": 0.01,
+  "base_nx": 158,
+  "base_ny": 112,
+  "target_st": 0.165
+}

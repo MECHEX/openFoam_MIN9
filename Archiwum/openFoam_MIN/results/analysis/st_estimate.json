@@ -1,0 +1,17 @@
+{
+  "input": {
+    "diameter_m": 0.012,
+    "u_inf_m_per_s": 0.125,
+    "analysis_time_start_s": 1.0
+  },
+  "signal": {
+    "samples_used": 1786,
+    "time_min_s": 1.00045372,
+    "time_max_s": 4.138373356687273,
+    "mean_dt_s": 0.0017579381718135982
+  },
+  "result": {
+    "shedding_frequency_hz": 1.274016170332244,
+    "strouhal_number": 0.12230555235189541
+  }
+}

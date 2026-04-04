@@ -1,0 +1,52 @@
+#!/bin/bash
+# V4b — 3-D production case, buoyantPimpleFoam
+# Mesh must be imported from Gmsh before running this script.
+#
+# Full workflow:
+#   cd ../../Archiwum/mesh
+#   bash generate_meshes.sh medium          # generates cylinder_channel_medium.geo and related mesh assets
+#   cd ../VV_cases/V4b_3D
+#   gmshToFoam ../../Archiwum/mesh/cylinder_medium.msh
+#   bash Allrun
+
+set -euo pipefail
+cd "$(dirname "$0")"
+
+# --- Check mesh is present ---
+if [ ! -d constant/polyMesh/faces ]; then
+    echo "ERROR: No polyMesh found."
+    echo "Run gmshToFoam first. See header comment above."
+    exit 1
+fi
+
+# --- Verify and fix patch types if needed ---
+echo "=== checkMesh ==="
+checkMesh -allTopology -allGeometry | tee checkMesh.log
+echo ""
+echo "=== Boundary file ==="
+grep -A2 "type" constant/polyMesh/boundary | head -60
+echo ""
+echo "IMPORTANT: Verify patch names match 0.orig/ fields:"
+echo "  Expected: inlet outlet topWall bottomWall finTop finBottom cylinder defaultFaces"
+echo "  Actual (from boundary file above). Press Enter to continue or Ctrl-C to abort."
+read -r
+
+# --- Copy 0.orig to 0 ---
+cp -r 0.orig 0
+
+# --- Decompose ---
+echo "=== decomposePar ==="
+decomposePar
+
+# --- Run in parallel ---
+echo "=== buoyantPimpleFoam (parallel, 10 cores) ==="
+mpirun -np 10 buoyantPimpleFoam -parallel 2>&1 | tee run.log
+
+# --- Reconstruct ---
+echo "=== reconstructPar ==="
+reconstructPar -latestTime
+
+echo "=== Done. ==="
+echo "postProcessing/forceCoeffs/ -> Cd(t), Cl(t)"
+echo "postProcessing/wallHeatFlux_cylinder/ -> q''(t) on cylinder"
+echo "postProcessing/probes/ -> wake velocity/temperature signals"

@@ -1,0 +1,47 @@
+{
+  "case": "long_medium_Re200",
+  "metadata": {
+    "case": "long_medium_Re200",
+    "purpose": "benchmark-vs-sahin",
+    "mesh": "medium",
+    "reynolds": 200.0,
+    "u_centerline_m_per_s": 0.25266666666666665,
+    "u_bulk_m_per_s": 0.16844444444444442,
+    "upstream_D": 10.0,
+    "downstream_D": 30.0,
+    "beta": 0.5,
+    "diameter_m": 0.012,
+    "channel_height_m": 0.024,
+    "span_m": 0.01,
+    "base_dx_m": 0.0025,
+    "base_nx": 192,
+    "base_ny": 12,
+    "surface_level": 3,
+    "near_level": 2,
+    "wake_level": 1,
+    "cylinder_layers": 6,
+    "wall_layers": 2,
+    "end_time_s": 4.0,
+    "x_min_m": -0.12,
+    "x_max_m": 0.36,
+    "length_m": 0.48
+  },
+  "mesh": {
+    "status": "warn",
+    "cells": 46040,
+    "points": 61265,
+    "faces": 152862,
+    "max_non_ortho": 62.2589883
+  },
+  "metrics": {
+    "status": "ok",
+    "regime": "periodic",
+    "analysis_start_s": 1.5437518847040905,
+    "time_max_s": 3.859379711760226,
+    "Cd_mean": 2.4004203135554567,
+    "Cd_std": 0.001946962118732633,
+    "Cl_rms": 0.04252463204533066,
+    "frequency_hz": 7.3918061204144365,
+    "St": 0.35106203210411574
+  }
+}

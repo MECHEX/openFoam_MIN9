@@ -1,0 +1,31 @@
+{
+  "case_dir": "C:\\openfoam-case\\re100Cylinder3D\\min3d_u12_d30_h15_z0p5D_nz2",
+  "results_root": "C:\\Users\\kik\\My Drive\\Politechnika Krakowska\\Researches\\Repositories\\openFoam\\openFoam_MIN\\results\\study_re100_3d_min",
+  "metadata": {
+    "case": "min3d_u12_d30_h15_z0p5D_nz2",
+    "x_min_m": -0.14400000000000002,
+    "x_max_m": 0.36,
+    "y_min_m": -0.18,
+    "y_max_m": 0.18,
+    "z_min_m": -0.003,
+    "z_max_m": 0.003,
+    "length_m": 0.504,
+    "height_m": 0.36,
+    "span_m": 0.006,
+    "diameter_m": 0.012,
+    "u_inf_m_per_s": 0.125,
+    "nu_m2_per_s": 1.5e-05,
+    "reynolds": 100.0,
+    "target_st": 0.165,
+    "base_nx": 158,
+    "base_ny": 112,
+    "base_nz": 2,
+    "span_D": 0.5,
+    "span_cells": 2,
+    "span_bc": "cyclic",
+    "top_bottom_bc": "symmetryPlane",
+    "outlet_bc": "inletOutlet(U) + fixedValue(p)",
+    "inlet_bc": "fixedValue(U) + zeroGradient(p)",
+    "startup_perturbation": "setExprFields asymmetric Uy bump + small antisymmetric Uz"
+  }
+}

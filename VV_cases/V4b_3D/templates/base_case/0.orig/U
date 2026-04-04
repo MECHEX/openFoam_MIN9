@@ -1,0 +1,55 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// V4b: buoyantPimpleFoam, 3-D, Pt/D=2.667, Lz/D=0.238
+// Re=100: U_in = 100 * 1.516e-5 / 0.012 = 0.12633 m/s
+// Patch names come from Gmsh Physical Groups in the archived mesh assets
+// (see Archiwum/mesh/cylinder_channel_medium.geo)
+
+dimensions      [0 1 -1 0 0 0 0];
+internalField   uniform (0.1263 0 0);
+
+boundaryField
+{
+    inlet
+    {
+        type        fixedValue;
+        value       uniform (0.1263 0 0);
+    }
+    outlet
+    {
+        type        zeroGradient;
+    }
+    // Array midplane symmetry (y-direction) — NOT a no-slip wall
+    topWall
+    {
+        type        symmetryPlane;
+    }
+    bottomWall
+    {
+        type        symmetryPlane;
+    }
+    // Heated fin walls (z-direction) — no-slip
+    finTop
+    {
+        type        noSlip;
+    }
+    finBottom
+    {
+        type        noSlip;
+    }
+    // Heated cylinder
+    cylinder
+    {
+        type        noSlip;
+    }
+    // gmshToFoam creates this empty patch for interior faces; leave as empty
+    defaultFaces
+    {
+        type        empty;
+    }
+}

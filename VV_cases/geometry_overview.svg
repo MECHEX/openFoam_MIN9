@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1700" viewBox="0 0 1500 1700">
+  <style>
+    .title { font: 700 28px Arial, sans-serif; fill: #111; }
+    .subtitle { font: 600 18px Arial, sans-serif; fill: #222; }
+    .body { font: 16px Arial, sans-serif; fill: #222; }
+    .small { font: 14px Arial, sans-serif; fill: #333; }
+    .note { font: 15px Arial, sans-serif; fill: #444; }
+    .wall { stroke: #c53b2d; stroke-width: 4; fill: none; }
+    .sym { stroke: #1d6fd1; stroke-width: 4; stroke-dasharray: 10 8; fill: none; }
+    .empty { stroke: #888; stroke-width: 3; stroke-dasharray: 6 6; fill: none; }
+    .dom { stroke: #222; stroke-width: 2.5; fill: #fafafa; }
+    .cyl { stroke: #111; stroke-width: 3; fill: #ffd48a; }
+    .heat { fill: #ffe1e1; }
+    .axis { stroke: #555; stroke-width: 2; marker-end: url(#arrow); }
+    .dim { stroke: #555; stroke-width: 2; marker-start: url(#arrowSmall); marker-end: url(#arrowSmall); }
+    .panel { fill: #fff; stroke: #d6d6d6; stroke-width: 2; }
+  </style>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+    <marker id="arrowSmall" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="45" class="title">VV Geometries V1-V4b</text>
+  <text x="40" y="75" class="body">Based on actual files in VV_cases/system/blockMeshDict and mesh/cylinder_channel_medium.geo</text>
+  <text x="40" y="102" class="note">Not to scale. All x extents are identical: x in [-96 mm, +240 mm], cylinder center at (0,0).</text>
+  <text x="40" y="128" class="small">Legend: red solid = no-slip wall, blue dashed = symmetryPlane, gray dashed = empty 2D slice, pink = heated wall/fin.</text>
+
+  <!-- Panel 1 -->
+  <rect x="30" y="160" width="1440" height="250" rx="12" class="panel"/>
+  <text x="55" y="195" class="subtitle">V1 - 2D hydro benchmark, confined cylinder in channel (Sahin-style)</text>
+  <text x="55" y="220" class="body">Domain: x [-96, 240] mm, y [-12, 12] mm, z [-5, 5] mm with 1 cell and front/back = empty</text>
+  <text x="55" y="245" class="body">Key idea: top and bottom are real no-slip channel walls</text>
+  <rect x="180" y="275" width="900" height="70" class="dom"/>
+  <circle cx="437" cy="310" r="16" class="cyl"/>
+  <line x1="180" y1="275" x2="1080" y2="275" class="wall"/>
+  <line x1="180" y1="345" x2="1080" y2="345" class="wall"/>
+  <line x1="120" y1="310" x2="170" y2="310" class="axis"/>
+  <text x="78" y="304" class="body">flow</text>
+  <text x="610" y="268" class="small">top wall: no-slip</text>
+  <text x="595" y="365" class="small">bottom wall: no-slip</text>
+  <line x1="180" y1="365" x2="1080" y2="365" class="dim"/>
+  <text x="580" y="390" class="small">H = 24 mm = 2D channel height</text>
+  <text x="1110" y="300" class="small">inlet</text>
+  <text x="1110" y="325" class="small">at x = -96 mm</text>
+  <text x="1110" y="355" class="small">outlet at x = +240 mm</text>
+
+  <!-- Panel 2 -->
+  <rect x="30" y="435" width="1440" height="250" rx="12" class="panel"/>
+  <text x="55" y="470" class="subtitle">V2 - 2D thermal benchmark, heated cylinder in wider channel (Dhiman-style)</text>
+  <text x="55" y="495" class="body">Domain: x [-96, 240] mm, y [-24, 24] mm, z [-5, 5] mm with 1 cell and front/back = empty</text>
+  <text x="55" y="520" class="body">Key idea: same 2D channel concept as V1, but lower confinement and heated cylinder</text>
+  <rect x="180" y="545" width="900" height="95" class="dom"/>
+  <circle cx="437" cy="592.5" r="16" class="cyl"/>
+  <line x1="180" y1="545" x2="1080" y2="545" class="wall"/>
+  <line x1="180" y1="640" x2="1080" y2="640" class="wall"/>
+  <circle cx="437" cy="592.5" r="16" class="cyl heat"/>
+  <line x1="120" y1="592.5" x2="170" y2="592.5" class="axis"/>
+  <text x="78" y="586.5" class="body">flow</text>
+  <text x="605" y="538" class="small">top wall: no-slip</text>
+  <text x="595" y="660" class="small">bottom wall: no-slip</text>
+  <line x1="180" y1="660" x2="1080" y2="660" class="dim"/>
+  <text x="580" y="685" class="small">H = 48 mm = 2D channel height</text>
+  <text x="1110" y="590" class="small">cylinder heated</text>
+
+  <!-- Panel 3 -->
+  <rect x="30" y="710" width="1440" height="250" rx="12" class="panel"/>
+  <text x="55" y="745" class="subtitle">V3 - 2D array-flow benchmark, infinite row model</text>
+  <text x="55" y="770" class="body">Domain: x [-96, 240] mm, y [-16, 16] mm, z [-5, 5] mm with 1 cell and front/back = empty</text>
+  <text x="55" y="795" class="body">Key idea: top and bottom are NOT walls. They are symmetry planes representing the midplane to neighboring tubes.</text>
+  <rect x="180" y="820" width="900" height="80" class="dom"/>
+  <circle cx="437" cy="860" r="16" class="cyl"/>
+  <line x1="180" y1="820" x2="1080" y2="820" class="sym"/>
+  <line x1="180" y1="900" x2="1080" y2="900" class="sym"/>
+  <line x1="120" y1="860" x2="170" y2="860" class="axis"/>
+  <text x="78" y="854" class="body">flow</text>
+  <text x="565" y="812" class="small">top = symmetryPlane</text>
+  <text x="547" y="920" class="small">bottom = symmetryPlane</text>
+  <line x1="180" y1="920" x2="1080" y2="920" class="dim"/>
+  <text x="540" y="945" class="small">Pt = 32 mm, so y in [-16, +16] mm</text>
+
+  <!-- Panel 4 -->
+  <rect x="30" y="985" width="1440" height="250" rx="12" class="panel"/>
+  <text x="55" y="1020" class="subtitle">V4a - 2D thermal production baseline</text>
+  <text x="55" y="1045" class="body">Geometry is identical to V3 in x-y-z extent. Only physics changes: buoyantPimpleFoam + heated cylinder.</text>
+  <text x="55" y="1070" class="body">So if you visualize V3 and V4a as solids, they look the same.</text>
+  <rect x="180" y="1095" width="900" height="80" class="dom"/>
+  <circle cx="437" cy="1135" r="16" class="cyl heat"/>
+  <line x1="180" y1="1095" x2="1080" y2="1095" class="sym"/>
+  <line x1="180" y1="1175" x2="1080" y2="1175" class="sym"/>
+  <line x1="120" y1="1135" x2="170" y2="1135" class="axis"/>
+  <text x="78" y="1129" class="body">flow</text>
+  <text x="560" y="1087" class="small">top = symmetryPlane</text>
+  <text x="540" y="1195" class="small">bottom = symmetryPlane</text>
+  <text x="1110" y="1130" class="small">same geometry as V3</text>
+  <text x="1110" y="1153" class="small">but heated cylinder</text>
+
+  <!-- Panel 5 -->
+  <rect x="30" y="1260" width="1440" height="390" rx="12" class="panel"/>
+  <text x="55" y="1295" class="subtitle">V4b - 3D production geometry</text>
+  <text x="55" y="1320" class="body">Top view (x-y) is the same as V3/V4a. The real 3D difference appears in z: two heated fin planes at z=0 and z=2.86 mm.</text>
+
+  <!-- Top view V4b -->
+  <text x="75" y="1360" class="body">Top view (x-y)</text>
+  <rect x="100" y="1385" width="560" height="100" class="dom"/>
+  <circle cx="260" cy="1435" r="18" class="cyl"/>
+  <line x1="100" y1="1385" x2="660" y2="1385" class="sym"/>
+  <line x1="100" y1="1485" x2="660" y2="1485" class="sym"/>
+  <line x1="60" y1="1435" x2="90" y2="1435" class="axis"/>
+  <text x="20" y="1429" class="body">flow</text>
+  <text x="410" y="1377" class="small">topWall = symmetryPlane</text>
+  <text x="392" y="1508" class="small">bottomWall = symmetryPlane</text>
+  <text x="220" y="1534" class="small">same x-y footprint as V3/V4a</text>
+
+  <!-- Side view V4b -->
+  <text x="790" y="1360" class="body">Side view (x-z, cut through y=0)</text>
+  <rect x="820" y="1390" width="540" height="90" class="dom"/>
+  <rect x="1001" y="1390" width="20" height="90" class="cyl heat"/>
+  <rect x="820" y="1390" width="540" height="10" class="heat" stroke="none"/>
+  <rect x="820" y="1470" width="540" height="10" class="heat" stroke="none"/>
+  <line x1="820" y1="1390" x2="1360" y2="1390" class="wall"/>
+  <line x1="820" y1="1480" x2="1360" y2="1480" class="wall"/>
+  <text x="1120" y="1382" class="small">finBottom, heated, no-slip</text>
+  <text x="1130" y="1505" class="small">finTop, heated, no-slip</text>
+  <text x="960" y="1534" class="small">tube passes through the fin gap</text>
+  <line x1="1380" y1="1390" x2="1380" y2="1480" class="dim"/>
+  <text x="1395" y="1442" class="small">Lz = 2.86 mm</text>
+
+  <text x="55" y="1588" class="body">Interpretation: V4b is not a "2D cylinder with a tiny thickness". It is a real 3D fin-and-tube slice.</text>
+  <text x="55" y="1614" class="body">In y: array midplane symmetry. In z: two heated no-slip fin planes. The cylinder surface is also heated and spans the full fin gap.</text>
+</svg>

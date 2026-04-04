@@ -1,0 +1,27 @@
+{
+  "run_root": "C:\\openfoam-case\\re100Cylinder",
+  "results_root": "C:\\Users\\kik\\My Drive\\Politechnika Krakowska\\Researches\\Repositories\\openFoam\\openFoam_MIN\\results\\study_re100",
+  "variants": [
+    {
+      "name": "v1_u10_d25_h10",
+      "upstream_D": 10.0,
+      "downstream_D": 25.0,
+      "half_height_D": 10.0,
+      "base_dx": 0.003
+    },
+    {
+      "name": "v2_u12_d30_h15",
+      "upstream_D": 12.0,
+      "downstream_D": 30.0,
+      "half_height_D": 15.0,
+      "base_dx": 0.0032
+    },
+    {
+      "name": "v3_u11_d27_h12",
+      "upstream_D": 11.0,
+      "downstream_D": 27.0,
+      "half_height_D": 12.0,
+      "base_dx": 0.0031
+    }
+  ]
+}

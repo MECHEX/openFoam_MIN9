@@ -1,0 +1,16 @@
+{
+  "name": "v3_u15_d35_h20",
+  "upstream_D": 15.0,
+  "downstream_D": 35.0,
+  "half_height_D": 20.0,
+  "base_dx": 0.0035,
+  "diameter_m": 0.012,
+  "radius_m": 0.006,
+  "u_inf_m_per_s": 0.125,
+  "nu_m2_per_s": 1.5e-05,
+  "reynolds": 100.0,
+  "span_m": 0.01,
+  "base_nx": 171,
+  "base_ny": 137,
+  "target_st": 0.165
+}

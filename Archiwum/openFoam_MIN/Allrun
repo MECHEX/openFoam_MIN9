@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+source /home/kik/openfoam/OpenFOAM-v2512/etc/bashrc
+
+case_dir="$(cd "$(dirname "$0")" && pwd)"
+
+cd "$case_dir"
+blockMesh
+snappyHexMesh -overwrite
+checkMesh
+pimpleFoam
+
+repo_case_dir="/mnt/c/Users/kik/My Drive/Politechnika Krakowska/Researches/Repositories/openFoam/cylinder2D"
+repo_case_dir="/mnt/c/Users/kik/My Drive/Politechnika Krakowska/Researches/Repositories/openFoam/openFoam_MIN"
+
+"$repo_case_dir/PostProcess.sh"

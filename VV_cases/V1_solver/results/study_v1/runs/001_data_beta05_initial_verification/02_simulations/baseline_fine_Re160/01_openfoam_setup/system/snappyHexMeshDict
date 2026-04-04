@@ -1,0 +1,128 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+
+castellatedMesh true;
+snap            true;
+addLayers       true;
+
+geometry
+{
+    cylinder
+    {
+        type searchableCylinder;
+        point1 (0 0 -0.010);
+        point2 (0 0 0.010);
+        radius 0.006000;
+    }
+    nearCylinder
+    {
+        type searchableBox;
+        min (-0.030000 -0.030000 -0.010);
+        max (0.072000 0.030000 0.010);
+    }
+    wakeBox
+    {
+        type searchableBox;
+        min (0.000000 -0.021600 -0.010);
+        max (0.144000 0.021600 0.010);
+    }
+}
+
+castellatedMeshControls
+{
+    maxLocalCells 600000;
+    maxGlobalCells 2400000;
+    minRefinementCells 0;
+    maxLoadUnbalance 0.10;
+    nCellsBetweenLevels 3;
+    resolveFeatureAngle 30;
+    features ();
+    refinementSurfaces
+    {
+        cylinder
+        {
+            level (4 4);
+            patchInfo { type wall; }
+        }
+    }
+    refinementRegions
+    {
+        nearCylinder
+        {
+            mode inside;
+            levels ((1e15 3));
+        }
+        wakeBox
+        {
+            mode inside;
+            levels ((1e15 2));
+        }
+    }
+    locationInMesh (-0.090000 0 0);
+    allowFreeStandingZoneFaces true;
+}
+
+snapControls
+{
+    nSmoothPatch 5;
+    tolerance 2.0;
+    nSolveIter 100;
+    nRelaxIter 5;
+    nFeatureSnapIter 10;
+    implicitFeatureSnap true;
+    explicitFeatureSnap false;
+    multiRegionFeatureSnap false;
+}
+
+addLayersControls
+{
+    relativeSizes true;
+    expansionRatio 1.200;
+    finalLayerThickness 0.300;
+    minThickness 0.01;
+    nGrow 0;
+    featureAngle 60;
+    nRelaxIter 3;
+    nSmoothSurfaceNormals 1;
+    nSmoothNormals 3;
+    nSmoothThickness 10;
+    maxFaceThicknessRatio 0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedialAxisAngle 90;
+    nBufferCellsNoExtrude 0;
+    nLayerIter 50;
+    nRelaxedIter 20;
+    layers
+    {
+        cylinder { nSurfaceLayers 8; }
+        top { nSurfaceLayers 4; }
+        bottom { nSurfaceLayers 4; }
+    }
+}
+
+meshQualityControls
+{
+    maxNonOrtho 65;
+    maxBoundarySkewness 20;
+    maxInternalSkewness 4;
+    maxConcave 80;
+    minVol 1e-13;
+    minTetQuality 1e-30;
+    minArea -1;
+    minTwist 0.02;
+    minDeterminant 0.001;
+    minFaceWeight 0.02;
+    minVolRatio 0.01;
+    minTriangleTwist -1;
+    nSmoothScale 4;
+    errorReduction 0.75;
+    relaxed { maxNonOrtho 75; }
+}
+
+writeFlags ( scalarLevels layerSets );
+mergeTolerance 1e-6;
