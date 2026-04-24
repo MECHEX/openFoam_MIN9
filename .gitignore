@@ -1,14 +1,39 @@
-.claude/
+# Python
 **/__pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# OS
 Thumbs.db
 .DS_Store
 
-# Heavy simulation folders — kept on C:\openfoam-case, not in repo
-**/01_openfoam_setup/0.orig/
-**/01_openfoam_setup/constant/
-**/01_openfoam_setup/system/
-**/02_raw_data/postProcessing/
-**/05_logs/logs/
+# Claude internal
+.claude/
+
+# ── OpenFOAM ────────────────────────────────────────────────────────────────
+# Mesh binaries — reproducible from blockMeshDict / snappyHexMesh
+**/constant/polyMesh/
+**/constant/triSurface/*.stl
+
+# ── Large computed matrices — regenerate with analysis scripts ───────────────
+# POD spatial modes (2 MB+ per field)
+**/spatial_modes.csv
+spatial_mode_*.csv
+
+# EPOD extended modes (1.5–2 MB per pair)
+**/extended_modes.csv
+
+# Snapshot matrices
+**/snapshot_matrix.csv
+**/centered_snapshot_matrix.csv
+
+# Full-field reconstruction outputs
+**/target_reconstruction_all_modes.csv
+**/target_centered_reconstruction_all_modes.csv
+
+# ── Heavy simulation timeseries (raw OF output, >1 MB) ──────────────────────
+**/*_timeseries.csv
+
+# ── toolkit_test raw input snapshots ────────────────────────────────────────
+toolkit_test/data/
