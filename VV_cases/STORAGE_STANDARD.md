@@ -2,421 +2,171 @@
 
 ## Purpose
 
-This document defines how simulation results are stored in the `VV_cases` part of the repository.
-The goal is reproducibility, easy navigation, and a clear separation between:
+This document defines the simplified repository layout for `VV_cases`.
 
-- OpenFOAM setup used for the run
-- raw solver output
-- processed data
-- plots
-- human-readable notes
+The repository is intended to remain readable and article-oriented.
+It is not meant to mirror every OpenFOAM working directory in full.
 
-## Scope
+## Core rule
 
-This standard applies to every study directory:
+There are only two documentation layers:
 
-- `VV_cases/V1_solver`
-- `VV_cases/V2_confined`
-- `VV_cases/V2_thermal`
-- `VV_cases/V3_array`
-- `VV_cases/V4a_2D`
-- `VV_cases/V4b_3D`
+- `VV_cases/RESEARCH_LOG.md`
+  chronological log of work, debugging, decisions, and packages
+- `VV_cases/<study>/doc/<study>.md`
+  clean canonical technical description of the accepted setup and results
 
-## Core principle
+`RESEARCH_LOG.md` is appended.
+`doc/<study>.md` is rewritten and improved over time.
 
-In this repository:
+## Study-level layout
 
-- a `run` means one attempt / one computational campaign
-- a run can contain many simulations
-- different Reynolds numbers, meshes, or domain variants usually belong to the same run
-- a new run number is created only when the whole attempt is repeated after failure, correction, or major methodological change
-
-## What belongs where
-
-This is the practical rule for OpenFOAM content:
-
-- study level:
-  - Python scripts
-  - generators
-  - plotting scripts
-  - documentation
-  - study-wide plans and comparisons
-- run level:
-  - campaign notes
-  - run-wide summary tables
-  - overlay plots across many simulations
-  - shared assumptions for that attempt
-- simulation level:
-  - frozen OpenFOAM case
-  - raw solver output
-  - processed metrics
-  - single-case plots
-
-Important:
-
-- `0/`, `constant/`, `system/`, `Allrun`, `caseMeta.json` belong to one simulation
-- they should not be stored only once at study level if they are meant to document results
-- the study may keep templates or generators, but the frozen setup used to produce a result must live with that simulation
-
-### Example
-
-Correct:
-
-```text
-VV_cases/
-  V1_solver/
-    V1Study.py
-    V1PublicationPlots.py
-    templates/
-      base_case/
-    results/
-      study_v1/
-        runs/
-          001_data_beta05_initial_verification/
-            02_simulations/
-              baseline_medium_Re160/
-                01_openfoam_setup/
-                  0/
-                  constant/
-                  system/
-                  Allrun
-```
-
-Not recommended:
-
-```text
-VV_cases/
-  V1_solver/
-    0/
-    constant/
-    system/
-```
-
-if those folders are supposed to document many different simulations. That would hide which setup produced which result.
-
-If a study keeps a reusable generic case template, store it under:
-
-- `templates/base_case/`
-
-and not as loose `0/`, `constant/`, or `system/` folders directly in the study root.
-
-## High-level study layout
-
-Each study should follow this structure:
+Each study should be kept as simple as possible:
 
 ```text
 VV_cases/
   Vx_name/
-    templates/
-      base_case/
-    <study scripts and templates>
+    _code/
+    doc/
+      Vx_name.md
+      figs/
     results/
-      runs/
-        001_data_<run_slug>/
-        002_data_<run_slug>/
-        003_data_<run_slug>/
-      study_summary/
-      publication/
+      study_vx/
+        runs/
+          001_data_<slug>/
+          002_data_<slug>/
 ```
 
-If a study already uses a named study root such as `results/study_v1`, then the same
-structure should exist inside that study root:
+No additional study-level `publication/`, `study_summary/`, or cache folders should be
+kept in the active structure unless there is a strong technical reason.
+
+## Study-level code
+
+Python helper scripts for a study should be stored in:
+
+- `VV_cases/<study>/_code/`
+
+This keeps the study root cleaner and separates code from documentation and archived results.
+
+## What belongs in `doc/`
+
+`doc/<study>.md` should contain the current accepted:
+
+- objective
+- literature reference
+- geometry
+- boundary conditions
+- numerical setup
+- mesh description or mesh-independence notes
+- residual/convergence description
+- accepted result tables
+- accepted comparison with literature
+
+`doc/figs/` should contain only figures explicitly cited by `doc/<study>.md`.
+
+## Runs
+
+A run is one attempt or one computational campaign.
+
+Examples:
+
+- `001_data_beta05_initial_verification`
+- `002_data_sahin_owens_poiseuille_verification`
+
+Different Reynolds numbers or mesh variants can belong to the same run.
+A new run number is used only after a major correction, restart, or methodological change.
+
+## Simplified run layout
+
+Each run should be flattened to:
 
 ```text
-results/
-  study_v1/
-    runs/
-    study_summary/
-    publication/
+001_data_<slug>/
+  run.md
+  summary.csv
+  summary.md
+  plots/          # optional, only for run-specific comparison plots
+  simulations/
 ```
 
-## Run numbering
+### `run.md`
 
-Each run attempt gets its own numbered folder:
+This is the human-readable description of the run as a whole.
+It replaces the earlier split across `00_notes`, `01_run_setup`, and similar folders.
 
-- `001_data_<run_slug>`
-- `002_data_<run_slug>`
-- `003_data_<run_slug>`
+### `summary.csv` and `summary.md`
 
-Rules:
+These store the aggregated results of the run.
+They replace the earlier `03_run_summary/` folder.
 
-- The numeric prefix is global within a study and increments monotonically.
-- Do not overwrite an old run folder after a failed or incomplete attempt.
-- If the whole attempt must be repeated, create the next number and keep a meaningful slug.
-- Example:
-  - `001_data_beta05_initial_verification`
-  - `002_data_beta05_inlet_fix`
-  - `003_data_beta05_repeat_after_mesh_change`
+### `plots/`
 
-This preserves history and makes failed attempts traceable.
+Optional.
+Use only if a run genuinely needs run-level comparison plots.
+Study-level final figures still belong only in `doc/figs/`.
 
-## Required structure inside each run
+## Simplified simulation layout
 
-Every run folder should contain the following subfolders:
+Each simulation inside a run should be flattened to:
 
 ```text
-001_data_<run_slug>/
-  00_notes/
-  01_run_setup/
-  02_simulations/
-  03_run_summary/
-  04_publication_candidates/
-  05_run_logs/
-```
-
-### `00_notes`
-
-Human-readable documentation for the run as a whole.
-
-Recommended files:
-
-- `run_scope.md`
-- `run_decisions.md`
-- `run_outcome.md`
-
-### `01_run_setup`
-
-Run-level setup shared by all simulations in the campaign.
-
-Recommended contents:
-
-- shared assumptions
-- batch scripts
-- parameter notes
-- copied study plan if useful
-
-This folder should not be used as the only place for case-specific `0/constant/system`.
-Those belong inside each simulation when they define the actual solved case.
-
-### `02_simulations`
-
-One subfolder per simulation, for example:
-
-- `baseline_medium_Re100`
-- `baseline_medium_Re160`
-- `long_medium_Re200`
-
-### `03_run_summary`
-
-Aggregated outputs for the whole run.
-
-Recommended contents:
-
-- `summary.csv`
-- `summary.md`
-- comparison tables
-- overlay plots generated from all simulations in the run
-
-### `04_publication_candidates`
-
-Run-level figures and tables that may later be promoted to study-level or manuscript-level outputs.
-
-### `05_run_logs`
-
-Batch-level helper logs if they exist.
-
-## Required structure inside each simulation
-
-Each simulation inside a run should contain the following subfolders:
-
-```text
-02_simulations/
+simulations/
   <simulation_slug>/
-    00_notes/
-    01_openfoam_setup/
-    02_raw_data/
-    03_processed_data/
-    04_plots/
-    05_logs/
+    notes.md
 ```
 
-### Simulation-level `00_notes`
+### `notes.md`
 
-Human-readable documentation for one simulation.
+This single file should describe the case in plain technical language and may include:
 
-Required files:
+- case name
+- geometry
+- Reynolds number
+- mesh identifier
+- accepted cell count
+- important setup details
+- outcome
+- key metrics
+- interpretation
 
-- `input.md`
-  What was intended before launch: geometry, mesh, Reynolds number, target quantity, assumptions.
-- `output.md`
-  What happened after the run: result quality, regime, issues, comparison to reference, next action.
+The repository should not keep mirrored `0/`, `constant/`, `system/`, raw time directories,
+or per-simulation plot folders in the active V&V structure unless explicitly needed later.
 
-Optional files:
+## Practical implication
 
-- `decision.md`
-- `comparison.md`
+The repo is for:
 
-### Simulation-level `01_openfoam_setup`
+- clean study documentation
+- compact run summaries
+- article-oriented material
 
-Snapshot of the exact OpenFOAM case used to produce that simulation.
+The repo is not the primary storage location for every raw OpenFOAM artifact.
 
-Recommended contents:
+## Naming
 
-- `0/`
-- `constant/`
-- `system/`
-- `Allrun`
-- `caseMeta.json`
-- helper dictionaries such as `setExprFieldsDict`
+Use short stable slugs:
 
-Rule:
+- run: `001_data_beta05_initial_verification`
+- simulation: `baseline_medium_Re160`
 
-- This folder is a frozen copy of the setup used for that simulation.
-- Do not treat it as a live working directory after the simulation is archived.
-- If a simulation has a unique `0`, `constant`, `system`, or `Allrun`, store them here.
+Avoid spaces and long prose in names.
 
-### Simulation-level `02_raw_data`
+## Workflow
 
-Direct outputs copied from the working OpenFOAM case.
+1. Create the next numbered run.
+2. Add or update `run.md`.
+3. Add simulation folders with `notes.md`.
+4. Update `summary.csv` and `summary.md`.
+5. Update `doc/<study>.md` if the accepted setup or accepted results changed.
+6. Copy only cited figures to `doc/figs/`.
+7. Append the package to `VV_cases/RESEARCH_LOG.md`.
 
-Recommended contents:
+## Migration policy
 
-- `postProcessing/`
-- time directories if they are being archived
-- copied mesh reports
-- exported coefficient files
+When old studies are simplified:
 
-Rule:
+- keep the current accepted meaning
+- remove redundant layers
+- prefer one clear location over several overlapping ones
 
-- Keep these files as raw as possible.
-- Avoid mixing hand-edited spreadsheets or manually cleaned files here.
-
-### Simulation-level `03_processed_data`
-
-Derived machine-readable outputs.
-
-Recommended contents:
-
-- `summary.json`
-- extracted tables used in papers or reports
-- processed coefficient files if needed
-
-Rule:
-
-- This is where processed metrics belong.
-- If a value appears in a plot or a table, its generating data should exist here first.
-
-### Simulation-level `04_plots`
-
-Figures generated from the processed data of that simulation.
-
-Recommended contents:
-
-- `Cl_vs_time.png`
-- `Cd_vs_time.png`
-- single-case diagnostic figures
-
-Rule:
-
-- Keep only output graphics here, not the scripts that generate them.
-
-### Simulation-level `05_logs`
-
-Execution logs and utility logs for that simulation.
-
-Recommended contents:
-
-- `blockMesh.log`
-- `snappyHexMesh.log`
-- `checkMesh.log`
-- `pimpleFoam.log`
-- helper-script logs
-
-Rule:
-
-- Logs stay separate from raw field data and separate from human notes.
-
-## Study-level summary folders
-
-At the study level, keep:
-
-```text
-results/
-  runs/
-  study_summary/
-  publication/
-```
-
-### `study_summary`
-
-Cross-run summaries for the whole study.
-
-Recommended contents:
-
-- run index
-- cross-run comparison tables
-- current study plan
-- study-wide summary files when needed
-
-### `publication`
-
-Selected polished outputs intended for reporting or paper writing.
-
-Recommended contents:
-
-- final figures
-- tables exported for manuscripts
-- short text snippets if needed
-
-## Naming recommendations
-
-Use short, stable slugs.
-
-Run examples:
-
-- `beta05_initial_verification`
-- `beta05_inlet_fix`
-- `beta0375_campaign_01`
-
-Simulation examples:
-
-- `baseline_medium_Re160`
-- `long_medium_Re200`
-- `b030_medium_Re095`
-
-Avoid:
-
-- spaces
-- Polish diacritics
-- long free-form descriptions in folder names
-
-## Recommended workflow
-
-For each new run:
-
-1. Reserve the next numbered run folder.
-2. Describe the run scope in `00_notes`.
-3. Create or update simulation subfolders inside `02_simulations`.
-4. For each simulation:
-   - write `00_notes/input.md`
-   - run the case in the working directory
-   - copy the frozen setup to `01_openfoam_setup`
-   - copy raw solver outputs to `02_raw_data`
-   - generate processed metrics into `03_processed_data`
-   - save figures into `04_plots`
-   - write `00_notes/output.md`
-5. Build run-level summaries in `03_run_summary`.
-6. Save polished figures for that run in `04_publication_candidates`.
-7. Update `study_summary` if the run changes the study-level picture.
-8. Append the action to `VV_cases/RESEARCH_LOG.md`.
-
-## Migration policy for existing studies
-
-Existing study folders may still use the older layout, for example:
-
-- `V1_solver/results/study_v1/...`
-
-Migration rule:
-
-- Do not rewrite history destructively.
-- Keep old results readable.
-- Migrate gradually by regrouping simulations under campaign-style runs.
-
-## Decision for this repository
-
-From this point forward:
-
-- new work should follow this storage standard
-- one run may contain many simulations
-- old work should be migrated only when it materially helps the study
-- every completed work package must be logged in `VV_cases/RESEARCH_LOG.md`
+The active repository should favor clarity over archival completeness.

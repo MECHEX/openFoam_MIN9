@@ -1,0 +1,27 @@
+{
+  "pairs": [
+    {
+      "pair": "probe_0_1D",
+      "peak_freq_Hz": 6.25,
+      "peak_coherence": 0.9997855497638994
+    },
+    {
+      "pair": "probe_1_2D",
+      "peak_freq_Hz": 13.28125,
+      "peak_coherence": 0.9999775500378234
+    },
+    {
+      "pair": "probe_2_3D",
+      "peak_freq_Hz": 23.4375,
+      "peak_coherence": 0.9998524241610574
+    },
+    {
+      "pair": "Uy_probe_0",
+      "peak_freq_Hz": 19.53125,
+      "peak_coherence": 0.9977379228016214
+    }
+  ],
+  "fs_Hz": 100.0,
+  "nperseg": 128,
+  "note": "Welch method. run001 steady -> coherence reflects IC transient. No shedding frequency expected."
+}

@@ -1,0 +1,5 @@
+pair,expected_frequency_Hz,peak_frequency_Hz,peak_coherence,phase_at_peak_rad,phase_at_peak_deg
+u_skew_vs_q_skew,1.25,1.25,0.9999958032,2.479634661,142.0726008
+u_core_mean_vs_q_wall_mean,2.5,2.5,0.9999803954,-0.3504975334,-20.08202939
+u_pod_a1_vs_q_pod_a1,1.25,1.25,0.9975998407,2.944549248,168.7102445
+u_pod_a2_vs_q_pod_a2,2.5,2.5,0.670887393,2.419529857,138.6288492

@@ -1,0 +1,19 @@
+source,case,Re,Nu,note
+Bharti et al. (2007),,10.0,1.8623,CWT tabulated reference
+Bharti et al. (2007),,20.0,2.4653,CWT tabulated reference
+Bharti et al. (2007),,40.0,3.2825,CWT tabulated reference
+Lange et al. (1998),,10.0,1.8101007110108736,correlation value
+Lange et al. (1998),,20.0,2.4086785671463318,correlation value
+Lange et al. (1998),,40.0,3.2805027786114174,correlation value
+Lange et al. (1998),,45.0,3.465657777620164,correlation value
+Lange et al. (1998),,60.0,3.9751563171796196,correlation value
+Lange et al. (1998),,100.0,5.127775395230791,correlation value
+Lange et al. (1998),,150.0,6.342902905133428,correlation value
+Lange et al. (1998),,200.0,7.420205234233615,correlation value
+Present work,Re10_ogrid,10.0,1.880652032516138,run 004 O-grid
+Present work,Re20_ogrid,20.0,2.4829304949864373,run 004 O-grid
+Present work,Re40_ogrid,40.0,3.3045409684503424,run 004 O-grid
+Present work,Re45_ogrid,45.0,3.473561140160554,run 004 O-grid
+Present work,Re60_ogrid,60.0,3.9777695233677153,run 004 O-grid
+Present work,Re100_ogrid,100.0,5.171960704715537,run 004 O-grid
+Present work,Re200_ogrid,200.0,7.503991370178309,run 004 O-grid

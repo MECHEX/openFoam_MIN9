@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="720" viewBox="0 0 1120 720">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#334155"/>
+    </marker>
+    <style>
+      .title { font: 700 24px sans-serif; fill: #0f172a; }
+      .subtitle { font: 600 15px sans-serif; fill: #334155; }
+      .label { font: 13px sans-serif; fill: #0f172a; }
+      .small { font: 11px sans-serif; fill: #334155; }
+      .tiny { font: 10px sans-serif; fill: #475569; }
+      .dim { stroke: #334155; stroke-width: 1.4; marker-start: url(#arrow); marker-end: url(#arrow); }
+      .guide { stroke: #64748b; stroke-width: 1; stroke-dasharray: 4 4; }
+      .sym { stroke: #0f766e; stroke-width: 3; stroke-dasharray: 8 5; }
+      .hot { stroke: #dc2626; stroke-width: 5; }
+      .wall { stroke: #475569; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1120" height="720" fill="#f8fafc"/>
+  <text x="44" y="42" class="title">V4b 3D fin-and-tube unit-cell geometry</text>
+  <text x="44" y="67" class="subtitle">Baseline interpretation: tube axis along z, hot fins at z=0 and z=Lz only in the fin zone</text>
+
+  <!-- XY view constants: x0=60, y0=116, scale=7 px/mm, Lx=63.71, H=32 -->
+  <text x="60" y="101" class="subtitle">1) x-y view at mid-span z=Lz/2</text>
+  <rect x="60" y="116" width="84" height="224" fill="#dbeafe" stroke="#93c5fd"/>
+  <rect x="144" y="116" width="194" height="224" fill="#ffedd5" stroke="#fed7aa"/>
+  <rect x="338" y="116" width="168" height="224" fill="#dcfce7" stroke="#86efac"/>
+  <line x1="60" y1="116" x2="506" y2="116" class="sym"/>
+  <line x1="60" y1="340" x2="506" y2="340" class="sym"/>
+  <line x1="60" y1="116" x2="60" y2="340" class="wall"/>
+  <line x1="506" y1="116" x2="506" y2="340" class="wall"/>
+  <line x1="144" y1="116" x2="144" y2="340" class="guide"/>
+  <line x1="338" y1="116" x2="338" y2="340" class="guide"/>
+  <line x1="60" y1="228" x2="506" y2="228" class="guide"/>
+  <circle cx="241" cy="228" r="42" fill="#fb923c" stroke="#c2410c" stroke-width="3"/>
+  <circle cx="241" cy="228" r="4" fill="#7c2d12"/>
+  <text x="88" y="141" class="label">inlet</text>
+  <text x="93" y="158" class="small">Lin=12 mm</text>
+  <text x="199" y="141" class="label">heated fin zone</text>
+  <text x="202" y="158" class="small">Lf=27.71 mm</text>
+  <text x="389" y="141" class="label">outlet</text>
+  <text x="385" y="158" class="small">Lout=24 mm</text>
+  <text x="209" y="224" class="label">hot tube</text>
+  <text x="213" y="240" class="small">D=12 mm</text>
+  <text x="515" y="121" class="small">y=+H/2 symmetryPlane</text>
+  <text x="515" y="342" class="small">y=-H/2 symmetryPlane</text>
+  <text x="64" y="360" class="tiny">x=0</text>
+  <text x="130" y="360" class="tiny">x=12</text>
+  <text x="320" y="360" class="tiny">x=39.71</text>
+  <text x="476" y="360" class="tiny">x=63.71 mm</text>
+  <line x1="60" y1="384" x2="506" y2="384" class="dim"/>
+  <text x="231" y="406" class="label">Lx = 63.71 mm = 5.309 D</text>
+  <line x1="42" y1="116" x2="42" y2="340" class="dim"/>
+  <text x="14" y="234" class="label" transform="rotate(-90 14 234)">H=32 mm, beta=D/H=0.375</text>
+
+  <!-- XZ view: same x scale, z scale, y=450 -->
+  <text x="60" y="445" class="subtitle">2) x-z view at cylinder centerline y=0</text>
+  <rect x="60" y="462" width="84" height="84" fill="#dbeafe" stroke="#93c5fd"/>
+  <rect x="144" y="462" width="194" height="84" fill="#ffedd5" stroke="#fed7aa"/>
+  <rect x="338" y="462" width="168" height="84" fill="#dcfce7" stroke="#86efac"/>
+  <line x1="60" y1="462" x2="144" y2="462" class="sym"/>
+  <line x1="338" y1="462" x2="506" y2="462" class="sym"/>
+  <line x1="144" y1="462" x2="338" y2="462" class="hot"/>
+  <line x1="60" y1="546" x2="144" y2="546" class="sym"/>
+  <line x1="338" y1="546" x2="506" y2="546" class="sym"/>
+  <line x1="144" y1="546" x2="338" y2="546" class="hot"/>
+  <line x1="144" y1="462" x2="144" y2="546" class="guide"/>
+  <line x1="338" y1="462" x2="338" y2="546" class="guide"/>
+  <rect x="199" y="462" width="84" height="84" fill="#fb923c" stroke="#c2410c" stroke-width="3" opacity="0.88"/>
+  <text x="208" y="507" class="label">tube span</text>
+  <text x="205" y="523" class="small">axis parallel z</text>
+  <text x="156" y="457" class="small">hot fin wall: z=0</text>
+  <text x="156" y="565" class="small">hot fin wall: z=Lz</text>
+  <text x="66" y="482" class="tiny">z symmetry</text>
+  <text x="385" y="482" class="tiny">z symmetry</text>
+  <line x1="60" y1="586" x2="506" y2="586" class="dim"/>
+  <text x="211" y="608" class="label">same x-length; z depth below is Lz=12 mm</text>
+  <line x1="526" y1="462" x2="526" y2="546" class="dim"/>
+  <text x="540" y="509" class="label">Lz=12 mm = D</text>
+
+  <!-- Right information panel -->
+  <rect x="620" y="110" width="450" height="510" rx="16" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="646" y="145" class="subtitle">Canonical dimensions</text>
+  <text x="646" y="174" class="label">D = 12.00 mm, R = 6.00 mm</text>
+  <text x="646" y="198" class="label">H = Pt = 32.00 mm, beta = 0.375</text>
+  <text x="646" y="222" class="label">Lz = 12.00 mm = 1D</text>
+  <text x="646" y="246" class="label">Lf = 27.71 mm = 2.309D</text>
+  <text x="646" y="270" class="label">Lin = 12.00 mm, Lout = 24.00 mm</text>
+  <text x="646" y="294" class="label">Lx = 63.71 mm</text>
+  <text x="646" y="318" class="label">xc = Lin + Lf/2 = 25.855 mm</text>
+
+  <text x="646" y="357" class="subtitle">Heated patches</text>
+  <rect x="650" y="376" width="18" height="18" fill="#fb923c" stroke="#c2410c"/>
+  <text x="678" y="390" class="label">hot_tube: noSlip, T=343.15 K</text>
+  <line x1="650" y1="414" x2="668" y2="414" class="hot"/>
+  <text x="678" y="419" class="label">hot_fin_z_min / hot_fin_z_max</text>
+  <text x="678" y="437" class="small">fin-zone only, T=343.15 K</text>
+
+  <text x="646" y="474" class="subtitle">Non-heated unit-cell boundaries</text>
+  <line x1="650" y1="494" x2="668" y2="494" class="sym"/>
+  <text x="678" y="499" class="label">symmetryPlane baseline</text>
+  <text x="678" y="517" class="small">slip velocity, dT/dn=0</text>
+  <text x="678" y="535" class="small">used on y faces and z inlet/outlet extensions</text>
+
+  <text x="646" y="573" class="subtitle">Important meshing note</text>
+  <text x="646" y="594" class="small">Split z faces into inlet / fin / outlet patches.</text>
+  <text x="646" y="612" class="small">A single global periodic z pair is not compatible</text>
+  <text x="646" y="630" class="small">with hot fin walls in the middle section.</text>
+
+  <!-- Legend -->
+  <text x="60" y="654" class="subtitle">Legend</text>
+  <rect x="60" y="670" width="18" height="18" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="86" y="684" class="small">inlet extension, T_in=293.15 K</text>
+  <rect x="275" y="670" width="18" height="18" fill="#ffedd5" stroke="#fed7aa"/>
+  <text x="301" y="684" class="small">heated fin zone</text>
+  <rect x="440" y="670" width="18" height="18" fill="#dcfce7" stroke="#86efac"/>
+  <text x="466" y="684" class="small">outlet extension</text>
+  <line x1="620" y1="679" x2="650" y2="679" class="sym"/>
+  <text x="660" y="684" class="small">symmetry / adiabatic</text>
+  <line x1="815" y1="679" x2="845" y2="679" class="hot"/>
+  <text x="855" y="684" class="small">hot wall, T=343.15 K</text>
+</svg>

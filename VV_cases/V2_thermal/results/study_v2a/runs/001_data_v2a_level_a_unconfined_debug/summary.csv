@@ -1,0 +1,4 @@
+"case","role","status","key_result"
+"Re10","baseline input case","input-only","baseline compact note only"
+"Re10_debug_serial","serial no-function-objects diagnostic","debug-completed","crash remained after solving rho, U, and h"
+"Re10_debug_serial_nolayers","serial no-layer diagnostic","debug-completed","crash remained even after removing layer extrusion"

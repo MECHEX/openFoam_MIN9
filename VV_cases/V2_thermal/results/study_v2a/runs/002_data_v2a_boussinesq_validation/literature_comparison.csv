@@ -1,0 +1,2 @@
+case,Re,time_max_s,Nu_tail_mean,Nu_last10s_mean,Nu_Lange,Nu_Bharti,err_vs_Lange_pct,err_vs_Bharti_pct,Cd_tail_mean,Cl_rms_tail,St_peak_transient,St_note
+Re10_long100s,10,47.0012,6.8857,6.0189,1.8101,1.8623,280.41,269.74,2.5775,2.616600,0.0659,"No literature St in Lange/Bharti; Re=10 expected steady/no periodic shedding."

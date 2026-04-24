@@ -1,0 +1,2 @@
+case,beta,Re,cells,regime,Cd_mean,Cl_rms,frequency_hz,St_sim,so_Re_crit,so_St_crit,delta_St_percent,status
+b060_medium_Re135,0.6,135.0,33268,periodic,4.608415955835755,0.0013234274320711172,5.824383749710125,0.4098071239901583,117.19,0.4073,0.616,ok

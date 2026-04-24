@@ -1,0 +1,60 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+
+application     buoyantBoussinesqPimpleFoam;
+
+startFrom       startTime;
+startTime       0;
+stopAt          endTime;
+endTime         100.0;
+
+deltaT          1e-4;
+adjustTimeStep  yes;
+maxCo           0.5;
+
+writeControl    runTime;
+writeInterval   1.0;
+purgeWrite      0;
+writeFormat     ascii;
+writePrecision  8;
+writeCompression off;
+timeFormat      general;
+timePrecision   8;
+runTimeModifiable true;
+
+functions
+{
+    forceCoeffs
+    {
+        type            forceCoeffs;
+        libs            (forces);
+        executeControl  timeStep;
+        writeControl    runTime;
+        writeInterval   0.1;
+        log             yes;
+        patches         (cylinder);
+        rho             rhoInf;
+        rhoInf          1.2040;
+        CofR            (0 0 0);
+        liftDir         (0 1 0);
+        dragDir         (1 0 0);
+        pitchAxis       (0 0 1);
+        magUInf         0.050526024;
+        lRef            0.012;
+        Aref            0.00012;
+    }
+
+    residuals
+    {
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        fields          (U p_rgh T);
+        writeControl    timeStep;
+        writeInterval   20;
+    }
+}

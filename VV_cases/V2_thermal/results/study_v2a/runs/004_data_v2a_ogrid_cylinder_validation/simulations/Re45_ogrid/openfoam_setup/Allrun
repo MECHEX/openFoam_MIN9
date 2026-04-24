@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+cd "$(dirname "$0")" || exit 1
+source /home/kik/openfoam/OpenFOAM-v2512/etc/bashrc 2>/dev/null
+set -e
+mkdir -p logs
+blockMesh | tee logs/log.blockMesh
+checkMesh | tee logs/log.checkMesh
+postProcess -func writeCellCentres -time 0 | tee logs/log.writeCellCentres
+setExprFields | tee logs/log.setExprFields || true
+decomposePar -force | tee logs/log.decomposePar
+mpirun -np 15 buoyantBoussinesqPimpleFoam -parallel | tee logs/log.buoyantBoussinesqPimpleFoam
+reconstructPar | tee logs/log.reconstructPar

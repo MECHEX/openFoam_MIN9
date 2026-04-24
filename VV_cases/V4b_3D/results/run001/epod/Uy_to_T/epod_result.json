@@ -1,0 +1,61 @@
+{
+  "source": "Uy",
+  "target": "T",
+  "n_source_modes": 10,
+  "formula": "Psi = Y_c A^T (A A^T)^-1",
+  "all_modes_rel_error": 8.761568711536198e-11,
+  "all_modes_captured_pct": 100.0,
+  "metrics": [
+    {
+      "modes": 1,
+      "rel_error": 0.1874567636938633,
+      "captured_pct": 96.48599617454231
+    },
+    {
+      "modes": 2,
+      "rel_error": 0.03927205420356809,
+      "captured_pct": 99.8457705758632
+    },
+    {
+      "modes": 3,
+      "rel_error": 0.005447668182463937,
+      "captured_pct": 99.99703229113737
+    },
+    {
+      "modes": 4,
+      "rel_error": 0.0008529616061142408,
+      "captured_pct": 99.99992724564984
+    },
+    {
+      "modes": 5,
+      "rel_error": 7.471428586699416e-05,
+      "captured_pct": 99.99999944177756
+    },
+    {
+      "modes": 6,
+      "rel_error": 2.0167949431344015e-05,
+      "captured_pct": 99.99999995932538
+    },
+    {
+      "modes": 7,
+      "rel_error": 1.0165250916442468e-05,
+      "captured_pct": 99.99999998966676
+    },
+    {
+      "modes": 8,
+      "rel_error": 4.588320987376141e-06,
+      "captured_pct": 99.99999999789473
+    },
+    {
+      "modes": 9,
+      "rel_error": 8.76156871248549e-11,
+      "captured_pct": 100.0
+    },
+    {
+      "modes": 10,
+      "rel_error": 8.761568711536198e-11,
+      "captured_pct": 100.0
+    }
+  ],
+  "note": "run001: high captured % expected \u2014 Ux and T covary during spin-up"
+}

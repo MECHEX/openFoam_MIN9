@@ -1,0 +1,210 @@
+{
+  "direction": "heat_flux_to_velocity",
+  "source_dataset": "heat_flux",
+  "target_dataset": "velocity",
+  "source_snapshot_ids": [
+    "q01_symmetric_walls",
+    "q02_right_wall_hot",
+    "q03_left_wall_hot",
+    "q04_top_bottom_hot",
+    "q05_diagonal_wall_mode"
+  ],
+  "target_snapshot_ids": [
+    "s01_symmetric_core",
+    "s02_right_skew",
+    "s03_left_skew",
+    "s04_vertical_stretch",
+    "s05_diagonal_mode"
+  ],
+  "active_source_modes": 4,
+  "formula": "Psi = Y_centered A_source^T (A_source A_source^T)^(-1)",
+  "target_reconstruction": "Y_centered_hat = Psi A_source",
+  "metrics": [
+    {
+      "mode_count": 1,
+      "relative_error_centered_target": 0.7237086389608032,
+      "captured_target_energy_fraction": 0.47624580589350185,
+      "captured_target_energy_percent": 47.62458058935019
+    },
+    {
+      "mode_count": 2,
+      "relative_error_centered_target": 0.5253766237804245,
+      "captured_target_energy_fraction": 0.7239794031850824,
+      "captured_target_energy_percent": 72.39794031850823
+    },
+    {
+      "mode_count": 3,
+      "relative_error_centered_target": 0.18034749485797777,
+      "captured_target_energy_fraction": 0.9674747810984516,
+      "captured_target_energy_percent": 96.74747810984516
+    },
+    {
+      "mode_count": 4,
+      "relative_error_centered_target": 6.500615861509756e-16,
+      "captured_target_energy_fraction": 1.0,
+      "captured_target_energy_percent": 100.0
+    }
+  ],
+  "extended_modes": [
+    {
+      "mode": 1,
+      "matrix": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -0.06461874460972489,
+          0.07227340007723204,
+          0.09453469673857946,
+          0.0
+        ],
+        [
+          0.0,
+          -0.23472220881101843,
+          0.05591318927322012,
+          0.2333821012431722,
+          0.0
+        ],
+        [
+          0.0,
+          -0.18275435491663355,
+          -0.11010771568671608,
+          0.07510651556431996,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    {
+      "mode": 2,
+      "matrix": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -0.12224054836004974,
+          -0.12309746496804377,
+          0.19683737701817144,
+          0.0
+        ],
+        [
+          0.0,
+          0.11973841276204132,
+          -0.06321434774398656,
+          0.07406166208224862,
+          0.0
+        ],
+        [
+          0.0,
+          0.16320850191293526,
+          0.05113196573118009,
+          -0.10332170374857744,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    {
+      "mode": 3,
+      "matrix": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -0.005111406052443647,
+          0.20218496614861456,
+          0.012554085922956737,
+          0.0
+        ],
+        [
+          0.0,
+          -0.13523538986984113,
+          -0.16367518131335498,
+          -0.0810269481001229,
+          0.0
+        ],
+        [
+          0.0,
+          0.06827884037396642,
+          0.23991873093919772,
+          0.08170330260632148,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    {
+      "mode": 4,
+      "matrix": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.14764403886439617,
+          0.21161732553559964,
+          0.032221826583408164,
+          0.0
+        ],
+        [
+          0.0,
+          0.057211467983009516,
+          -0.5017428665475584,
+          0.039495973349645566,
+          0.0
+        ],
+        [
+          0.0,
+          0.08224531960298943,
+          0.10116321226361426,
+          0.23550324981884124,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    }
+  ]
+}

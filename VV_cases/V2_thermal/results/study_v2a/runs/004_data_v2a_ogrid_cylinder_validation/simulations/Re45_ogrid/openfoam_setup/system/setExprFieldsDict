@@ -1,0 +1,28 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      setExprFieldsDict;
+}
+
+readFields ( U );
+
+expressions
+(
+    U
+    {
+        field U;
+        create no;
+        dimensions [0 1 -1 0 0 0 0];
+        expression
+        #{
+            vector(
+                0.056841777,
+                0.000284209*exp(-pow((pos().x()-0.006000000)/0.018000000, 2.0)
+                                  -pow((pos().y()-0.003000000)/0.009000000, 2.0)),
+                0
+            )
+        #};
+    }
+);

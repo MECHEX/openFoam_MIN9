@@ -1,0 +1,5 @@
+mode_count,relative_error_centered_target,captured_target_energy_fraction,captured_target_energy_percent
+1,0.7634186671,0.4171919387,41.71919387
+2,0.5710944623,0.6738511152,67.38511152
+3,0.1677614547,0.9718560943,97.18560943
+4,9.347245962e-16,1,100

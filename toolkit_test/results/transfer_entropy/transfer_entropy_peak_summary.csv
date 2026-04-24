@@ -1,0 +1,8 @@
+example,pair,lag_samples,lag_time,te_bits,surrogate_mean_bits,surrogate_p95_bits,excess_te_bits
+current_common_driver,u_skew_to_q_skew,38,1.9,0.8051143506,0.02312810753,0.03369703138,0.7819862431
+current_common_driver,q_skew_to_u_skew,26,1.3,0.7694438564,0.02382903619,0.03416849251,0.7456148202
+current_common_driver,u_pod_a1_to_q_pod_a1,24,1.2,0.9940112273,0.03132279162,0.04392958317,0.9626884357
+current_common_driver,q_pod_a1_to_u_pod_a1,19,0.95,0.9680744394,0.0235472325,0.03528560765,0.9445272069
+delayed_causal,u_driver_to_q_response,7,0.35,1.209229527,0.05848255013,0.07301591168,1.150746977
+delayed_causal,q_response_to_u_driver,4,0.2,0.08308108798,0.06002789758,0.07833147504,0.0230531904
+delayed_causal,independent_to_q_response,2,0.1,0.07408902794,0.05906183703,0.07175568732,0.01502719092

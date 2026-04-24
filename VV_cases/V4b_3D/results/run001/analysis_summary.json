@@ -1,0 +1,108 @@
+{
+  "run_id": "run001",
+  "Re": 100,
+  "flow_regime": "steady",
+  "Ri": 1.258,
+  "pod": {
+    "Ux": {
+      "n_modes": 10,
+      "mode1_energy_pct": 83.28,
+      "mode2_energy_pct": 15.84
+    },
+    "Uy": {
+      "n_modes": 10,
+      "mode1_energy_pct": 86.54,
+      "mode2_energy_pct": 13.24
+    },
+    "T": {
+      "n_modes": 9,
+      "mode1_energy_pct": 96.86,
+      "mode2_energy_pct": 3.05
+    }
+  },
+  "epod": [
+    {
+      "source": "Ux",
+      "target": "T",
+      "captured_pct": 100.0,
+      "rel_error": 0.0
+    },
+    {
+      "source": "T",
+      "target": "Ux",
+      "captured_pct": 100.0,
+      "rel_error": 0.0041
+    },
+    {
+      "source": "Uy",
+      "target": "T",
+      "captured_pct": 100.0,
+      "rel_error": 0.0
+    }
+  ],
+  "transfer_entropy_peaks": [
+    {
+      "pair": "Ux_1D->T_1D",
+      "peak_lag_samples": 1,
+      "peak_lag_s": 0.01,
+      "te_bits": 0.00494075837219023,
+      "excess_te_bits": 0.0,
+      "surr_p95_bits": 0.020309114449435305
+    },
+    {
+      "pair": "T_1D->Ux_1D",
+      "peak_lag_samples": 31,
+      "peak_lag_s": 0.31,
+      "te_bits": 0.0803439940841686,
+      "excess_te_bits": 0.039403129212120976,
+      "surr_p95_bits": 0.05032432063159641
+    },
+    {
+      "pair": "Ux_3D->T_3D",
+      "peak_lag_samples": 24,
+      "peak_lag_s": 0.24,
+      "te_bits": 0.12436835732896777,
+      "excess_te_bits": 0.05655002020050176,
+      "surr_p95_bits": 0.08310230614296814
+    },
+    {
+      "pair": "T_3D->Ux_3D",
+      "peak_lag_samples": 16,
+      "peak_lag_s": 0.16,
+      "te_bits": 0.18035984164032076,
+      "excess_te_bits": 0.08643646099039103,
+      "surr_p95_bits": 0.11233661818508867
+    },
+    {
+      "pair": "Uy_1D->T_1D",
+      "peak_lag_samples": 1,
+      "peak_lag_s": 0.01,
+      "te_bits": 0.0041571491404288185,
+      "excess_te_bits": 0.0,
+      "surr_p95_bits": 0.02031516873212861
+    }
+  ],
+  "spectral_coherence_peaks": [
+    {
+      "pair": "probe_0_1D",
+      "peak_freq_Hz": 6.25,
+      "peak_coherence": 0.9997855497638994
+    },
+    {
+      "pair": "probe_1_2D",
+      "peak_freq_Hz": 13.28125,
+      "peak_coherence": 0.9999775500378234
+    },
+    {
+      "pair": "probe_2_3D",
+      "peak_freq_Hz": 23.4375,
+      "peak_coherence": 0.9998524241610574
+    },
+    {
+      "pair": "Uy_probe_0",
+      "peak_freq_Hz": 19.53125,
+      "peak_coherence": 0.9977379228016214
+    }
+  ],
+  "note": "All analyses on STEADY run001. Modal structure reflects spin-up transient. For vortex-shedding POD/EPOD, run Re>Re_crit."
+}

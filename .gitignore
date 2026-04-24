@@ -5,3 +5,10 @@
 *.pyd
 Thumbs.db
 .DS_Store
+
+# Heavy simulation folders — kept on C:\openfoam-case, not in repo
+**/01_openfoam_setup/0.orig/
+**/01_openfoam_setup/constant/
+**/01_openfoam_setup/system/
+**/02_raw_data/postProcessing/
+**/05_logs/logs/

@@ -1,0 +1,60 @@
+quantity,source,case,Re,value,note
+Nu,Bharti et al. (2007),,10.0,1.8623,CWT tabulated
+Nu,Bharti et al. (2007),,20.0,2.4653,CWT tabulated
+Nu,Bharti et al. (2007),,40.0,3.2825,CWT tabulated
+Nu,Bharti et al. (2007),,10.0,2.04,"UHF tabulated, not present boundary condition"
+Nu,Bharti et al. (2007),,20.0,2.7788,"UHF tabulated, not present boundary condition"
+Nu,Bharti et al. (2007),,40.0,3.7755,"UHF tabulated, not present boundary condition"
+Nu,Bharti et al. (2007),,10.0,1.7571021897713248,CWT power-law fit
+Nu,Bharti et al. (2007),,20.0,2.4302388259491,CWT power-law fit
+Nu,Bharti et al. (2007),,40.0,3.3612505781004662,CWT power-law fit
+Nu,Bharti et al. (2007),,45.0,3.5516908397183036,CWT power-law fit
+Nu,Lange et al. (1998),,10.0,1.8101007110108736,correlation
+Nu,Lange et al. (1998),,20.0,2.4086785671463318,correlation
+Nu,Lange et al. (1998),,40.0,3.2805027786114174,correlation
+Nu,Lange et al. (1998),,45.0,3.465657777620164,correlation
+Nu,Lange et al. (1998),,60.0,3.9751563171796196,correlation
+Nu,Lange et al. (1998),,100.0,5.127775395230791,correlation
+Nu,Lange et al. (1998),,150.0,6.342902905133428,correlation
+Nu,Lange et al. (1998),,200.0,7.420205234233615,correlation
+St,Lange et al. (1998),,50.0,0.12307000000000001,Williamson fit cited by Lange
+St,Lange et al. (1998),,60.0,0.13575833333333334,Williamson fit cited by Lange
+St,Lange et al. (1998),,70.0,0.14527857142857142,Williamson fit cited by Lange
+St,Lange et al. (1998),,100.0,0.164335,Williamson fit cited by Lange
+St,Lange et al. (1998),,150.0,0.18342333333333335,Williamson fit cited by Lange
+St,Lange et al. (1998),,200.0,0.19696750000000002,Williamson fit cited by Lange
+Cd,Lange et al. (1998),,1.0,10.0,approximate digitized reading
+Cd,Lange et al. (1998),,2.0,6.0,approximate digitized reading
+Cd,Lange et al. (1998),,5.0,3.6,approximate digitized reading
+Cd,Lange et al. (1998),,10.0,2.5,approximate digitized reading
+Cd,Lange et al. (1998),,20.0,1.8,approximate digitized reading
+Cd,Lange et al. (1998),,40.0,1.45,approximate digitized reading
+Cd,Lange et al. (1998),,100.0,1.2,approximate digitized reading
+Nu,Present work,Re10_ogrid,10.0,1.880652032516138,run 004 O-grid
+Cd,Present work,Re10_ogrid,10.0,2.925892225804564,tail mean from forceCoeffs
+St,Present work,Re10_ogrid,10.0,,steady; St undefined
+Cl_rms,Present work,Re10_ogrid,10.0,1.8597964647841878e-10,tail RMS; no article curve
+Nu,Present work,Re20_ogrid,20.0,2.4829304949864373,run 004 O-grid
+Cd,Present work,Re20_ogrid,20.0,2.103105835367948,tail mean from forceCoeffs
+St,Present work,Re20_ogrid,20.0,,steady; St undefined
+Cl_rms,Present work,Re20_ogrid,20.0,1.141887054054262e-09,tail RMS; no article curve
+Nu,Present work,Re40_ogrid,40.0,3.3045409684503424,run 004 O-grid
+Cd,Present work,Re40_ogrid,40.0,1.5712531,tail mean from forceCoeffs
+St,Present work,Re40_ogrid,40.0,,steady; St undefined
+Cl_rms,Present work,Re40_ogrid,40.0,8.724623786903208e-13,tail RMS; no article curve
+Nu,Present work,Re45_ogrid,45.0,3.473561140160554,run 004 O-grid
+Cd,Present work,Re45_ogrid,45.0,1.5006671000000003,tail mean from forceCoeffs
+St,Present work,Re45_ogrid,45.0,,steady; St undefined
+Cl_rms,Present work,Re45_ogrid,45.0,6.043150087394951e-07,tail RMS; no article curve
+Nu,Present work,Re60_ogrid,60.0,3.9777695233677153,run 004 O-grid
+Cd,Present work,Re60_ogrid,60.0,1.4086128487933636,tail mean from forceCoeffs
+St,Present work,Re60_ogrid,60.0,0.1268603141132264,Cl FFT tail peak
+Cl_rms,Present work,Re60_ogrid,60.0,0.07323216701543298,tail RMS; no article curve
+Nu,Present work,Re100_ogrid,100.0,5.171960704715537,run 004 O-grid
+Cd,Present work,Re100_ogrid,100.0,1.3329013896417783,tail mean from forceCoeffs
+St,Present work,Re100_ogrid,100.0,0.153915299907654,Cl FFT tail peak
+Cl_rms,Present work,Re100_ogrid,100.0,0.206267321552868,tail RMS; no article curve
+Nu,Present work,Re200_ogrid,200.0,7.503991370178309,run 004 O-grid
+Cd,Present work,Re200_ogrid,200.0,1.3233592708982693,tail mean from forceCoeffs
+St,Present work,Re200_ogrid,200.0,0.1831173921008645,Cl FFT tail peak
+Cl_rms,Present work,Re200_ogrid,200.0,0.444334815094187,tail RMS; no article curve

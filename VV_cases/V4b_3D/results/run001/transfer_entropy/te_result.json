@@ -1,0 +1,49 @@
+{
+  "pairs": [
+    {
+      "pair": "Ux_1D->T_1D",
+      "peak_lag_samples": 1,
+      "peak_lag_s": 0.01,
+      "te_bits": 0.00494075837219023,
+      "excess_te_bits": 0.0,
+      "surr_p95_bits": 0.020309114449435305
+    },
+    {
+      "pair": "T_1D->Ux_1D",
+      "peak_lag_samples": 31,
+      "peak_lag_s": 0.31,
+      "te_bits": 0.0803439940841686,
+      "excess_te_bits": 0.039403129212120976,
+      "surr_p95_bits": 0.05032432063159641
+    },
+    {
+      "pair": "Ux_3D->T_3D",
+      "peak_lag_samples": 24,
+      "peak_lag_s": 0.24,
+      "te_bits": 0.12436835732896777,
+      "excess_te_bits": 0.05655002020050176,
+      "surr_p95_bits": 0.08310230614296814
+    },
+    {
+      "pair": "T_3D->Ux_3D",
+      "peak_lag_samples": 16,
+      "peak_lag_s": 0.16,
+      "te_bits": 0.18035984164032076,
+      "excess_te_bits": 0.08643646099039103,
+      "surr_p95_bits": 0.11233661818508867
+    },
+    {
+      "pair": "Uy_1D->T_1D",
+      "peak_lag_samples": 1,
+      "peak_lag_s": 0.01,
+      "te_bits": 0.0041571491404288185,
+      "excess_te_bits": 0.0,
+      "surr_p95_bits": 0.02031516873212861
+    }
+  ],
+  "n_surrogates": 100,
+  "n_bins": 5,
+  "max_lag_samples": 40,
+  "dt_probe": 0.01,
+  "note": "run001 steady after t~1s. TE signal reflects spin-up transient. Expected: Ux->T > T->Ux (advective causality)."
+}
