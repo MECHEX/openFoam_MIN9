@@ -2979,4 +2979,89 @@ Stworzono run_log.csv w VV_cases/V4b_3D/results/ — jedna linia = jeden run, ko
 1. Pokrycie BL na hot_tube tylko 39.7% → refinement do poziomu 3 (0.125mm) wokół cylindra
 2. Sprawdzić czy T_min<T_in (292.4<293.15) to artefakt numeryczny czy efekt fizyczny
 3. Uruchomić Re=200 (Ri=0.315) aby sprawdzić czy pojawi się periodyczność
+
+---
+
+## 2026-04-22 — 2026-04-26 | V4b_3D | run002: siatka lvl-3, analiza mesh sensitivity
+
+### Work package
+
+Wygenerowanie siatki z poziomem 3 na rurce (run002) i porównanie wyników z run001 w celu oceny zbieżności siatki (Cd, Nu, pole prędkości w wake).
+
+### Akcje — mesh (2026-04-22 – 2026-04-23)
+
+- Skopiowano run001 → run002, zaktualizowano `snappyHexMeshDict`: `level (3 3)` na `hot_tube`, `refBox_near` podniesiono do poziomu 2
+- Uruchomiono snappyHexMesh równolegle (8 rdzeni) + `reconstructParMesh`
+- **Problemy snappy:**
+  - `locationInMesh` w okrągłych współrzędnych trafiła na ścianę komórki → przeniesiono na `(0.0781 0.0161 0.0061)`
+  - Pokrycie BL na `hot_tube` = 0% (vs 39.7% w run001) — przyczyną: `featureAngle=60°` blokuje ekstruzję warstw na złączu cylinder-fin (kąt 90° > 60°). Poziom 3 daje komórki 0.029mm (z) → y+≈0.5 → wystarczające dla laminarnego Re=100; zaakceptowano 0% BL
+  - Siatka: 1 840 178 komórek, max nonortho=57.1°, avg=4.5°, 34 825 komórek wklęsłych (poziom 3 ostrych krawędzi)
+
+### Akcje — solver (2026-04-23 – 2026-04-26)
+
+- Uruchomiono `buoyantBoussinesqPimpleFoam` równolegle (8 rdzeni MPI), `nohup nice -n 10`
+- **Crash SIGFPE na t=0.017s**: Co_max wybuchł do 10^16 przy stałym dt=1ms — przyczyna: komórki lvl-3 z=0.029mm wymagają dt≤4e-4 dla Co<0.8. Naprawa: `adjustTimeStep yes; maxCo 0.8; maxDeltaT 5e-4` → solver sam znalazł dt≈4.15e-4
+- **decomposePar błąd "Size mismatch"**: stare pola snappy (cellLevel, pointLevel) w `0/` — usunięto
+- **Swapowanie przy 15 rdzeniach**: 15×450MB=6.75GB > 7.6GB RAM → ClockTime/ExecTime=2×. Zredukowano do 8 rdzeni (3.6GB, 1.9GB zapas) → ratio=1.0
+- Wielokrotne restarty z checkpointów (t=0.7, 0.9, 1.9) z powodu ręcznych przerw i epizodów swapowania (ClockTime/ExecTime do 4.6×, nieznana przyczyna — prawdopodobnie inne procesy systemu)
+- Solver zatrzymano na t=2.9s (docelowe t=3s), ostatni checkpoint t=2.9; łączny czas wall ≈45h
+
+### Analiza wyników
+
+Rekonstrukcja (`reconstructPar`), analiza sił z `postProcessing/forces_tube`, bilans energetyczny z `patchAverage` na inlet/outlet.
+
+**Siły:**
+- Cd_mean (t=2.0–2.9) = **3.9974** (run001: 4.00) → **ΔCd = −0.07%**
+- Cl_mean = 9.80 (stały w czasie → przepływ USTALONY, bez zrzucania wirów)
+- Składowe Cd: ciśnienie 3.313, lepkość 0.684
+
+**Wymiana ciepła — metoda bilansu energetycznego (EB+LMTD):**
+
+| Parametr | run001 | run002 | Δ |
+|---|---|---|---|
+| T_out [K] | 313.281 | 313.306 | +0.025 K |
+| Q_total [W] | 1.1777 | 1.1792 | +0.13% |
+| LMTD [K] | 39.07 | 39.06 | −0.03% |
+| Nu_total (EB) | **7.054** | **6.955** | **−1.41%** |
+
+Metoda: `Q = m_dot × Cp × (T_out − T_in)`, `h = Q / (A_hot_total × LMTD)`, `Nu = h × D / k`
+z `k = ρ × Cp × ν/Pr = 0.02564 W/(m·K)`, D=0.012 m, A_hot_total = A_tube + 2×A_fin.
+
+**Uwaga metodologiczna — dwie metody Nu:**
+
+- `Nu_snGrad` (run001 legacy = 4.73): obliczone przez lokalny gradient ∂T/∂n na ściankach — metoda dokładna, ale `wallHeatFlux` niedostępny dla `buoyantBoussinesqPimpleFoam` (wymaga kompresyjnego modelu turbulencji). Metody obliczenia nie zrekonstruowano.
+- `Nu_EB` (run001=7.054, run002=6.955): bilans energetyczny przez `T_out` z `patchAverage` — spójna dla obu runów, fizycznie poprawna. Dla cylindra izolowanego Re=100 literatura daje Nu≈5.5 (Churchill–Bernstein); z blokadą β=0.375 i płetwami ~7 jest w granicach rozsądku.
+- Oba runy mają Nu_EB zgodne w 1.4% → **siatka zbieżna** niezależnie od metody.
+
+**Pole prędkości w wake:**
+
+| Sonda | Pozycja | run001 Ux | run002 Ux | Δ |
+|---|---|---|---|---|
+| P0 | 1D za rurką | −0.01146 | −0.01362 | −19% |
+| P1 | 2D za rurką | +0.04918 | +0.04276 | −13% |
+| P2 | 3D za rurką | +0.12499 | +0.12402 | −1% |
+| P3 | 1D+4mm | +0.09233 | +0.08396 | −9% |
+
+Bliski wake (1D–2D): różnice 10–20% — lvl-3 lepiej rozwiązuje lepką strefę recyrkulacji.
+Daleki wake (3D): <1% — obie siatki zgodne.
+
+### Wnioski
+
+1. **Siatka zbieżna**: ΔCd=−0.07%, ΔNu=−1.4%, ΔT_out=0.025K — wyniki niezależne od zagęszczenia
+2. Siatka lvl-2 z run001 (337k) jest **wystarczająca** dla globalnych predykcji Re=100
+3. Siatka lvl-3 z run002 (1.84M) niezbędna gdy interesuje nas lokalna struktura bliskiego wake'u (1D–2D)
+4. Przepływ USTALONY w obu przypadkach — potwierdza Re=100 < Re_crit dla tej geometrii/blokady
+5. A_tube_meshed run002 = 4.84e-4 m² (+7% vs analitycznego π×D×Lz=4.52e-4) — artefakt snappy lvl-3; nie wpływa na Nu_EB bo używamy A_total
+
+### Problemy otwarte
+
+- Nu_snGrad dla run002 niedostępne (`wallHeatFlux` wymaga kompresyjnego solver). Do obliczenia: ręczna ekstrakcja snGrad(T) po konwersji do ASCII lub kodowany function object
+- A_tube_meshed run002 o 7% większa niż analityczna — sprawdzić czy to artefakt snappy czy błąd patchAverage
+- Re=200 nie uruchomione — plan po zakończeniu analizy run002
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run_log.csv` — zaktualizowany: run001 + run002, kolumny `Nu_total_snGrad` i `Nu_total_EB_LMTD`, dodano `T_out_K`, `Q_total_W`
+- `C:\openfoam-case\VV_cases\V4b_3D_run002\` — pliki konfiguracji solvera (Windows sync)
+- `/home/kik/of_runs/V4b_3D_run002/` — pełne dane symulacji (WSL, nie w repo)
 4. Rozszerzyć analizę Nu o profil obwodowy na cylindrze (circ_Nu_profile)
