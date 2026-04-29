@@ -1,0 +1,54 @@
+{
+  "run_id": "run003",
+  "fs_Hz": 200.00000000000426,
+  "nperseg": 325,
+  "target_shedding_frequency_Hz": 3.125,
+  "peaks_near_shedding": [
+    {
+      "signal": "force_col_1",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_psd": 1.6877289306967154e-18
+    },
+    {
+      "signal": "force_col_2",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_psd": 1.1505220249567624e-16
+    },
+    {
+      "signal": "force_col_3",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_psd": 2.711906856373853e-19
+    },
+    {
+      "signal": "force_col_4",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_psd": 1.4703824088123505e-18
+    },
+    {
+      "signal": "force_col_5",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_psd": 9.583462199593551e-17
+    },
+    {
+      "signal": "force_col_6",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_psd": 2.9052222288795958e-28
+    },
+    {
+      "signal": "force_col_7",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_psd": 9.201085989610155e-21
+    },
+    {
+      "signal": "force_col_8",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_psd": 1.031065668234096e-18
+    },
+    {
+      "signal": "force_col_9",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_psd": 2.711741908734266e-19
+    }
+  ],
+  "note": "Columns are raw OpenFOAM force.dat numeric columns after time."
+}

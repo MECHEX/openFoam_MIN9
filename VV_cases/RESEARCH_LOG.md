@@ -3055,13 +3055,195 @@ Daleki wake (3D): <1% — obie siatki zgodne.
 
 ### Problemy otwarte
 
-- Nu_snGrad dla run002 niedostępne (`wallHeatFlux` wymaga kompresyjnego solver). Do obliczenia: ręczna ekstrakcja snGrad(T) po konwersji do ASCII lub kodowany function object
 - A_tube_meshed run002 o 7% większa niż analityczna — sprawdzić czy to artefakt snappy czy błąd patchAverage
 - Re=200 nie uruchomione — plan po zakończeniu analizy run002
+- Profil obwodowy Nu na cylindrze (circ_Nu_profile) — nie wykonany
 
 ### Outputs
 
 - `VV_cases/V4b_3D/results/run_log.csv` — zaktualizowany: run001 + run002, kolumny `Nu_total_snGrad` i `Nu_total_EB_LMTD`, dodano `T_out_K`, `Q_total_W`
 - `C:\openfoam-case\VV_cases\V4b_3D_run002\` — pliki konfiguracji solvera (Windows sync)
 - `/home/kik/of_runs/V4b_3D_run002/` — pełne dane symulacji (WSL, nie w repo)
-4. Rozszerzyć analizę Nu o profil obwodowy na cylindrze (circ_Nu_profile)
+
+---
+
+## 2026-04-27 | V4b_3D | Nu snGrad — run002 obliczenia
+
+### Work package
+
+Obliczenie Nu metodą snGrad (metoda 2) dla run002 — analogicznie jak dla run001, do porównania obu metod na tym samym poziomie.
+
+### Kontekst metodologiczny
+
+Dwie równoważne metody Nu (żadna nie jest "stara" ani "gorsza"):
+
+| Metoda | Opis | run001 | run002 |
+|--------|------|--------|--------|
+| **EB+LMTD** | Q=ṁ·Cp·ΔT, h=Q/(A_total·LMTD) | 7.054 | 6.955 |
+| **snGrad** | Nu=snGrad_filt·D/(T_wall−T_bulk) | 4.73 | 4.28 |
+
+Różnica między metodami wynika z definicji h: EB używa LMTD (efektywna różnica temperatur wzdłuż kanału), snGrad używa lokalnego gradientu przy ścianie z T_bulk jako temperaturą odniesienia.
+
+### Actions taken
+
+- Skonwertowano pole T i C (cell centres) do ASCII via `foamFormatConvert -latestTime` (t=2.9s, 1.84M komórek)
+- Napisano skrypt `/home/kik/compute_Nu_snGrad3.py` (pure Python, bez numpy)
+- Metoda: delta = dist(cell_centre, wall), snGrad = (T_wall − T_P)/delta, outlier filter: wykluczono >5× median
+- T_ref = T_bulk = (T_in + T_out)/2 = 303.228 K (spójne z run001 — potwierdzone przez porównanie fin)
+
+### Wyniki run002 (t=2.9s, filt.mean, T_bulk)
+
+| Patch | nFaces | snGrad_median [K/m] | snGrad_filt [K/m] | Nu(filt, T_bulk) | outliers |
+|-------|--------|---------------------|-------------------|------------------|----------|
+| hot_fin_z_min | 10584 | 16466 | 16292 | **4.90** | 2.0% |
+| hot_fin_z_max | 10584 | 16467 | 16292 | **4.90** | 2.0% |
+| hot_tube | 61712 | 9782 | 13515 | **4.06** | 9.2% |
+| **total (area-weighted)** | — | — | — | **4.28** | — |
+
+### Porównanie run001 vs run002 (metoda snGrad)
+
+| Komponent | run001 | run002 | Δ |
+|-----------|--------|--------|---|
+| Nu_tube | 4.52 | 4.06 | −10.2% |
+| Nu_fin_z_min | 4.80 | 4.90 | +2.1% |
+| Nu_fin_z_max | 4.80 | 4.90 | +2.1% |
+| **Nu_total** | **4.73** | **4.28** | **−9.5%** |
+
+Uwaga: spadek Nu_tube w run002 wynika z braku warstw BL (no explicit BL, y+~0.5). Bez BL komórki przyścienne mają nieregularne delty → wyższy scatter IQR [2661–29141] K/m dla tuby vs [6879–22033] K/m dla fin. Wartości fin są zbieżne (+2%), wartości tuby nie są wiarygodne metodą snGrad bez BL.
+
+### Decisions
+
+- Używamy T_bulk jako T_ref dla metody snGrad (potwierdzone: fin run001≈run002 przy T_bulk, rozbieżność przy T_in=−18%)
+- Metoda snGrad bez BL na rurze: wyniki z zastrzeżeniem (wysoki scatter na rurze)
+- Metoda EB+LMTD pozostaje główną metodą dla Nu_total (nie wymaga BL, oparta na globalnym bilansie energii)
+
+### Outputs
+
+- `/home/kik/compute_Nu_snGrad3.py` — skrypt obliczeniowy (WSL)
+- `VV_cases/V4b_3D/results/run_log.csv` — uzupełniono Nu_snGrad dla run002: tube=4.06, fin_zmin=4.90, fin_zmax=4.90, total=4.28
+
+---
+
+## 2026-04-29 | V4b_3D | run003: Re=200 na siatce medium/lvl-2
+
+### Work package
+
+Uruchomienie Re=200 na siatce medium z run001 w celu sprawdzenia, czy konfiguracja V4b_3D przechodzi z reżimu ustalonego do okresowego oraz jak zmieniają się Cd, T_out i Nu_EB względem run002 Re=100.
+
+### Status symulacji
+
+- Solver zatrzymano na t = 6.505 s z planowanych 10.0 s, czyli ok. 65% przebiegu.
+- Czas obliczeń: ~6.7 h wall, ClockTime = 24 091 s, 8 rdzeni.
+- Dane traktujemy jako wiarygodne do identyfikacji reżimu i wstępnych statystyk; finalne średnie warto przeliczyć po dłuższym domkniętym przebiegu.
+
+### Wyniki
+
+| Wielkość | run002 Re=100 | run003 Re=200 | Wniosek |
+|---|---:|---:|---|
+| Reżim | STEADY | PERIODIC | pojawia się shedding |
+| Cd_mean | 3.9974 | 3.161 | spadek o ok. 21% |
+| Cl_rms | 0 | 0.187 | amplituda zrzucania wirów |
+| Cl_mean | ~2.4 | 2.52 | offset wyporu podobnego rzędu |
+| f_shed | N/A | 3.125 Hz | częstotliwość z Cl |
+| St | N/A | 0.1484 | St = fD/U, D = 12 mm |
+| T_out | 313.306 K | 305.26 K | spadek o 8.05 K |
+| Nu_EB | 6.955 | 7.476 | wzrost o ok. 7.5% |
+| Ri | 1.26 | 0.314 | słabszy względny wpływ wyporu |
+
+### Obliczenia uzupełniające
+
+- D = 0.012 m, U = 0.25267 m/s, nu = 1.516e-5 m2/s -> Re = 200.0.
+- St = f_shed*D/U = 3.125*0.012/0.25267 = 0.1484.
+- LMTD = 43.665 K dla T_in = 293.15 K, T_out = 305.26 K, T_wall = 343.15 K.
+- Q_total = 1.417 W, przy m_dot wyprowadzonym z run002 i podwojonym dla Re=200.
+- A_total = 0.002032 m2; Nu_EB = 7.476.
+
+### Interpretacja
+
+Run003 potwierdza, że Re=200 leży powyżej Re_crit dla geometrii V4b_3D: run002 przy Re=100 pozostaje ustalony, natomiast run003 pokazuje okresowe zrzucanie wirów. Niższe St względem trendu V1 2D dla beta=0.375 jest zgodne z oczekiwanym wpływem geometrii 3D z płetwami oraz niezerowego sprzężenia wyporowego.
+
+Uwaga korekcyjna: wcześniejsze St=0.099 nie jest właściwe dla V4b_3D, bo używało błędnej długości charakterystycznej. Kanoniczna średnica w V4b wynosi D=12 mm, więc dla f=3.125 Hz otrzymujemy St=0.1484.
+
+### Min9
+
+Nie znaleziono etykiety `Min9` w repozytorium, logach ani dostępnych wynikach `postProcessing`. Na ten moment `Min9` nie jest nazwą żadnego utrwalonego artefaktu V4b_3D/run003; może oznaczać zewnętrzny opis, timestep albo inną rodzinę symulacji.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run003/summary.md` - dodano podsumowanie run003.
+- `VV_cases/V4b_3D/results/run_log.csv` - dopisano wiersz `run003`.
+- `C:\openfoam-case\VV_cases\V4b_3D_run003\` - roboczy katalog Windows sync.
+- `/home/kik/of_runs/V4b_3D_run003/` - pełne dane symulacji w WSL, poza repo.
+
+---
+
+## 2026-04-29 | V4b_3D | run003: POD/EPOD/coherence/TE toolkit
+
+### Work package
+
+Uruchomienie lokalnego toolkit/post-processingu dla run003 analogicznie do run001: POD pól `Ux`, `Uy`, `T` na midspan slice, EPOD między polami, spectral coherence oraz transfer entropy na sondach wake. Wyniki zapisano bezpośrednio w repo w `VV_cases/V4b_3D/results/run003/`.
+
+### Dane wejściowe
+
+- `midspan_slice`: 13 snapshotów VTP, t = 0.5, 1.0, ..., 6.5 s; 10 725 punktów na snapshot.
+- `probes_wake`: 1301 próbek, dt = 0.005 s, połączone segmenty restartu `0` i `2.567`.
+- Częstotliwość referencyjna shedding: f = 3.125 Hz; najbliższy bin Welcha w analizie = 3.077 Hz.
+
+### Wyniki POD
+
+| Pole | n_modes | Mode 1 | Mode 2 | Cum. 2 |
+|---|---:|---:|---:|---:|
+| Ux | 12 | 34.37% | 27.57% | 61.94% |
+| Uy | 12 | 53.23% | 32.92% | 86.16% |
+| T | 12 | 41.02% | 37.78% | 78.80% |
+
+### Wyniki EPOD
+
+- `Ux -> T`: captured target energy = 100.00%, rel_error = 2.48e-11.
+- `T -> Ux`: captured target energy = 100.00%, rel_error = 2.47e-15.
+- `Uy -> T`: captured target energy = 100.00%, rel_error = 1.57e-14.
+- Interpretacja: ponieważ mamy tylko 13 snapshotów i 12 aktywnych modów, EPOD z kompletem modów jest praktycznie pełnorzędową rekonstrukcją. Wynik potwierdza spójność pipeline'u, ale nie jest jeszcze selektywną redukcją modelu.
+
+### Spectral coherence i TE
+
+| Para | f_peak [Hz] | coherence |
+|---|---:|---:|
+| probe_0_1D Ux-T | 3.077 | 0.704 |
+| probe_1_2D Ux-T | 3.077 | 0.129 |
+| probe_2_3D Ux-T | 3.077 | 0.066 |
+| probe_0_1D Uy-T | 3.077 | 0.704 |
+
+| Kierunek TE | Lag [s] | Excess TE [bits] |
+|---|---:|---:|
+| Ux_1D -> T_1D | 0.115 | 0.2067 |
+| T_1D -> Ux_1D | 0.005 | 0.1844 |
+| Ux_3D -> T_3D | 0.145 | 0.3693 |
+| T_3D -> Ux_3D | 0.135 | 0.3637 |
+| Uy_1D -> T_1D | 0.090 | 0.1972 |
+
+### Wnioski
+
+1. Toolkit działa na run003 i daje fizycznie sensowny sygnał w paśmie shedding: coherence ma maksimum w najbliższym binie 3.077 Hz względem f_shed = 3.125 Hz.
+2. Najsilniejsze sprzężenie U/T w sondach jest blisko za rurą (`probe_0_1D`), a dalej w wake coherence Ux-T szybko słabnie.
+3. POD midspan pokazuje dwumodową strukturę okresową: dla `Uy` pierwsze dwa mody niosą 86% energii, dla `T` 79%, dla `Ux` 62%.
+4. Wyniki POD/EPOD są eksploracyjne, bo baza snapshotów jest krótka; finalny run modalny powinien zapisywać równomierne snapshoty po odrzuceniu transjentu przez wiele okresów shedding.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run003/analyse_run003.py`
+- `VV_cases/V4b_3D/results/run003/analysis_summary.json`
+- `VV_cases/V4b_3D/results/run003/modal_analysis_summary.md`
+- `VV_cases/V4b_3D/results/run003/pod/{Ux,Uy,T}/`
+- `VV_cases/V4b_3D/results/run003/epod/{Ux_to_T,T_to_Ux,Uy_to_T}/`
+- `VV_cases/V4b_3D/results/run003/spectral_coherence/`
+- `VV_cases/V4b_3D/results/run003/transfer_entropy/`
+- `VV_cases/V4b_3D/results/run003/force_spectra/`
+
+### Figures
+
+Dodano `VV_cases/V4b_3D/results/run003/plot_run003_modal.py`, który generuje figury diagnostyczne do zrozumienia każdej metody. Wygenerowane pliki w `VV_cases/V4b_3D/results/run003/figures/`:
+
+- POD: `pod_modal_energy.png`, `pod_temporal_coefficients.png`, mean fields i spatial modes 1-4 dla `Ux`, `Uy`, `T`.
+- EPOD: `epod_reconstruction_quality.png` oraz extended modes 1-4 dla `Ux_to_T`, `T_to_Ux`, `Uy_to_T`.
+- Spectral: `coherence_curves.png`, `probe_power_spectra.png`, `force_power_spectra.png`.
+- TE: `transfer_entropy_curves.png`, `transfer_entropy_peak_summary.png`.

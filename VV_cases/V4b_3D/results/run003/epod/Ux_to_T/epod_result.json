@@ -1,0 +1,72 @@
+{
+  "run_id": "run003",
+  "source": "Ux",
+  "target": "T",
+  "n_source_modes": 12,
+  "formula": "Psi = Y_c A^T (A A^T)^-1",
+  "all_modes_rel_error": 2.4783170050058846e-11,
+  "all_modes_captured_pct": 100.0,
+  "metrics": [
+    {
+      "modes": 1,
+      "rel_error": 0.9749758453838873,
+      "captured_pct": 4.942210091797438
+    },
+    {
+      "modes": 2,
+      "rel_error": 0.893928637928868,
+      "captured_pct": 20.089159029063886
+    },
+    {
+      "modes": 3,
+      "rel_error": 0.870490492375418,
+      "captured_pct": 24.224630268400237
+    },
+    {
+      "modes": 4,
+      "rel_error": 0.8377663119436605,
+      "captured_pct": 29.814760657231744
+    },
+    {
+      "modes": 5,
+      "rel_error": 0.7729813775666289,
+      "captured_pct": 40.249978993519676
+    },
+    {
+      "modes": 6,
+      "rel_error": 0.6986610450043779,
+      "captured_pct": 51.18727441933907
+    },
+    {
+      "modes": 7,
+      "rel_error": 0.5955426149557338,
+      "captured_pct": 64.53289937716866
+    },
+    {
+      "modes": 8,
+      "rel_error": 0.5158516422542259,
+      "captured_pct": 73.38970831836183
+    },
+    {
+      "modes": 9,
+      "rel_error": 0.44538352301050715,
+      "captured_pct": 80.16335174307491
+    },
+    {
+      "modes": 10,
+      "rel_error": 0.3165226850359166,
+      "captured_pct": 89.98133898576539
+    },
+    {
+      "modes": 11,
+      "rel_error": 0.25496051912928586,
+      "captured_pct": 93.4995133685325
+    },
+    {
+      "modes": 12,
+      "rel_error": 2.4783170050058846e-11,
+      "captured_pct": 100.0
+    }
+  ],
+  "note": "run003 EPOD on synchronized midspan snapshots."
+}

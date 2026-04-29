@@ -1,0 +1,238 @@
+{
+  "run_id": "run003",
+  "Re": 200,
+  "flow_regime": "periodic",
+  "n_snapshots": 13,
+  "snapshot_times": [
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    2.5,
+    3.0,
+    3.5,
+    4.0,
+    4.5,
+    5.0,
+    5.5,
+    6.0,
+    6.5
+  ],
+  "n_probe_samples": 1301,
+  "probe_dt_s": 0.004999999999999893,
+  "St_reference": 0.14841492856294772,
+  "pod": {
+    "Ux": {
+      "n_modes": 12,
+      "mode1_energy_pct": 34.36889490066717,
+      "mode2_energy_pct": 27.572884178891577,
+      "mode1_mode2_cum_pct": 61.94177907955874
+    },
+    "Uy": {
+      "n_modes": 12,
+      "mode1_energy_pct": 53.23155453940682,
+      "mode2_energy_pct": 32.924083036781184,
+      "mode1_mode2_cum_pct": 86.155637576188
+    },
+    "T": {
+      "n_modes": 12,
+      "mode1_energy_pct": 41.018646719888764,
+      "mode2_energy_pct": 37.784168728639585,
+      "mode1_mode2_cum_pct": 78.80281544852835
+    }
+  },
+  "epod": [
+    {
+      "source": "Ux",
+      "target": "T",
+      "captured_pct": 100.0,
+      "rel_error": 2.4783170050058846e-11
+    },
+    {
+      "source": "T",
+      "target": "Ux",
+      "captured_pct": 100.0,
+      "rel_error": 2.4745258310768448e-15
+    },
+    {
+      "source": "Uy",
+      "target": "T",
+      "captured_pct": 100.0,
+      "rel_error": 1.5691958782090473e-14
+    }
+  ],
+  "transfer_entropy_peaks": [
+    {
+      "pair": "Ux_1D_to_T_1D",
+      "peak_lag_samples": 23,
+      "peak_lag_s": 0.11499999999999755,
+      "te_bits": 0.22594355448262896,
+      "excess_te_bits": 0.20669234420865332,
+      "surr_p95_bits": 0.027415947243951033
+    },
+    {
+      "pair": "T_1D_to_Ux_1D",
+      "peak_lag_samples": 1,
+      "peak_lag_s": 0.004999999999999893,
+      "te_bits": 0.20575425378518714,
+      "excess_te_bits": 0.1844356910517373,
+      "surr_p95_bits": 0.027253161691872346
+    },
+    {
+      "pair": "Ux_3D_to_T_3D",
+      "peak_lag_samples": 29,
+      "peak_lag_s": 0.1449999999999969,
+      "te_bits": 0.3986741544530914,
+      "excess_te_bits": 0.3693286954669063,
+      "surr_p95_bits": 0.03847376160207874
+    },
+    {
+      "pair": "T_3D_to_Ux_3D",
+      "peak_lag_samples": 27,
+      "peak_lag_s": 0.13499999999999712,
+      "te_bits": 0.3871995928539477,
+      "excess_te_bits": 0.36367089435762556,
+      "surr_p95_bits": 0.032068684123032445
+    },
+    {
+      "pair": "Uy_1D_to_T_1D",
+      "peak_lag_samples": 18,
+      "peak_lag_s": 0.08999999999999808,
+      "te_bits": 0.21610252368038416,
+      "excess_te_bits": 0.19720778209926582,
+      "surr_p95_bits": 0.02780862326850755
+    }
+  ],
+  "spectral_coherence_peaks": [
+    {
+      "pair": "probe_0_1D",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_coherence": 0.7040315394929665
+    },
+    {
+      "pair": "probe_1_2D",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_coherence": 0.12862831097678054
+    },
+    {
+      "pair": "probe_2_3D",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_coherence": 0.06592107297668799
+    },
+    {
+      "pair": "Uy_probe_0",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_coherence": 0.7039792085655446
+    }
+  ],
+  "pod_pair_coherence": [
+    {
+      "pair": "Ux_mode1_vs_T_mode1",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9773718280548187
+    },
+    {
+      "pair": "Ux_mode2_vs_T_mode2",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9993701048248397
+    },
+    {
+      "pair": "Ux_mode3_vs_T_mode3",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9805232281609964
+    },
+    {
+      "pair": "Ux_mode4_vs_T_mode4",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9418674795836494
+    },
+    {
+      "pair": "Uy_mode1_vs_T_mode1",
+      "peak_freq_Hz": 0.25,
+      "peak_coherence": 0.997317320680818
+    },
+    {
+      "pair": "Uy_mode2_vs_T_mode2",
+      "peak_freq_Hz": 0.25,
+      "peak_coherence": 0.9944485200394639
+    },
+    {
+      "pair": "Uy_mode3_vs_T_mode3",
+      "peak_freq_Hz": 0.5,
+      "peak_coherence": 0.9983573561180279
+    },
+    {
+      "pair": "Uy_mode4_vs_T_mode4",
+      "peak_freq_Hz": 0.5,
+      "peak_coherence": 0.9951152217616543
+    },
+    {
+      "pair": "Ux_mode1_vs_Uy_mode1",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9882368634744325
+    },
+    {
+      "pair": "Ux_mode2_vs_Uy_mode2",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9879405804989146
+    },
+    {
+      "pair": "Ux_mode3_vs_Uy_mode3",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9182901354528924
+    },
+    {
+      "pair": "Ux_mode4_vs_Uy_mode4",
+      "peak_freq_Hz": 0.0,
+      "peak_coherence": 0.9612684568164694
+    }
+  ],
+  "force_spectra_peaks": [
+    [
+      "force_col_1",
+      3.0769230769231424,
+      1.6877289306967154e-18
+    ],
+    [
+      "force_col_2",
+      3.0769230769231424,
+      1.1505220249567624e-16
+    ],
+    [
+      "force_col_3",
+      3.0769230769231424,
+      2.711906856373853e-19
+    ],
+    [
+      "force_col_4",
+      3.0769230769231424,
+      1.4703824088123505e-18
+    ],
+    [
+      "force_col_5",
+      3.0769230769231424,
+      9.583462199593551e-17
+    ],
+    [
+      "force_col_6",
+      3.0769230769231424,
+      2.9052222288795958e-28
+    ],
+    [
+      "force_col_7",
+      3.0769230769231424,
+      9.201085989610155e-21
+    ],
+    [
+      "force_col_8",
+      3.0769230769231424,
+      1.031065668234096e-18
+    ],
+    [
+      "force_col_9",
+      3.0769230769231424,
+      2.711741908734266e-19
+    ]
+  ],
+  "note": "Exploratory run003 modal analysis using available partial-run data t<=6.505s."
+}

@@ -1,0 +1,50 @@
+{
+  "run_id": "run003",
+  "pairs": [
+    {
+      "pair": "Ux_1D_to_T_1D",
+      "peak_lag_samples": 23,
+      "peak_lag_s": 0.11499999999999755,
+      "te_bits": 0.22594355448262896,
+      "excess_te_bits": 0.20669234420865332,
+      "surr_p95_bits": 0.027415947243951033
+    },
+    {
+      "pair": "T_1D_to_Ux_1D",
+      "peak_lag_samples": 1,
+      "peak_lag_s": 0.004999999999999893,
+      "te_bits": 0.20575425378518714,
+      "excess_te_bits": 0.1844356910517373,
+      "surr_p95_bits": 0.027253161691872346
+    },
+    {
+      "pair": "Ux_3D_to_T_3D",
+      "peak_lag_samples": 29,
+      "peak_lag_s": 0.1449999999999969,
+      "te_bits": 0.3986741544530914,
+      "excess_te_bits": 0.3693286954669063,
+      "surr_p95_bits": 0.03847376160207874
+    },
+    {
+      "pair": "T_3D_to_Ux_3D",
+      "peak_lag_samples": 27,
+      "peak_lag_s": 0.13499999999999712,
+      "te_bits": 0.3871995928539477,
+      "excess_te_bits": 0.36367089435762556,
+      "surr_p95_bits": 0.032068684123032445
+    },
+    {
+      "pair": "Uy_1D_to_T_1D",
+      "peak_lag_samples": 18,
+      "peak_lag_s": 0.08999999999999808,
+      "te_bits": 0.21610252368038416,
+      "excess_te_bits": 0.19720778209926582,
+      "surr_p95_bits": 0.02780862326850755
+    }
+  ],
+  "n_surrogates": 100,
+  "n_bins": 5,
+  "max_lag_samples": 120,
+  "dt_probe": 0.004999999999999893,
+  "note": "Quantile-discretized lagged TE with shuffled-source surrogate baseline."
+}

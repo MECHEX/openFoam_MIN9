@@ -1,0 +1,91 @@
+{
+  "run_id": "run003",
+  "fs_Hz": 200.00000000000426,
+  "nperseg": 325,
+  "target_shedding_frequency_Hz": 3.125,
+  "probe_pairs": [
+    {
+      "pair": "probe_0_1D",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_coherence": 0.7040315394929665
+    },
+    {
+      "pair": "probe_1_2D",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_coherence": 0.12862831097678054
+    },
+    {
+      "pair": "probe_2_3D",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_coherence": 0.06592107297668799
+    },
+    {
+      "pair": "Uy_probe_0",
+      "peak_freq_Hz": 3.0769230769231424,
+      "peak_coherence": 0.7039792085655446
+    }
+  ],
+  "pod_pair_coherence": [
+    {
+      "pair": "Ux_mode1_vs_T_mode1",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9773718280548187
+    },
+    {
+      "pair": "Ux_mode2_vs_T_mode2",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9993701048248397
+    },
+    {
+      "pair": "Ux_mode3_vs_T_mode3",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9805232281609964
+    },
+    {
+      "pair": "Ux_mode4_vs_T_mode4",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9418674795836494
+    },
+    {
+      "pair": "Uy_mode1_vs_T_mode1",
+      "peak_freq_Hz": 0.25,
+      "peak_coherence": 0.997317320680818
+    },
+    {
+      "pair": "Uy_mode2_vs_T_mode2",
+      "peak_freq_Hz": 0.25,
+      "peak_coherence": 0.9944485200394639
+    },
+    {
+      "pair": "Uy_mode3_vs_T_mode3",
+      "peak_freq_Hz": 0.5,
+      "peak_coherence": 0.9983573561180279
+    },
+    {
+      "pair": "Uy_mode4_vs_T_mode4",
+      "peak_freq_Hz": 0.5,
+      "peak_coherence": 0.9951152217616543
+    },
+    {
+      "pair": "Ux_mode1_vs_Uy_mode1",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9882368634744325
+    },
+    {
+      "pair": "Ux_mode2_vs_Uy_mode2",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9879405804989146
+    },
+    {
+      "pair": "Ux_mode3_vs_Uy_mode3",
+      "peak_freq_Hz": 1.0,
+      "peak_coherence": 0.9182901354528924
+    },
+    {
+      "pair": "Ux_mode4_vs_Uy_mode4",
+      "peak_freq_Hz": 0.0,
+      "peak_coherence": 0.9612684568164694
+    }
+  ],
+  "note": "Welch coherence on wake probes; probe peaks reported near the known shedding band."
+}

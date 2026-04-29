@@ -1,0 +1,13 @@
+pair,peak_freq_Hz,peak_coherence
+Ux_mode1_vs_T_mode1,1,0.9773718281
+Ux_mode2_vs_T_mode2,1,0.9993701048
+Ux_mode3_vs_T_mode3,1,0.9805232282
+Ux_mode4_vs_T_mode4,1,0.9418674796
+Uy_mode1_vs_T_mode1,0.25,0.9973173207
+Uy_mode2_vs_T_mode2,0.25,0.99444852
+Uy_mode3_vs_T_mode3,0.5,0.9983573561
+Uy_mode4_vs_T_mode4,0.5,0.9951152218
+Ux_mode1_vs_Uy_mode1,1,0.9882368635
+Ux_mode2_vs_Uy_mode2,1,0.9879405805
+Ux_mode3_vs_Uy_mode3,1,0.9182901355
+Ux_mode4_vs_Uy_mode4,0,0.9612684568
