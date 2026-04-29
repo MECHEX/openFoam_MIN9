@@ -1,0 +1,5 @@
+case,beta,Re,mesh,downstream_D,cells,t_reached_s,t_end_s,regime,Cd_mean,Cl_rms,f_Hz,St,status,notes
+b050_fine_Re130,0.50,130,fine,20D,123502,5.1,15.0,steady,2.833,0.0013,,,ok,stopped early; Cl_rms noise-level only
+b050_fine_Re135,0.50,135,fine,20D,123502,,15.0,not-run,,,,,,not-run,solver never started
+b050_long_Re130,0.50,130,long,40D,,,15.0,not-run,,,,,,not-run,solver never started
+b050_long_Re135,0.50,135,long,40D,,,15.0,not-run,,,,,,not-run,solver never started
