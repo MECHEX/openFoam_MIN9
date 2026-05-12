@@ -1,0 +1,7 @@
+label,time_s,phase_deg,q_iso,lambda2_iso,screenshot,processor_vtk_files,tube_patch_files,fin_patch_files
+cl_zero_down,2.72,11.480889108231402,3000.0,-1000.0,figures/014/run008_014_iso_Q_Lambda2_cl_zero_down.png,20,20,40
+cl_zero_up,7.44,78.67187366614066,3000.0,-1000.0,figures/014/run008_014_iso_Q_Lambda2_cl_zero_up.png,20,20,40
+nu_global_max,6.88,123.56236733673705,3000.0,-1000.0,figures/014/run008_014_iso_Q_Lambda2_nu_global_max.png,20,20,40
+cl_min_qtube_max,3.84,241.0837452874401,3000.0,-1000.0,figures/014/run008_014_iso_Q_Lambda2_cl_min_qtube_max.png,20,20,40
+cl_max,2.16,281.3945742246654,3000.0,-1000.0,figures/014/run008_014_iso_Q_Lambda2_cl_max.png,20,20,40
+qfins_qwall_max,5.04,304.9738314139337,3000.0,-1000.0,figures/014/run008_014_iso_Q_Lambda2_qfins_qwall_max.png,20,20,40

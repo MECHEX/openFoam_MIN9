@@ -113,3 +113,25 @@ full-field checkpoints:
 
 The exported VTK set is about `408 MB` and is intended for ParaView inspection
 of `Q > 0` iso-surfaces and `Lambda2 < 0` vortex cores.
+
+Executed visual iso-surface inspection as layer `014`.
+
+Repository outputs:
+
+- `data/014/run008_014_q_lambda2_isosurface_render.csv`
+- `data/014/run008_014_q_lambda2_isosurface_render.json`
+- `data/014/run008_014_q_lambda2_isosurface_render.md`
+- `figures/014/run008_014_iso_Q_Lambda2_cl_zero_down.png`
+- `figures/014/run008_014_iso_Q_Lambda2_cl_zero_up.png`
+- `figures/014/run008_014_iso_Q_Lambda2_nu_global_max.png`
+- `figures/014/run008_014_iso_Q_Lambda2_cl_min_qtube_max.png`
+- `figures/014/run008_014_iso_Q_Lambda2_cl_max.png`
+- `figures/014/run008_014_iso_Q_Lambda2_qfins_qwall_max.png`
+- `scripts/render_run008_q_lambda2_isosurfaces_014.py`
+
+Layer `014` uses ParaView/pvpython to render `Q = 3000` iso-surfaces in orange
+and `Lambda2 = -1000` iso-surfaces in blue, with the hot tube and fins as
+translucent context geometry. This gives a clean first visual check of coherent
+vortical structures at the selected phases. The thresholds are chosen for
+diagnostic visibility, so the next quantitative step should be region-limited
+surface/volume metrics rather than all-domain cell counts.

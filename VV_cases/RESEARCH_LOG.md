@@ -6075,3 +6075,39 @@ Inspect `Q > 0` and `Lambda2 < 0` iso-surfaces in ParaView for the six exported
 phases. If the structures are visually clean, add a second-pass quantitative
 metric based on region-limited positive-`Q` volume or circulation proxy near
 the wake and fin junctions.
+
+---
+
+## 2026-05-12 | V4b_3D | run008 Q/lambda2 iso-surface render pass
+
+### Work package
+
+Rendered first-pass `Q` and `Lambda2` iso-surfaces for the six layer-013
+representative phases.
+
+### Actions taken
+
+- Added `scripts/render_run008_q_lambda2_isosurfaces_014.py`.
+- Read decomposed VTK exports from:
+  `/home/hexmachina/of_runs/V4b_3D_run008_q_lambda2_013/vtk_processors`
+- Rendered `Q = 3000` iso-surfaces in orange.
+- Rendered `Lambda2 = -1000` iso-surfaces in blue.
+- Added translucent hot tube and fin geometry as context.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/014/run008_014_q_lambda2_isosurface_render.md`
+- `VV_cases/V4b_3D/results/run008/data/014/run008_014_q_lambda2_isosurface_render.csv`
+- `VV_cases/V4b_3D/results/run008/data/014/run008_014_q_lambda2_isosurface_render.json`
+- `VV_cases/V4b_3D/results/run008/figures/014/run008_014_iso_Q_Lambda2_*.png`
+
+### Interpretation
+
+The iso-surfaces are readable at the chosen thresholds and show coherent
+near-tube and wake structures at the selected phases. The pass is diagnostic:
+it demonstrates that the exported fields are suitable for structural
+inspection, but it does not by itself quantify local heat-transfer control.
+
+The next useful analysis is to measure `Q`/`Lambda2` only in restricted regions:
+near wake, tube-fin junctions, and fin-surface sweeping zones, then correlate
+those metrics with local tube and fin `Nu`.
