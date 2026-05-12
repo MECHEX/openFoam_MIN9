@@ -32,8 +32,8 @@ center is at `y = H/2`.
 | fin pitch / spanwise domain depth | `Lz` | `12.00 mm` | `1.000 D` |
 | heated fin-zone length | `Lf` | `27.71 mm` | `2.309 D` |
 | inlet extension | `Lin` | `24.00 mm` | `2.000 D` |
-| outlet extension | `Lout` | `60.00 mm` | `5.000 D` |
-| total streamwise length | `Lx = Lin + Lf + Lout` | `111.71 mm` | `9.309 D` |
+| outlet extension | `Lout` | `96.00 mm` | `8.000 D` |
+| total streamwise length | `Lx = Lin + Lf + Lout` | `147.71 mm` | `12.309 D` |
 | physical fin thickness | `tf` | `0.14 mm` | `0.0117 D` |
 
 The fin thickness is not meshed as a solid volume in the baseline CFD model. The fins are
@@ -45,7 +45,7 @@ represented as constant-temperature wall boundary patches on the two `z` planes.
 |---|---:|
 | inlet region | `0 <= x < 24.00 mm` |
 | heated fin region | `24.00 <= x <= 51.71 mm` |
-| outlet region | `51.71 < x <= 111.71 mm` |
+| outlet region | `51.71 < x <= 147.71 mm` |
 | cylinder center, `x` | `xc = Lin + Lf/2 = 37.855 mm` |
 | cylinder center, centered `y` convention | `yc = 0.000 mm` |
 | cylinder center, positive `y` convention | `yc = 16.000 mm` |
@@ -195,13 +195,14 @@ symmetry_y_max
 
 ## Solver and physical model
 
-The baseline V4b solver should be:
+The accepted V4b production run uses OpenFOAM 13:
 
 ```text
-buoyantBoussinesqPimpleFoam
+foamRun -solver fluid
 ```
 
-This is the preferred production path because it gives two-way flow-temperature coupling without
+with the stable Boussinesq thermophysical architecture established during the
+V2/V4b debugging campaign. It gives two-way flow-temperature coupling without
 requiring a solid-metal conduction region:
 
 - velocity and pressure affect temperature through convective transport
@@ -209,21 +210,35 @@ requiring a solid-metal conduction region:
 - tube and fin metal are not meshed as solids
 - tube and fin surfaces are represented as fixed-temperature wall patches
 
-The old `V4b_3D/templates/base_case` still contains an earlier `buoyantPimpleFoam` setup. That
-template should be treated as deprecated until it is rebuilt. The V2 thermal validation path and
-the channel sanity check support the `buoyantBoussinesqPimpleFoam` architecture as the safer first
-production choice.
+The old `V4b_3D/templates/base_case` still contains an earlier
+`buoyantPimpleFoam` setup. That template should be treated as deprecated until
+it is rebuilt.
 
-The baseline thermal parameters are:
+The accepted `run008` production model is constant-property and Cp-consistent:
 
 ```text
 T_in  = 293.15 K
 T_hot = 343.15 K
 DeltaT = 50 K
-nu    = 1.516e-5 m2/s
+rho   = 1.205 kg/m3  (coefficient normalization)
+mu    = 1.827e-5 Pa s
 Pr    = 0.713
+capacity coefficient = 1005 J/(kg K)
 betaT = 3.41e-3 1/K
 ```
+
+In OpenFOAM terms, `run008` inherited the `run007c` thermophysics:
+
+```text
+eConst + Boussinesq + sensibleInternalEnergy
+```
+
+with the energy-capacity coefficient changed from the earlier `718` to `1005`.
+This is not the variable-property air model. The variable-property diagnostic
+was `run007a`, using `incompressiblePerfectGas + Sutherland`; it changed drag
+and thermal response in the short window but did not close the wall-air heat
+balance sufficiently for production use. `run008` should therefore be described
+as the accepted constant-property, Cp-consistent production reference.
 
 The baseline gravity vector assumes `y` is the vertical direction:
 
@@ -233,38 +248,37 @@ g = (0 -9.81 0)
 
 If the physical exchanger orientation changes, only the gravity vector should be rotated.
 
-Because `betaT * DeltaT` is about `0.17`, the Boussinesq approximation should be checked later
-against at least one full-density/compressible buoyant setup if this effect becomes important for
-the final conclusions.
+Because `betaT * DeltaT` is about `0.17`, the Boussinesq approximation remains
+a physics assumption. The existing variable-property `run007a` is useful as a
+diagnostic, but a production-quality variable-property comparison would need a
+closed energy balance before it can replace `run008`.
 
 ## Domain strategy
 
 The documented V4b geometry is a physical compact unit-cell, not a numerically large free-cylinder
-domain. Therefore the baseline dimensions are the first reference point rather than proof of domain
-independence:
+domain. The accepted production domain after controlled sensitivity checks is:
 
 ```text
-Lin  = 2D   (24 mm — baseline, extended from 1D after inlet-sensitivity discussion)
+Lin  = 2D   (24 mm)
 Lf   = 2.309D
-Lout = 5D   (60 mm — baseline, extended from 2D to avoid outlet-reflection in shedding regime)
+Lout = 8D   (96 mm)
 H    = 2.667D
 Lz   = 1D
 ```
 
-For `Nu`, this is a meaningful physical starting point because heat transfer is measured on the
-actual tube and fin surfaces. For `St`, `Cd`, wake structure, and modal analysis, the short outlet
-and compact unit-cell boundaries may influence the result. The production workflow should therefore
-compare controlled variants:
+For `Nu`, this is a meaningful physical starting point because heat transfer is
+measured on the actual tube and fin surfaces. For `St`, `Cd`, wake structure,
+and modal analysis, controlled variants were run before accepting the
+production domain:
 
 | variant | purpose |
 |---|---|
-| baseline `Lin=2D`, `Lout=5D` | first production mesh |
-| longer inlet, e.g. `Lin=4D` | inlet sensitivity for separation, buoyancy, and `Nu` |
-| longer outlet, e.g. `Lout=8D` or `10D` | outlet sensitivity for wake, `St`, `Cd`, and pressure drop |
-| refined wake mesh | check numerical diffusion in shedding frequency and wake dynamics |
-| refined hot-wall layers | check `snGrad(T)` and surface heat transfer |
-| alternative `y` boundary if needed | check whether transverse symmetry suppresses buoyant motion |
-| local `cyclic` test in non-fin `z` patches if meshing allows | check unit-cell side-boundary treatment |
+| `Lout=8D` (`run004b`) | accepted outlet-domain candidate |
+| `Lout=16D` (`run004c`) | matched `8D` for `Cd`, `St`, and `Nu_EB` |
+| `Lin=4D` (`run005`) | matched `Lin=2D`; inlet sensitivity closed |
+| `maxCo=0.4/1.0` checks (`run006a/b`) | supported `maxCo=0.8` as production default |
+| `run007a` variable properties | diagnostic only; heat balance not production-ready |
+| `run007c` Cp-capacity constant-property smoke test | accepted physics parent for `run008` |
 
 ## Measurement plan
 
@@ -439,7 +453,45 @@ summary metadata into the repository.
 
 ## Current status
 
-The canonical production geometry, solver direction, measurement plan, mesh-quality requirements,
-and storage policy are now defined at the documentation level. The next step is to turn this into
-an actual OpenFOAM case generator with explicit patch splitting and a mesh-quality check around
-the tube-fin junction.
+`run008` is the accepted production reference for the current V4b campaign.
+
+| quantity | value |
+|---|---:|
+| `Re` | `200` |
+| production window | `t = 2..10 s` |
+| effective shedding cycles | `25.98` |
+| `Cd_mean` | `3.361014 +/- 0.000772` |
+| `Cl_rms` | `0.176441 +/- 0.011097` |
+| `St` | `0.154261 +/- 0.009574` |
+| `Nu_EB` | `7.770004 +/- 0.091573` |
+| `Nu_wall` | `7.816521 +/- 0.012286` |
+| wall-air heat closure | `+0.706 +/- 1.075%` |
+
+The integrated heat transfer is fin-dominated: `Q_tube = 0.3618 W`,
+`Q_fins = 1.1189 W`, corresponding to about `24.4% / 75.6%` of the wall heat
+input. The shedding state is pressure-dominated and stable. POD/DMD,
+coherence, transfer-entropy screening, wake-probe analysis, and phase averaging
+are completed for the production window.
+
+The strongest current mechanism statement is:
+
+> In the accepted Re=200 production domain, vortex shedding establishes a
+> stable pressure-dominated aerodynamic cycle. The same cycle organizes local
+> tube and fin heat transfer, but the global wall heat response is
+> fin-dominated and phase-shifted relative to lift. Wall-side and air-side heat
+> balances close to within about one percent, supporting the production
+> Nusselt estimates and the phase-resolved interpretation.
+
+The curated paper-figure layer for `run008` contains ten article-planning
+figures covering geometry, forces, heat balance, local tube/fin Nu, POD/EPOD,
+coherence maps, and a mechanism schematic.
+
+## Immediate next steps
+
+Two follow-up directions are technically ready:
+
+- Re-scan below `Re=200`, for example `Re=120, 140, 160, 180`, to quantify how
+  the onset of shedding changes local and global heat transfer.
+- Use the existing full 3D snapshots to compute `Q`-criterion or `lambda2`
+  structures and connect named vortical structures with local `Nu(theta,z,t)`
+  and fin `Nu_local(x,t)`.

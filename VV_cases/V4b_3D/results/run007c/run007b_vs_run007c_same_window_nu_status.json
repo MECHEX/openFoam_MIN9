@@ -1,0 +1,30 @@
+{
+  "requested_comparison": "run007b vs run007c Nu using the same early window as the t=0.2 quick-look",
+  "valid_same_window_t_0p2_available": false,
+  "reason": "run007b failed during startup and has no post-startup reconstructed checkpoint; only t=0 exists.",
+  "run007b": {
+    "model": "hConst + sensibleEnthalpy + Boussinesq",
+    "status": "failed during startup",
+    "available_thermal_times": [
+      "0"
+    ],
+    "force_samples": 1,
+    "last_force_time_s": 0.0
+  },
+  "run007c": {
+    "model": "eConst + sensibleInternalEnergy + Boussinesq, capacity=1005",
+    "status": "running normally",
+    "available_thermal_times": [
+      "0",
+      "0.2"
+    ]
+  },
+  "only_common_instant_t0": {
+    "interpretation": "initial-condition artifact, not a physical heat-transfer result",
+    "Q_wall_hot_total_W_run007b": 138.3718924,
+    "Q_wall_hot_total_W_run007c": 138.3718924,
+    "Nu_wall_k_mu_1005_over_Pr_run007b": 634.6296218968513,
+    "Nu_wall_k_mu_1005_over_Pr_run007c": 634.6296218968513
+  },
+  "conclusion": "Do not use run007b for Nu comparison. Continue using run007c as the valid Cp-scale diagnostic."
+}

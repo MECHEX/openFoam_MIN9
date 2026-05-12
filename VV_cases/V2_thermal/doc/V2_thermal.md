@@ -6,10 +6,9 @@ V2 is the thermal verification track for forced convection around a heated circu
 The active sub-study is `V2a`, whose goal is to reproduce reference Nusselt numbers for
 an unconfined heated cylinder under constant wall temperature conditions.
 
-The current objective is two-stage:
+The original snappy-mesh thermal path was rejected after solver and Nu-definition debugging. The current accepted validation path is the structured O-grid cylinder matrix in `results/study_v2a/runs/004_data_v2a_ogrid_cylinder_validation`.
 
-1. stabilize the numerical architecture for the thermal solver
-2. run the Reynolds-number matrix and compare `Nu` against the reference correlations and DNS data
+The current objective is now to use that validated O-grid chain as the thermal reference for V4b-style heat-transfer post-processing, and to keep the earlier snappy/Boussinesq attempts as historical diagnostics only.
 
 ## Reference literature
 
@@ -80,33 +79,27 @@ The accepted property model is Boussinesq-style incompressible transport:
 - `Pr = 0.713`
 - `Prt = 0.9`
 
-### Active smoke-test settings
+### Accepted validation run
 
-The latest successful smoke-test was performed with:
+The accepted V2a validation run is:
 
-- `endTime = 0.02 s`
-- fixed `deltaT`
-- reduced function objects
-- focus on startup stability rather than production statistics
+```text
+results/study_v2a/runs/004_data_v2a_ogrid_cylinder_validation
+```
 
-These are smoke-test settings only. Production settings still need to be restored before
-the full Reynolds-number campaign is launched.
+It replaced the earlier unstable snappy-mesh branch and uses a structured O-grid around the heated cylinder. The earlier `run001` and `run002` branches remain useful debugging history, but they should not be cited as accepted thermal validation.
 
 ## Mesh and mesh-independence study
 
 ### Current status
 
-The mesh-independence study for V2a has not yet been formalized.
-At the moment the work has focused on solver stabilization.
+The accepted validation mesh for `run004` is a structured O-grid with `10,240` cells in the archived result table. It is not a full mesh-independence study, but it is sufficiently clean for the current purpose: checking the solver, wall-normal Nu extraction, bounded temperature field, and Reynolds-number trend against the reference data.
 
 ### Practical current mesh notes
 
-- the mesh is generated with `blockMesh` and `snappyHexMesh`
-- very fine near-wall cells made `GAMG` unattractive in the thermal solver tests
-- one diagnostic variant without boundary-layer extrusion was tested during debugging
-
-This no-layer diagnostic was useful for identifying that the original crash source was not
-the layer addition itself.
+- the accepted validation branch uses a structured O-grid cylinder mesh
+- the older snappyHexMesh/no-layer cases are historical diagnostics
+- the O-grid branch avoids the near-wall ambiguity that made the first thermal validation attempt unreliable
 
 ## Convergence and monitored quantities
 
@@ -128,8 +121,8 @@ For the Boussinesq architecture, `wallHeatFlux` is no longer the preferred path.
 The intended extraction route is:
 
 - wall-normal temperature gradient on the cylinder surface
-- area-averaged projection `grad(T) · n` over the `cylinder` patch
-- `Nu = D * <grad(T)·n>_cylinder / (T_wall - T_inf)`
+- area-averaged projection `grad(T) . n` over the `cylinder` patch
+- `Nu = D * <grad(T).n>_cylinder / (T_wall - T_inf)`
 
 The earlier shortcut based on `mag(grad(T))` was rejected as non-physical because it
 mixes tangential components into the wall heat-transfer metric.
@@ -141,98 +134,58 @@ This definition is now directly consistent with the reference papers:
 
 ## Current case matrix
 
-The currently planned V2a Reynolds-number matrix is:
+The accepted O-grid validation matrix is:
 
-| case | Re | expected regime | target end time [s] | status |
-|---|---:|---|---:|---|
-| Re10 | 10 | steady | 100.0 | smoke-test passed in Boussinesq architecture; next run should target `Nu(t)` plateau |
-| Re20 | 20 | steady | 100.0 | pending |
-| Re40 | 40 | steady | 100.0 | pending |
-| Re100 | 100 | unsteady | 25.0 | pending |
-| Re200 | 200 | unsteady | 15.0 | pending |
+| case | Re | latest time [s] | Nu | reference Nu | error [%] | status |
+|---|---:|---:|---:|---:|---:|---|
+| `Re10_ogrid` | 10 | 99.994 | 1.88065 | 1.86230 | 0.985 | candidate |
+| `Re20_ogrid` | 20 | 100.000 | 2.48293 | 2.46530 | 0.715 | candidate |
+| `Re40_ogrid` | 40 | 100.000 | 3.30454 | 3.28250 | 0.671 | candidate |
+| `Re45_ogrid` | 45 | 119.999 | 3.47356 | 3.46566 | 0.228 | candidate |
+| `Re60_ogrid` | 60 | 79.800 | 3.97777 | 3.97516 | 0.066 | candidate |
+| `Re100_ogrid` | 100 | 24.513 | 5.17196 | 5.12778 | 0.862 | candidate |
+| `Re200_ogrid` | 200 | 11.464 | 7.50399 | 7.42021 | 1.129 | diagnostic |
 
-The active production-oriented run has now been prepared as:
-
-- `results/study_v2a/runs/002_data_v2a_boussinesq_validation`
-
-and the corresponding working cases were generated in:
-
-- `C:\openfoam-case\VV_cases\V2_thermal_run002`
-
-For the steady cases (`Re10`, `Re20`, `Re40`), the active plan is now to write results
-every `1 s` up to `100 s` so that `Nu(t)` can be assessed for thermal convergence rather
-than inferred from a single late snapshot.
+The low-Re cases form the cleanest validation set. The `Re200` O-grid result is useful as an article-range diagnostic, but it has the shortest physical record in the table and should be treated more cautiously than the low-Re steady cases.
 
 ## Current results
 
-### Latest accepted diagnostic result
+### Latest accepted result
 
-The current best diagnostic dataset is the stopped `Re10_long100s` run in the active
-run-002 Boussinesq branch.
+The accepted result is the O-grid cylinder validation (`run004`). It gives wall-normal-gradient Nusselt numbers within about `0.07..1.13%` of the reference values over the archived `Re=10..200` matrix, with bounded temperature fields and no cylinder-surface overshoot above `T_wall`.
 
-Post-processing of the saved parallel fields gives:
+Key interpretation:
 
-- `Nu(t)` reconstructed up to about `47.0 s`
-- mean `Nu` over the second half of the run: `6.8857`
-- mean `Nu` over the last `10 s`: `6.0189`
-- reference values:
-  - `Nu_Lange = 1.8101`
-  - `Nu_Bharti = 1.8623`
-- transient spectral peak from `Cl` tail: `St_peak = 0.0659`
+- the wall-normal `Nu` extraction route is now validated for a clean cylinder benchmark
+- the structured O-grid branch supersedes the rejected snappy validation attempt
+- the low-Re matrix (`Re10..Re60`) is especially strong for thermal verification
+- `Re100` and `Re200` are useful unsteady/article-range checks, with `Re200` marked diagnostic because of its shorter record
 
-Interpretation:
+Accepted run-level summary:
 
-- the solver architecture is stable and the accepted `Nu` definition is now implemented
-  consistently with Bharti and Lange
-- the current thermal solution is still far above the literature benchmark
-- therefore this run is still diagnostic, not validated
-- the extracted `St` is not physically comparable to literature for `Re = 10`, where a
-  steady regime is expected
+```text
+results/study_v2a/runs/004_data_v2a_ogrid_cylinder_validation/summary.md
+```
 
-The current comparison assets are stored in:
-
-- [literature_comparison.md](c:\Users\kik\My%20Drive\Politechnika%20Krakowska\Researches\Repositories\openFoam\VV_cases\V2_thermal\results\study_v2a\runs\002_data_v2a_boussinesq_validation\literature_comparison.md)
-- [literature_comparison_Re10_long100s.md](c:\Users\kik\My%20Drive\Politechnika%20Krakowska\Researches\Repositories\openFoam\VV_cases\V2_thermal\results\study_v2a\runs\002_data_v2a_boussinesq_validation\literature_comparison_Re10_long100s.md)
-- [Re10_long100s_Nu_vs_time.png](c:\Users\kik\My%20Drive\Politechnika%20Krakowska\Researches\Repositories\openFoam\VV_cases\V2_thermal\results\study_v2a\runs\002_data_v2a_boussinesq_validation\plots\Re10_long100s_Nu_vs_time.png)
-
-This is sufficient to confirm that the solver architecture and the accepted `Nu`
-definition are now viable. It is not yet sufficient for final literature comparison.
-because only one non-zero thermal snapshot is available and the case is still in startup
-transient.
-
-The compact run archive currently stored in:
-
-- `results/study_v2a/runs/001_data_v2a_level_a_unconfined_debug`
-
-contains only the earlier pre-switch debug cases in note form.
-It should therefore be treated as historical debug evidence, not as the accepted
-production Reynolds matrix for V2a.
+Earlier run-002 Boussinesq/snappy results should be cited only as diagnostic history. They confirmed parts of the solver architecture, but their Nu values were not accepted for literature validation.
 
 ## Comparison with literature
 
-No final literature comparison table should be treated as accepted yet for V2a.
+The accepted O-grid comparison is now the current literature comparison for V2a. The low-Re O-grid cases agree with the reference Nu values to within about one percent, and the extended article-range dashboard is stored with the run-004 outputs.
 
-At this stage:
-
-- the reference literature targets are defined
-- the solver architecture has been corrected
-- the production Reynolds-number matrix has not yet been completed
-
-Therefore the next comparison table should only be generated after:
-
-1. production controls are restored
-2. `Nu` extraction is implemented in the new architecture
-3. `Re10`, `Re20`, and `Re40` are completed successfully
+The remaining caution is scope: this validates the thermal solver and Nu extraction on an unconfined heated-cylinder benchmark. It does not by itself validate the confined V4b fin-and-tube geometry, whose production support comes from internal heat-balance closure and campaign sensitivity checks.
 
 ## Recommended reference setup
 
-The current recommended next-step setup for V2a is:
+The recommended V2a reference setup is:
 
-- `buoyantBoussinesqPimpleFoam`
-- active Boussinesq transport model in `transportProperties`
-- clean run-002 generator in `_code/V2AStudy.py`
-- `Re10` as the first production confirmation case of run 002
-- then `Re20` and `Re40`
+- structured O-grid cylinder validation branch (`run004`)
+- constant wall temperature cylinder
+- pure forced convection with `g = 0`
+- wall-normal-gradient Nusselt extraction on the cylinder surface
+- use the accepted `run004` table for thermal solver/Nu-method validation
+
+Future work, if needed, should formalize a mesh-independence check around the O-grid branch rather than returning to the rejected snappy validation path.
 
 ## Figures used in this document
 
@@ -240,8 +193,11 @@ Selected figures should be stored in:
 
 - [figs](./figs)
 
-At the current stage this folder is reserved for:
+Current run-level figures are stored with `run004`, including:
 
-- geometry figure
-- future `Nu vs Re` comparison figure
-- future residual or startup-stability figure if needed for the manuscript
+- `plots/V2_run004_Nu_vs_reference.png`
+- `plots/V2A_Nu_Re_articles_vs_present.png`
+- `plots/V2A_articles_vs_present_dashboard.png`
+- per-case `Nu(t)` plots for the O-grid matrix
+
+Only final figures explicitly cited by this canonical document should be copied into `doc/figs/`.

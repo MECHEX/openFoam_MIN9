@@ -1,8 +1,8 @@
 # Python
 **/__pycache__/
-*.pyc
 *.pyo
 *.pyd
+*.pyc
 
 # OS
 Thumbs.db
@@ -10,6 +10,9 @@ Thumbs.db
 
 # Claude internal
 .claude/
+**/claude_run008_flat_package/
+**/claude_run008_compact_review/
+*.zip
 
 # ── OpenFOAM ────────────────────────────────────────────────────────────────
 # Mesh binaries — reproducible from blockMeshDict / snappyHexMesh
@@ -27,6 +30,7 @@ spatial_mode_*.csv
 # Snapshot matrices
 **/snapshot_matrix.csv
 **/centered_snapshot_matrix.csv
+*.npz
 
 # Full-field reconstruction outputs
 **/target_reconstruction_all_modes.csv

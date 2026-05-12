@@ -1,0 +1,93 @@
+{
+  "summary": [
+    {
+      "metric": "n_times",
+      "value": 1601.0
+    },
+    {
+      "metric": "n_x_bins",
+      "value": 80.0
+    },
+    {
+      "metric": "n_valid_x_bins_z_min",
+      "value": 61.0
+    },
+    {
+      "metric": "n_valid_x_bins_z_max",
+      "value": 61.0
+    },
+    {
+      "metric": "Nu_mean_z_min",
+      "value": 4.5669215694095735
+    },
+    {
+      "metric": "Nu_mean_z_max",
+      "value": 4.541199580435455
+    },
+    {
+      "metric": "Nu_rms_z_min_mean",
+      "value": 0.04823820610363743
+    },
+    {
+      "metric": "Nu_rms_z_max_mean",
+      "value": 0.04984424913056924
+    },
+    {
+      "metric": "A1_z_min_mean",
+      "value": 0.013569087388618546
+    },
+    {
+      "metric": "A1_z_max_mean",
+      "value": 0.013022996636512912
+    },
+    {
+      "metric": "A2_z_min_mean",
+      "value": 0.00950372907355156
+    },
+    {
+      "metric": "A2_z_max_mean",
+      "value": 0.011093444824465696
+    },
+    {
+      "metric": "mean_abs_antisymmetric_Nu",
+      "value": 0.014798866082773254
+    },
+    {
+      "metric": "mean_fin_pair_corr",
+      "value": 0.8579344363986242
+    },
+    {
+      "metric": "mean_coherence_z_min",
+      "value": 0.60551446818761
+    },
+    {
+      "metric": "mean_coherence_z_max",
+      "value": 0.6132577220185664
+    },
+    {
+      "metric": "active_fraction_z_min",
+      "value": 0.5081967213114754
+    },
+    {
+      "metric": "active_fraction_z_max",
+      "value": 0.4918032786885246
+    },
+    {
+      "metric": "median_lag_z_min_s",
+      "value": -0.0749999999999984
+    },
+    {
+      "metric": "median_lag_z_max_s",
+      "value": -0.0749999999999984
+    },
+    {
+      "metric": "phase1_z_max_minus_z_min_deg",
+      "value": -3.326004020753593
+    },
+    {
+      "metric": "median_lag_z_max_minus_z_min_s",
+      "value": 0.0
+    }
+  ],
+  "definition": "Nu=q''*D/(k*LMTD(t)); coherence uses scipy.signal.coherence near f_shed"
+}

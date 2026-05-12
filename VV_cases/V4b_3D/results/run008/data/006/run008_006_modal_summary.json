@@ -1,0 +1,110 @@
+{
+  "summary": [
+    {
+      "metric": "n_snapshots",
+      "value": 401.0
+    },
+    {
+      "metric": "n_points",
+      "value": 13524.0
+    },
+    {
+      "metric": "U_mode1_energy_pct",
+      "value": 40.69660741749009
+    },
+    {
+      "metric": "U_mode2_energy_pct",
+      "value": 40.52293526677542
+    },
+    {
+      "metric": "T_mode1_energy_pct",
+      "value": 39.703995817946414
+    },
+    {
+      "metric": "T_mode2_energy_pct",
+      "value": 38.27311251057722
+    },
+    {
+      "metric": "joint_mode1_energy_pct",
+      "value": 40.22077323452644
+    },
+    {
+      "metric": "joint_mode2_energy_pct",
+      "value": 39.75756174787363
+    },
+    {
+      "metric": "U_pair12_share_of_first8",
+      "value": 0.8745211616889303
+    },
+    {
+      "metric": "T_pair12_share_of_first8",
+      "value": 0.840012987113221
+    },
+    {
+      "metric": "DMD_near_f_shed_hz",
+      "value": 3.3576678066756998
+    },
+    {
+      "metric": "DMD_near_2f_shed_hz",
+      "value": 6.569508372267634
+    },
+    {
+      "metric": "joint_scale_U_rms",
+      "value": 0.06679715947634587
+    },
+    {
+      "metric": "joint_scale_T_rms",
+      "value": 2.707149947705751
+    }
+  ],
+  "top_correlations": [
+    {
+      "pod_set": "T",
+      "mode": 1,
+      "signal": "Cl",
+      "corr": -0.9865058805042772
+    },
+    {
+      "pod_set": "U+T",
+      "mode": 1,
+      "signal": "Cl",
+      "corr": -0.9780962163840554
+    },
+    {
+      "pod_set": "U",
+      "mode": 1,
+      "signal": "Cd",
+      "corr": -0.8503384761974769
+    },
+    {
+      "pod_set": "U+T",
+      "mode": 1,
+      "signal": "Cd",
+      "corr": -0.8499605319353251
+    },
+    {
+      "pod_set": "T",
+      "mode": 1,
+      "signal": "Cd",
+      "corr": -0.8096818166121844
+    },
+    {
+      "pod_set": "U",
+      "mode": 2,
+      "signal": "Cl",
+      "corr": -0.7928495286993762
+    },
+    {
+      "pod_set": "T",
+      "mode": 5,
+      "signal": "Q_wall",
+      "corr": -0.6753863567167241
+    },
+    {
+      "pod_set": "U+T",
+      "mode": 5,
+      "signal": "Q_wall",
+      "corr": -0.623004591140444
+    }
+  ]
+}

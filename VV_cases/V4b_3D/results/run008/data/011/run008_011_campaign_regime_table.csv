@@ -1,0 +1,5 @@
+run,role,model,window,Cd_mean,Cl_rms,St,Nu,Nu_definition,closure_pct,status
+run004b,accepted domain baseline,"eConst/Boussinesq, old capacity scale",3..6 s,3.361489837250396,0.18405572195137482,0.15516774585941479,7.77795270770377,Nu_EB_LMTD,,"domain baseline, pre-Cp cleanup"
+run005,inlet sensitivity,"same as run004b, Lin=4D",3..6 s,3.3592754621694376,0.18461645806675525,0.15519392650906058,7.775975406966352,Nu_EB_LMTD,,inlet sensitivity closed
+run007c,Cp-capacity smoke,"eConst/Boussinesq, capacity=1005",0.5..2 s,3.3612089576545165,0.17669771834524226,,7.821736148249292,Nu_wall_case_k,1.3922305517104867,"short smoke, same model family as run008"
+run008,production reference,"eConst/Boussinesq, capacity=1005, production sampling",2..10 s,3.361013797095566,0.1764414206817274,0.15426122150265295,7.770003747254776,Nu_EB,0.7062132749826138,accepted production reference

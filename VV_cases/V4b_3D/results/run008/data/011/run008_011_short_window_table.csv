@@ -1,0 +1,4 @@
+run,model,window,Cd_mean,Cl_rms,Q_wall_W,Q_air_case_W,Nu_wall_case_k,Nu_wall_ref_k,wall_vs_air_case_pct,note
+run004b,baseline eConst/Boussinesq Cv=718,0.5..2.0,3.361209000237718,0.17669762793028465,1.0590850393333333,1.0445444831670454,7.8217339354660815,5.588064642452385,1.392047576777308,old capacity scale; short-window baseline
+run007a,variable props: incompressiblePerfectGas + Sutherland,0.5..2.0,3.473618629331158,0.17897880182001188,1.3396071836666668,1.8449897887074282,7.378584828493314,7.378584828493314,-27.392162717324567,variable-property diagnostic; not production
+run007c,constant props: eConst/Boussinesq capacity=1005,0.5..2.0,3.3612089576545165,0.17669771834524226,1.4824247686666665,1.4620693919053525,7.821736148249292,7.821736148249292,1.3922305517104867,constant-property Cp-capacity smoke; parent of run008 settings

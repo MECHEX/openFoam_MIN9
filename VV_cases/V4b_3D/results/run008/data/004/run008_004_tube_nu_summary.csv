@@ -1,0 +1,17 @@
+metric,value
+n_times,1601.0
+n_theta_bins,96.0
+n_z_bins,30.0
+Nu_mean_area_proxy,8.588057123320025
+Nu_rms_area_proxy,0.09782950443468486
+A1_mean,0.02526619667158074
+A1_max,0.06298901855823714
+A2_mean,0.021482794765967192
+A2_max,0.05963593681794019
+asym_abs_mean,0.2908567264129014
+asym_abs_max,1.3253083300924302
+theta_profile_max_deg,155.62499999999997
+theta_profile_min_deg,35.624999999999986
+upper_lower_asym_corr_with_Cl_zero_lag,0.9000668301574372
+upper_lower_asym_best_lag_s_positive_asym_lags_Cl,-0.004999999999999893
+upper_lower_asym_best_lag_corr,0.9222010280403636

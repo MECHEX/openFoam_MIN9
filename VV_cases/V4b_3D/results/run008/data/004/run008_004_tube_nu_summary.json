@@ -1,0 +1,69 @@
+{
+  "summary": [
+    {
+      "metric": "n_times",
+      "value": 1601.0
+    },
+    {
+      "metric": "n_theta_bins",
+      "value": 96.0
+    },
+    {
+      "metric": "n_z_bins",
+      "value": 30.0
+    },
+    {
+      "metric": "Nu_mean_area_proxy",
+      "value": 8.588057123320025
+    },
+    {
+      "metric": "Nu_rms_area_proxy",
+      "value": 0.09782950443468486
+    },
+    {
+      "metric": "A1_mean",
+      "value": 0.02526619667158074
+    },
+    {
+      "metric": "A1_max",
+      "value": 0.06298901855823714
+    },
+    {
+      "metric": "A2_mean",
+      "value": 0.021482794765967192
+    },
+    {
+      "metric": "A2_max",
+      "value": 0.05963593681794019
+    },
+    {
+      "metric": "asym_abs_mean",
+      "value": 0.2908567264129014
+    },
+    {
+      "metric": "asym_abs_max",
+      "value": 1.3253083300924302
+    },
+    {
+      "metric": "theta_profile_max_deg",
+      "value": 155.62499999999997
+    },
+    {
+      "metric": "theta_profile_min_deg",
+      "value": 35.624999999999986
+    },
+    {
+      "metric": "upper_lower_asym_corr_with_Cl_zero_lag",
+      "value": 0.9000668301574372
+    },
+    {
+      "metric": "upper_lower_asym_best_lag_s_positive_asym_lags_Cl",
+      "value": -0.004999999999999893
+    },
+    {
+      "metric": "upper_lower_asym_best_lag_corr",
+      "value": 0.9222010280403636
+    }
+  ],
+  "definition": "Nu=q''*D/(k*LMTD(t)); phase from Cl analytic signal"
+}

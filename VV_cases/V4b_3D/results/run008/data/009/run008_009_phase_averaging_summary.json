@@ -1,0 +1,102 @@
+{
+  "method": {
+    "phase_source": "Cl Hilbert phase from layer 002",
+    "window_s": [
+      2.0,
+      10.0
+    ],
+    "n_phase_bins": 16,
+    "midspan_snapshots": 401,
+    "case_dir": "\\\\wsl$\\Ubuntu-24.04\\home\\hexmachina\\of_runs\\V4b_3D_run008"
+  },
+  "events": [
+    {
+      "event": "Cl_max",
+      "phase_bin": 12,
+      "phase_deg": 281.25,
+      "value": 2.585784861392405,
+      "lag_from_abs_cl_max_deg": 45.0,
+      "lag_from_abs_cl_max_s": 0.03812486656296703
+    },
+    {
+      "event": "Cl_min",
+      "phase_bin": 10,
+      "phase_deg": 236.25,
+      "value": 2.423238404634146,
+      "lag_from_abs_cl_max_deg": 0.0,
+      "lag_from_abs_cl_max_s": 0.0
+    },
+    {
+      "event": "Cl_zero_down",
+      "phase_bin": 0,
+      "phase_deg": 11.25,
+      "value": 2.5148173267045455,
+      "lag_from_abs_cl_max_deg": 135.0,
+      "lag_from_abs_cl_max_s": 0.11437459968890108
+    },
+    {
+      "event": "Cl_zero_up",
+      "phase_bin": 3,
+      "phase_deg": 78.75,
+      "value": 2.5167295227333333,
+      "lag_from_abs_cl_max_deg": -157.5,
+      "lag_from_abs_cl_max_s": -0.1334370329703846
+    },
+    {
+      "event": "Q_wall_max",
+      "phase_bin": 13,
+      "phase_deg": 303.75,
+      "value": 1.4815962443303572,
+      "lag_from_abs_cl_max_deg": 67.5,
+      "lag_from_abs_cl_max_s": 0.05718729984445054
+    },
+    {
+      "event": "Q_tube_max",
+      "phase_bin": 10,
+      "phase_deg": 236.25,
+      "value": 0.3620427712317073,
+      "lag_from_abs_cl_max_deg": 0.0,
+      "lag_from_abs_cl_max_s": 0.0
+    },
+    {
+      "event": "Q_fins_max",
+      "phase_bin": 13,
+      "phase_deg": 303.75,
+      "value": 1.1196088398214286,
+      "lag_from_abs_cl_max_deg": 67.5,
+      "lag_from_abs_cl_max_s": 0.05718729984445054
+    },
+    {
+      "event": "Nu_tube_wall_max",
+      "phase_bin": 5,
+      "phase_deg": 123.74999999999999,
+      "value": 8.458564365090178,
+      "lag_from_abs_cl_max_deg": -112.50000000000001,
+      "lag_from_abs_cl_max_s": -0.09531216640741759
+    },
+    {
+      "event": "Nu_fins_wall_max",
+      "phase_bin": 5,
+      "phase_deg": 123.74999999999999,
+      "value": 7.660065133047254,
+      "lag_from_abs_cl_max_deg": -112.50000000000001,
+      "lag_from_abs_cl_max_s": -0.09531216640741759
+    },
+    {
+      "event": "Nu_EB_max",
+      "phase_bin": 5,
+      "phase_deg": 123.74999999999999,
+      "value": 7.954008339439078,
+      "lag_from_abs_cl_max_deg": -112.50000000000001,
+      "lag_from_abs_cl_max_s": -0.09531216640741759
+    }
+  ],
+  "heat_timing_answer": {
+    "abs_cl_reference_phase_deg": 236.25,
+    "Q_wall_max_phase_deg": 303.75,
+    "Q_wall_lag_from_abs_cl_max_deg": 67.5,
+    "Q_wall_lag_from_abs_cl_max_s": 0.05718729984445054,
+    "Q_tube_lag_from_abs_cl_max_s": 0.0,
+    "Q_fins_lag_from_abs_cl_max_s": 0.05718729984445054
+  }
+}

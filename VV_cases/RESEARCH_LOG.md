@@ -3247,3 +3247,2759 @@ Dodano `VV_cases/V4b_3D/results/run003/plot_run003_modal.py`, który generuje fi
 - EPOD: `epod_reconstruction_quality.png` oraz extended modes 1-4 dla `Ux_to_T`, `T_to_Ux`, `Uy_to_T`.
 - Spectral: `coherence_curves.png`, `probe_power_spectra.png`, `force_power_spectra.png`.
 - TE: `transfer_entropy_curves.png`, `transfer_entropy_peak_summary.png`.
+
+---
+
+## 2026-04-29 14:24:09 +02:00 | V4b_3D | run004 preparation for longer outlet sensitivity
+
+### Work package
+
+Przygotowanie kolejnego wariantu `V4b_3D` skoncentrowanego wyłącznie na wpływie dłuższego `Lout` względem bazowego `run003`.
+
+### Actions taken
+
+- przejrzano aktualny stan `V4b_3D` w repo:
+  - `doc/V4b_3D.md`
+  - `results/run_log.md`
+  - `results/run003/summary.md`
+  - `_code/prepare_run003_re200_medium.sh`
+- potwierdzono, że naturalnym następnym krokiem po `run003` jest wariant outlet-sensitivity bez zmiany solvera, `Re`, ani rodziny siatki
+- przygotowano nowy skrypt:
+  - `VV_cases/V4b_3D/_code/prepare_run004_re200_longer_lout.sh`
+- przyjęto domyślny wariant:
+  - `Lout = 8D`
+  - `Lout = 96.00 mm`
+  - `Lx = 147.71 mm`
+- dodano repozytoryjny szkic wyniku / setupu:
+  - `VV_cases/V4b_3D/results/run004/summary.md`
+- zapisano w skrypcie, że zmiana geometrii wymaga świeżego remeshu przed uruchomieniem solvera
+
+### Decisions made
+
+- `run004` ma być czystym testem wpływu długości wylotu na:
+  - `St`
+  - `Cd`
+  - `Cl_rms`
+  - `dp`
+  - `T_out`
+  - `Nu_EB`
+- nie zmieniamy teraz bazowego dokumentu `V4b_3D.md`, bo dłuższy `Lout` jest jeszcze wariantem kontrolnym, a nie zaakceptowanym baseline
+- domyślne `8D` jest pierwszym rozsądnym krokiem; skrypt pozwala też na `LOUT_D=10`, jeśli okaże się potrzebny mocniejszy test
+
+### Outputs
+
+- `VV_cases/V4b_3D/_code/prepare_run004_re200_longer_lout.sh`
+- `VV_cases/V4b_3D/results/run004/summary.md`
+
+### Next step
+
+Uruchomić skrypt przygotowujący `run004`, potwierdzić w aktywnym `mesh.sh` lub słownikach geometrii nowy `Lout`, przebudować siatkę i dopiero wtedy puścić solver dla porównania z `run003`.
+
+---
+
+## 2026-04-30 10:29:49 +02:00 | V4b_3D | run004b light outlet-sensitivity mesh
+
+### Work package
+
+Przygotowanie kontrolowanego wariantu `run004b` po diagnozie, że `run004` był zbyt mocno zrefinowany objętościowo i przez to nieporównywalny kosztowo z `run003`.
+
+### Actions taken
+
+- sprawdzono aktywny `run004` w WSL i potwierdzono, że nominalny `level (2 2)` dał 1,783,116 komórek przez bardzo duży `nearCylinder` level-2 volume box
+- dodano skrypt:
+  - `VV_cases/V4b_3D/_code/prepare_run004b_lout8_light_mesh.sh`
+- utworzono nowy case:
+  - `/home/hexmachina/of_runs/V4b_3D_run004b`
+- wygenerowano mesh `run004b` z:
+  - `Lout = 8D`
+  - `hot_tube level (2 2)`
+  - krótkim `wakeBox` level 1 (`x = 0..60 mm`, `y = +/-12 mm`)
+  - usuniętym dużym `nearCylinder` level-2 boxem
+- uruchomiono `checkMesh -allTopology -allGeometry`, zwykły `checkMesh`, oraz testowe `decomposePar -force`
+
+### Results
+
+| Quantity | run003 | run004 | run004b |
+|---|---:|---:|---:|
+| Lout/D | 5 | 8 | 8 |
+| cells | 337,184 | 1,783,116 | 283,716 |
+| max non-ortho | 64.87 deg | 26.18 deg | 26.34 deg |
+| max skewness | 0.861 | 0.790 | 0.790 |
+| concave cells | 9,524 | 0 | 4,624 |
+
+Normal `checkMesh`: `Mesh OK`.
+
+The stricter all-geometry check reports 4,624 concave cells, which is lower than the archived accepted `run001/run003` count of 9,524.
+
+### Decisions made
+
+- current `run004` should be treated as a diagnostic over-refined attempt, not the main controlled outlet-sensitivity comparison
+- `run004b` is the current controlled `Lout=8D` mesh candidate
+- `run004b` remains intentionally light; `addLayers false` because the available active `run004` bootstrap did not include the run001/run003 BL layer controls
+
+### Outputs
+
+- `VV_cases/V4b_3D/_code/prepare_run004b_lout8_light_mesh.sh`
+- `VV_cases/V4b_3D/results/run004b/summary.md`
+- `/home/hexmachina/of_runs/V4b_3D_run004b`
+
+### Next step
+
+Run a short solver benchmark to `0.1-0.2 s` physical time before any overnight full run, then estimate wall-time per simulated second.
+
+---
+
+## 2026-04-30 10:48:10 +02:00 | V4b_3D | run004b BL correction
+
+### Work package
+
+Correct `run004b` after review: the first light mesh had only 283,716 cells and no boundary-layer extrusion, so it was too light compared with the accepted `run001/run003` mesh family.
+
+### Actions taken
+
+- updated `VV_cases/V4b_3D/_code/prepare_run004b_lout8_light_mesh.sh`
+- regenerated `/home/hexmachina/of_runs/V4b_3D_run004b`
+- enabled `addLayers true`
+- requested BL layers:
+  - `hot_tube`: 8 layers
+  - `hot_fin_z_min`: 6 layers
+  - `hot_fin_z_max`: 6 layers
+  - first layer thickness: 30 um
+  - expansion ratio: 1.20
+- kept `hot_tube level (2 2)`
+- kept the large `nearCylinder` level-2 volume box removed
+- extended the light wake refinement to `x = 0..72 mm`, `y = +/-12 mm`, level 1
+- regenerated mesh and ran:
+  - `checkMesh -allTopology -allGeometry`
+  - normal `checkMesh`
+  - `decomposePar -force`
+
+### Results
+
+| Quantity | run003 | over-refined run004 | corrected run004b |
+|---|---:|---:|---:|
+| Lout/D | 5 | 8 | 8 |
+| cells | 337,184 | 1,783,116 | 407,440 |
+| max non-ortho | 64.87 deg | 26.18 deg | 62.84 deg |
+| max skewness | 0.861 | 0.790 | 3.319 |
+| max aspect ratio | 33.4 | 2.28 | 33.64 |
+| concave cells | 9,524 | 0 | 9,178 |
+
+Layer addition result:
+
+| patch | requested | average layers | overall thickness |
+|---|---:|---:|---:|
+| hot_tube | 8 | 7.19 | 0.000401 m / 81.1% |
+| hot_fin_z_min | 6 | 3.8 | 0.000228 m / 76.1% |
+| hot_fin_z_max | 6 | 3.8 | 0.000228 m / 76.1% |
+
+Normal `checkMesh`: `Mesh OK`.
+
+`decomposePar -force`: OK, 8 processor directories created.
+
+### Decision
+
+The corrected `run004b` is now a better controlled outlet-sensitivity candidate than the first light mesh: it restores BL-layer behavior and keeps the local tube refinement family close to `run001/run003`, while avoiding the 1.78M-cell over-refinement of `run004`.
+
+### Next step
+
+Run a short solver benchmark before launching an overnight production run.
+
+---
+
+## 2026-05-05 14:08:00 +02:00 | V4b_3D | run004b solver launch on 20 ranks
+
+### Work package
+
+Stop the initial 8-rank `run004b` background test and relaunch the corrected BL mesh on 20 MPI ranks.
+
+### Actions taken
+
+- checked active `run004b` processes:
+  - `mpirun` PID `748`
+  - 8 `foamRun` worker processes
+- stopped the 8-rank test by killing the parent `mpirun` process
+- added launch helper:
+  - `VV_cases/V4b_3D/_code/start_run004b_bg.sh`
+- fixed the helper so it:
+  - sources `/opt/openfoam13/etc/bashrc` before `set -u`
+  - updates `system/decomposeParDict` to match `NPROCS`
+  - runs `decomposePar -force`
+  - launches through `setsid mpirun --oversubscribe`
+  - writes a tagged PID and solver log
+- relaunched `run004b` with:
+
+```bash
+NPROCS=20 TAG=20260505_np20 bash /mnt/c/Users/wisie_101/Documents/GitHub/openFoam_MIN9/VV_cases/V4b_3D/_code/start_run004b_bg.sh
+```
+
+### Current active run
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run004b` |
+| MPI ranks | 20 |
+| Parent PID | `733` |
+| PID file | `logs/solver.20260505_np20.pid` |
+| Solver log | `logs/log.foamRun_parallel.20260505_np20` |
+| `decomposeParDict` | `numberOfSubdomains 20;` |
+| Processor directories | 20 |
+
+Initial log check:
+
+- solver entered the time loop
+- `Co_max` about `0.78`
+- `deltaT` about `1.25e-4` to `1.30e-4` during startup
+- residuals and continuity errors are finite and progressing
+- no startup crash observed
+
+### Correct launch procedure
+
+Start or restart `run004b` from WSL:
+
+```bash
+NPROCS=20 TAG=YYYYMMDD_np20 bash /mnt/c/Users/wisie_101/Documents/GitHub/openFoam_MIN9/VV_cases/V4b_3D/_code/start_run004b_bg.sh
+```
+
+Check status:
+
+```bash
+pgrep -af foamRun
+pgrep -af mpirun
+tail -n 120 /home/hexmachina/of_runs/V4b_3D_run004b/logs/log.foamRun_parallel.<TAG>
+```
+
+Stop safely:
+
+```bash
+kill "$(cat /home/hexmachina/of_runs/V4b_3D_run004b/logs/solver.<TAG>.pid)"
+```
+
+### Decision
+
+Use the tagged helper script for future runs. Avoid the older plain `run_parallel.sh` path because earlier background attempts produced empty logs and did not leave a live solver process in this WSL/PowerShell setup.
+
+### Next step
+
+Monitor progress to the first checkpoint (`t = 0.1 s`) and compute the actual wall-time per simulated second for the corrected 407k-cell BL mesh on 20 ranks.
+
+---
+
+## 2026-05-06 00:00:00 +02:00 | V4b_3D | run004b completed; analysis-first decision
+
+### Work package
+
+Close the corrected `Lout=8D` outlet-sensitivity run and decide the next
+scientific step before launching any `Lout=16D` case.
+
+### Solver status
+
+`run004b` completed cleanly to `t = 6 s`.
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run004b` |
+| MPI ranks | 20 |
+| Solver log | `logs/log.foamRun_parallel.20260505_np20` |
+| Final checkpoint | `processor*/6` |
+| Final ClockTime | `30720 s` |
+| Termination | `End` / `Finalising parallel run` |
+
+### Quick-look force comparison
+
+Final `run004b` force statistics:
+
+| Window | Cd_mean | Cl_mean | Cl_std/rms |
+|---|---:|---:|---:|
+| `t >= 2 s` | 3.362 | 2.519 | 0.194 |
+| `t >= 3 s` | 3.361 | 2.514 | 0.184 |
+| `t >= 4 s` | 3.360 | 2.514 | 0.168 |
+
+The adjacent `Cl` peak spacing gives a strong component near `6.5 Hz`; using
+every second peak as the fundamental gives `f_shed ~= 3.25 Hz`,
+`St ~= 0.155`.
+
+Compared with the archived `run003` summary (`Lout=5D`, `Cd_mean = 3.161`,
+`Cl_mean = 2.52`, `Cl_rms = 0.187`, `St = 0.1484`), the `Lout=8D` result is
+qualitatively similar: same periodic regime, nearly unchanged lift offset,
+comparable lift oscillation, and a slightly higher shedding frequency. The
+main remaining quantitative difference is about 6% higher drag.
+
+### Decision
+
+Do not launch `Lout=16D` yet. First complete a controlled `run003` vs
+`run004b` analysis using matched time windows and the same signal-processing
+method. Use `Lout=16D` only if the final comparison shows unresolved outlet
+sensitivity, especially in `Cd` or thermal metrics.
+
+### Saved analysis plan
+
+Detailed plan saved in:
+
+```text
+VV_cases/V4b_3D/results/run004b/summary.md
+```
+
+Immediate tasks:
+
+1. Recompute `run003` force statistics using the same windows as `run004b`
+   (`t = 2..6 s`, `3..6 s`, and late-window checks).
+2. Produce a matched comparison table with percent differences.
+3. Plot `Cd(t)` and `Cl(t)` for both runs with the same transient rejection.
+4. Estimate `f_shed/St` with one consistent method for both runs.
+5. Check whether `T_out/Nu_EB` can be extracted consistently for the
+   `Lout=8D` case.
+6. Write the scientific conclusion before deciding on `Lout=16D`.
+
+---
+
+## 2026-05-06 | V4b_3D | run003 vs run004b final force comparison
+
+### Work package
+
+Implemented the planned outlet-sensitivity comparison between accepted
+`run003` (`Lout=5D`) and completed `run004b` (`Lout=8D`) before deciding on
+any `Lout=16D` run.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run004b/analyse_run003_vs_run004b.py`
+- `VV_cases/V4b_3D/results/run004b/run003_vs_run004b_force_compare.csv`
+- `VV_cases/V4b_3D/results/run004b/run003_vs_run004b_force_compare.json`
+- `VV_cases/V4b_3D/results/run004b/run003_vs_run004b_summary_section.md`
+- `VV_cases/V4b_3D/results/run004b/figures/run003_vs_run004b_force_traces.png`
+- `VV_cases/V4b_3D/results/run004b/figures/run004b_cl_psd.png`
+
+### Data status
+
+`run004b` was analyzed from raw `forceCoeffs.dat`. The raw `run003` force file
+was not found in the active WSL/repo checkout, so `run003` is explicitly used
+as an archived summary baseline.
+
+### Recommended comparison
+
+Use `t >= 3 s` for `run004b`.
+
+| Quantity | run003 archived | run004b `t >= 3 s` | Difference |
+|---|---:|---:|---:|
+| Cd_mean | 3.161 | 3.361 | +6.34% |
+| Cl_mean | 2.520 | 2.514 | -0.25% |
+| Cl_rms/std | 0.187 | 0.184 | -1.57% |
+| f_shed | 3.125 Hz | 3.267 Hz | +4.54% |
+| St | 0.1484 | 0.1552 | +4.56% |
+
+### Interpretation
+
+The longer outlet does not change the qualitative Re=200 regime: `run004b`
+remains periodic, with nearly unchanged mean lift and comparable shedding
+amplitude. The persistent difference is drag: `Cd_mean` is about 6% higher in
+the `Lout=8D` case.
+
+### Decision
+
+Do not launch `Lout=16D` as a broad new campaign yet. A short `16D`
+drag/outlet-independence check is scientifically justified if the final claim
+needs drag accuracy, because `8D` confirms the regime but does not fully close
+the `Cd` sensitivity question. Thermal metrics are not closed for `run004b`
+because current postProcessing contains force coefficients, wake probes, and
+residuals, but no direct outlet-integral/Nusselt output.
+
+---
+
+## 2026-05-06 | V4b_3D | run004b thermal EB+LMTD comparison
+
+### Work package
+
+Computed the missing heat-transfer comparison for `run004b` before deciding
+whether to move to `Lout=16D`.
+
+### Actions taken
+
+- reconstructed `run004b` checkpoints for `t = 3..6 s` with `reconstructPar`
+- extended `VV_cases/V4b_3D/results/run004b/analyse_run003_vs_run004b.py`
+- computed outlet `T` from the reconstructed `outlet` patch values
+- used the same EB+LMTD method as archived `run003`
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run004b/run003_vs_run004b_thermal_compare.csv`
+- `VV_cases/V4b_3D/results/run004b/run003_vs_run004b_thermal_compare.json`
+
+### Results
+
+Thermal comparison uses `run004b` mean over `t = 3..6 s` and archived
+`run003` values.
+
+| Quantity | run003 archived | run004b `t=3..6 s` | Difference |
+|---|---:|---:|---:|
+| T_out area-average | 305.26 K | 305.68 +/- 0.68 K | +0.42 K |
+| T_out mass-weighted check | N/A | 305.75 K | N/A |
+| Q_total | 1.417 W | 1.472 +/- 0.075 W | +3.91% |
+| LMTD | 43.665 K | 43.432 K | N/A |
+| Nu_EB_LMTD | 7.476 | 7.778 +/- 0.463 | +4.04% |
+
+Constants: `Cp = 1005.0 J/(kg K)`, `k = 0.02575 W/(m K)`,
+`A_hot_total = 0.002032 m2`, `D = 0.012 m`.
+
+### Interpretation
+
+The `Lout=8D` case is thermally close to `run003`, but not identical:
+`Nu_EB_LMTD` is about 4% higher and `T_out` about 0.42 K higher. This thermal
+shift is smaller than the force/drag shift (`Cd` about +6.3%) but it means the
+outlet-sensitivity question is not purely aerodynamic.
+
+### Decision
+
+Before using `run004b` as the final outlet-independent reference, a short
+`Lout=16D` check is now scientifically stronger: it should verify both drag
+and EB+LMTD heat-transfer convergence. If `16D` matches `8D` within a few
+percent for `Cd`, `St`, `Cl_rms`, and `Nu_EB`, then `8D` is defensible as the
+production domain and `5D` can be described as qualitatively correct but mildly
+outlet-sensitive.
+
+---
+
+## 2026-05-06 | V4b_3D | run004c Lout=16D model prepared
+
+### Work package
+
+Prepared `run004c`, a controlled `Lout=16D` outlet-independence check based on
+the corrected `run004b` mesh strategy.
+
+### Actions taken
+
+- added `VV_cases/V4b_3D/_code/prepare_run004c_lout16_mesh.sh`
+- added `VV_cases/V4b_3D/_code/start_run004c_bg.sh`
+- added `VV_cases/V4b_3D/results/run004c/summary.md`
+- generated WSL case:
+  - `/home/hexmachina/of_runs/V4b_3D_run004c`
+- generated mesh with:
+  - `Lout = 16D`
+  - `Lx = 243.71 mm`
+  - `hot_tube level (2 2)`
+  - BL layers: tube 8, fins 6, first layer 30 um
+  - same short level-1 wake box as `run004b`: `x = 0..72 mm`, `y = +/-12 mm`
+
+### Mesh results
+
+Normal `checkMesh`: `Mesh OK`.
+
+| Quantity | run004b | run004c |
+|---|---:|---:|
+| Lout/D | 8 | 16 |
+| cells | 407,440 | 462,736 |
+| max non-ortho | 62.84 deg | 62.84 deg |
+| avg non-ortho | 5.93 deg | 5.58 deg |
+| max skewness | 3.319 | 3.319 |
+| max aspect ratio | 33.64 | 33.64 |
+| strict concave cells | 9,178 | 9,178 |
+
+Layer addition result for `run004c`:
+
+| Patch | requested | average layers | overall thickness |
+|---|---:|---:|---:|
+| hot_tube | 8 | 7.19 | 0.000401 m / 81.1% |
+| hot_fin_z_min | 6 | 3.8 | 0.000228 m / 76.1% |
+| hot_fin_z_max | 6 | 3.8 | 0.000228 m / 76.1% |
+
+### Decision
+
+`run004c` is mesh-ready and comparable to `run004b`. The next step is a
+20-rank run to `t = 6 s`, then reuse the `run004b` comparison workflow for
+`Cd_mean`, `Cl_rms`, `St`, `T_out`, and `Nu_EB_LMTD`.
+
+---
+
+## 2026-05-06 | V4b_3D | run004c solver launched
+
+### Work package
+
+Launched the `Lout=16D` outlet-independence check on 20 MPI ranks.
+
+### Launch
+
+```bash
+NPROCS=20 TAG=20260506_np20 bash /mnt/c/Users/wisie_101/Documents/GitHub/openFoam_MIN9/VV_cases/V4b_3D/_code/start_run004c_bg.sh
+```
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run004c` |
+| MPI ranks | 20 |
+| Parent MPI PID | 759 |
+| PID file | `logs/solver.20260506_np20.pid` |
+| Solver log | `logs/log.foamRun_parallel.20260506_np20` |
+| Target endTime | 6 s |
+
+### Initial status
+
+- no other `foamRun` process was active before launch
+- `decomposePar` completed
+- solver entered the time loop
+- all 20 worker processes were active at ~99% CPU
+- initial `Co_max` about 0.793
+- initial `deltaT` about 1.7e-4 s
+- continuity errors finite and small
+- no startup crash observed
+
+### Monitor
+
+```bash
+pgrep -af foamRun
+tail -n 120 /home/hexmachina/of_runs/V4b_3D_run004c/logs/log.foamRun_parallel.20260506_np20
+```
+
+### Stop safely
+
+```bash
+kill "$(cat /home/hexmachina/of_runs/V4b_3D_run004c/logs/solver.20260506_np20.pid)"
+```
+
+---
+
+## 2026-05-06 | V4b_3D | outlet sensitivity closed: 5D vs 8D vs 16D
+
+### Work package
+
+Completed full force, shedding, and EB+LMTD heat-transfer comparison for
+`run003`, `run004b`, and `run004c`.
+
+### Actions taken
+
+- reconstructed `run004c` checkpoints for `t = 3..6 s`
+- added `VV_cases/V4b_3D/results/run004c/analyse_outlet_sensitivity_5D_8D_16D.py`
+- compared:
+  - force coefficients from raw `forceCoeffs`
+  - shedding frequency and Strouhal number
+  - outlet `T_out`
+  - EB+LMTD `Nu_EB`
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run004c/run003_run004b_run004c_outlet_compare.csv`
+- `VV_cases/V4b_3D/results/run004c/run003_run004b_run004c_outlet_compare.json`
+- `VV_cases/V4b_3D/results/run004c/run003_run004b_run004c_outlet_compare.md`
+- `VV_cases/V4b_3D/results/run004c/figures/run003_run004b_run004c_outlet_sensitivity.png`
+
+### Results
+
+`run004b` and `run004c` use matched window `t = 3..6 s`; `run003` uses
+archived summary values.
+
+| Run | Lout/D | Cd_mean | Cl_mean | Cl_rms | f_shed | St | T_out | Nu_EB |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| run003 | 5 | 3.161 | 2.520 | 0.187 | 3.125 | 0.1484 | 305.26 | 7.476 |
+| run004b | 8 | 3.361 | 2.514 | 0.184 | 3.267 | 0.1552 | 305.68 +/- 0.68 | 7.778 +/- 0.463 |
+| run004c | 16 | 3.361 | 2.511 | 0.182 | 3.254 | 0.1546 | 305.72 +/- 0.13 | 7.803 +/- 0.089 |
+
+Key differences:
+
+| Comparison | Cd | St | Nu_EB |
+|---|---:|---:|---:|
+| 8D vs 5D | +6.34% | +4.56% | +4.04% |
+| 16D vs 5D | +6.33% | +4.15% | +4.37% |
+| 16D vs 8D | -0.01% | -0.40% | +0.32% |
+
+### Decision
+
+The `16D` result is essentially identical to `8D` for force metrics and very
+close for EB+LMTD heat transfer. The outlet-independence question is closed:
+`Lout=8D` is sufficient for production use. The earlier `Lout=5D` result is
+qualitatively correct for regime identification, but mildly outlet-sensitive
+for drag and heat transfer.
+
+---
+
+## 2026-05-06 | V4b_3D | run005 Lin=4D inlet-sensitivity plan prepared
+
+### Work package
+
+Prepared `run005` as the next controlled domain check after outlet
+independence was closed.
+
+### Purpose
+
+Check whether the upstream boundary location affects the accepted Re=200
+production-domain candidate. The case changes only the inlet extension:
+
+- reference: `run004b`, `Lin=2D`, `Lout=8D`
+- check: `run005`, `Lin=4D`, `Lout=8D`
+
+### Actions taken
+
+- added `VV_cases/V4b_3D/_code/prepare_run005_lin4_lout8_mesh.sh`
+- added `VV_cases/V4b_3D/_code/start_run005_bg.sh`
+- added `VV_cases/V4b_3D/results/run005/summary.md`
+- generated WSL case:
+  - `/home/hexmachina/of_runs/V4b_3D_run005`
+
+### Planned setup
+
+| Quantity | run004b | run005 |
+|---|---:|---:|
+| Lin/D | 2 | 4 |
+| Lout/D | 8 | 8 |
+| Lx | 147.71 mm | 171.71 mm |
+| hot-tube refinement | level 2 | level 2 |
+| BL request | tube 8 / fins 6 | tube 8 / fins 6 |
+| wake box | x=0..72 mm | x=0..72 mm |
+
+### Decision
+
+Generate and check the mesh first. If mesh quality remains comparable to
+`run004b`, run to `t = 6 s` on 20 ranks and compare the `t = 3..6 s` window
+for `Cd_mean`, `Cl_rms`, `St`, `T_out`, and `Nu_EB`. If changes stay small
+(`Cd/Nu` about <=2-3%, `St` about <=1-2%), keep `Lin=2D`, `Lout=8D` as the
+production domain and move to timestep sensitivity or the longer final
+measurement run.
+
+---
+
+## 2026-05-06 | V4b_3D | run005 meshed and launched
+
+### Work package
+
+Generated the `Lin=4D`, `Lout=8D` inlet-sensitivity mesh and launched the
+solver on 20 MPI ranks.
+
+### Mesh result
+
+Normal `checkMesh`: `Mesh OK`.
+
+| Quantity | Value |
+|---|---:|
+| cells | 421,264 |
+| max non-ortho | 62.84 deg |
+| avg non-ortho | 5.84 deg |
+| max skewness | 3.319 |
+| max aspect ratio | 33.64 |
+| strict concave cells | 9,178 |
+
+The strict concave-cell count matches `run004b/run004c`, so this remains a
+controlled mesh-family comparison.
+
+### Launch
+
+```bash
+NPROCS=20 TAG=20260506_np20 bash /mnt/c/Users/wisie_101/Documents/GitHub/openFoam_MIN9/VV_cases/V4b_3D/_code/start_run005_bg.sh
+```
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run005` |
+| MPI ranks | 20 |
+| Parent MPI PID | 738 |
+| PID file | `logs/solver.20260506_np20.pid` |
+| Solver log | `logs/log.foamRun_parallel.20260506_np20` |
+| Target endTime | 6 s |
+
+### Initial status
+
+- solver entered the time loop
+- all 20 worker processes were active
+- initial `Co_max` remained below `0.8`
+- residuals and continuity errors were finite
+- no startup crash observed
+
+### Monitor
+
+```bash
+pgrep -af foamRun
+tail -n 120 /home/hexmachina/of_runs/V4b_3D_run005/logs/log.foamRun_parallel.20260506_np20
+```
+
+---
+
+## 2026-05-07 | V4b_3D | run005 completed quick-look
+
+### Work package
+
+Checked the status of the `Lin=4D`, `Lout=8D` inlet-sensitivity run.
+
+### Solver status
+
+`run005` completed cleanly to `t = 6 s`.
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run005` |
+| MPI ranks | 20 |
+| Solver log | `logs/log.foamRun_parallel.20260506_np20` |
+| Final checkpoint | `processor*/6` |
+| Final ClockTime | `33469 s` |
+| Termination | `End` / `Finalising parallel run` |
+
+### Quick-look force result
+
+Raw `forceCoeffs.dat` statistics:
+
+| Window | Cd_mean | Cl_mean | Cl_std/rms |
+|---|---:|---:|---:|
+| `t >= 2 s` | 3.360 | 2.523 | 0.195 |
+| `t >= 3 s` | 3.359 | 2.518 | 0.185 |
+| `t >= 4 s` | 3.358 | 2.518 | 0.168 |
+
+Compared with `run004b` over the preferred `t >= 3 s` window
+(`Cd_mean = 3.361`, `Cl_mean = 2.514`, `Cl_rms = 0.184`), the force response
+is essentially unchanged. This suggests the inlet extension from `2D` to `4D`
+does not materially affect the Re=200 shedding-force regime.
+
+### Next step
+
+Complete the inlet-sensitivity analysis with:
+
+- matched `f_shed` / `St` extraction from `Cl(t)`
+- reconstructed outlet `T_out`
+- EB+LMTD `Nu_EB`
+- final comparison table against `run004b`
+
+---
+
+## 2026-05-07 | V4b_3D | run005 inlet sensitivity closed
+
+### Work package
+
+Completed the full `Lin=2D` versus `Lin=4D` inlet-sensitivity comparison for
+the accepted `Lout=8D` outlet-independent domain.
+
+### Actions taken
+
+- reconstructed `run005` fields for `t = 3..6 s`
+- added `VV_cases/V4b_3D/results/run005/analyse_inlet_sensitivity_run004b_vs_run005.py`
+- compared:
+  - raw `forceCoeffs`
+  - `Cl(t)` shedding frequency and `St`
+  - reconstructed outlet `T_out`
+  - EB+LMTD `Nu_EB`
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run005/run004b_vs_run005_inlet_compare.csv`
+- `VV_cases/V4b_3D/results/run005/run004b_vs_run005_inlet_compare.json`
+- `VV_cases/V4b_3D/results/run005/run004b_vs_run005_inlet_compare.md`
+- `VV_cases/V4b_3D/results/run005/figures/run004b_vs_run005_inlet_sensitivity.png`
+
+### Results
+
+Both cases use `Lout=8D` and the matched window `t = 3..6 s`.
+
+| Run | Lin/D | Cd_mean | Cl_mean | Cl_rms | f_shed | St | T_out | Nu_EB |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| run004b | 2 | 3.361 | 2.514 | 0.184 | 3.267 | 0.1552 | 305.682 +/- 0.676 | 7.778 +/- 0.463 |
+| run005 | 4 | 3.359 | 2.518 | 0.185 | 3.268 | 0.1552 | 305.680 +/- 0.653 | 7.776 +/- 0.447 |
+
+Key differences for `Lin=4D` versus `Lin=2D`:
+
+| Quantity | Difference |
+|---|---:|
+| Cd_mean | -0.07% |
+| Cl_rms | +0.30% |
+| St | +0.02% |
+| T_out | -0.002 K |
+| Nu_EB | -0.03% |
+
+### Decision
+
+The inlet extension from `2D` to `4D` does not materially affect force,
+shedding, or EB+LMTD heat-transfer metrics. The inlet-sensitivity question is
+closed for the current medium BL mesh family. Together with the closed outlet
+sensitivity (`8D` ~= `16D`), `Lin=2D`, `Lout=8D` is the defensible production
+domain candidate before timestep sensitivity and the longer measurement-rich
+final run.
+
+---
+
+## 2026-05-07 | V4b_3D | run006a maxCo=0.4 plan prepared
+
+### Work package
+
+Prepared the first timestep/Courant sensitivity check after closing inlet and
+outlet domain sensitivity.
+
+### Purpose
+
+Test whether the accepted `run004b` result is sensitive to the adaptive
+timestep limit. The case reuses the accepted domain and mesh:
+
+- `Lin=2D`
+- `Lout=8D`
+- corrected BL mesh from `run004b`
+- `maxCo=0.4` instead of `maxCo=0.8`
+
+### Actions taken
+
+- added `VV_cases/V4b_3D/_code/prepare_run006a_maxCo04.sh`
+- added `VV_cases/V4b_3D/_code/start_run006a_bg.sh`
+- added `VV_cases/V4b_3D/results/run006a/summary.md`
+
+### Decision plan
+
+Run to `t = 6 s` and compare against `run004b` over `t = 3..6 s` for
+`Cd_mean`, `Cl_rms`, `St`, `T_out`, and `Nu_EB`. If the differences stay small
+(`Cd` about <=1%, `St` about <=1%, `Nu_EB` about <=1-2%), keep `maxCo=0.8`
+for the longer production run. If not, run `maxCo=0.2`.
+
+---
+
+## 2026-05-07 | V4b_3D | run006a maxCo=0.4 launched
+
+### Work package
+
+Generated, checked, and launched the first timestep/Courant sensitivity check.
+
+### Actions taken
+
+- generated WSL case:
+  - `/home/hexmachina/of_runs/V4b_3D_run006a`
+- copied the accepted `run004b` mesh
+- set:
+  - `startFrom startTime`
+  - `startTime 0`
+  - `endTime 6`
+  - `maxCo 0.4`
+  - `numberOfSubdomains 20`
+- ran normal and strict `checkMesh`
+- launched the solver on 20 MPI ranks
+
+### Mesh result
+
+Normal `checkMesh`: `Mesh OK`.
+
+| Quantity | Value |
+|---|---:|
+| cells | 407,440 |
+| max non-ortho | 62.84 deg |
+| avg non-ortho | 5.93 deg |
+| max skewness | 3.319 |
+| max aspect ratio | 33.64 |
+| strict concave cells | 9,178 |
+
+### Launch
+
+```bash
+NPROCS=20 TAG=20260507_np20_maxCo04 bash /mnt/c/Users/wisie_101/Documents/GitHub/openFoam_MIN9/VV_cases/V4b_3D/_code/start_run006a_bg.sh
+```
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run006a` |
+| MPI ranks | 20 |
+| Parent MPI PID | 766 |
+| PID file | `logs/solver.20260507_np20_maxCo04.pid` |
+| Solver log | `logs/log.foamRun_parallel.20260507_np20_maxCo04` |
+| Target endTime | 6 s |
+
+### Initial status
+
+- solver entered the time loop
+- all 20 worker processes were active
+- initial `Co_max` stayed below `0.4`
+- residuals and continuity errors were finite
+- no startup crash observed
+
+### Monitor
+
+```bash
+pgrep -af foamRun
+tail -n 120 /home/hexmachina/of_runs/V4b_3D_run006a/logs/log.foamRun_parallel.20260507_np20_maxCo04
+```
+
+---
+
+## 2026-05-07 | V4b_3D | run006a stopped and partial timestep check analyzed
+
+### Work package
+
+Stopped `run006a` before the original `t = 6 s` target and computed the
+available partial timestep/Courant sensitivity metrics.
+
+### Solver status
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run006a` |
+| maxCo | 0.4 |
+| Last log time | about `2.616 s` |
+| Last checkpoint | `processor*/2.6` |
+| ClockTime at stop | about `26343 s` |
+| Stop method | parent MPI PID from `logs/solver.20260507_np20_maxCo04.pid` |
+| Termination | user stop, not solver crash |
+
+### Actions taken
+
+- reconstructed `run006a` fields for `t = 0.5..2.6 s`
+- reconstructed matching `run004b` fields for `t = 0.5..2.6 s`
+- added `VV_cases/V4b_3D/results/run006a/analyse_timestep_partial_run004b_vs_run006a.py`
+- compared raw force coefficients, `St`, outlet `T_out`, and EB+LMTD `Nu_EB`
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run006a/run004b_vs_run006a_timestep_partial_compare.csv`
+- `VV_cases/V4b_3D/results/run006a/run004b_vs_run006a_timestep_partial_compare.json`
+- `VV_cases/V4b_3D/results/run006a/run004b_vs_run006a_timestep_partial_compare.md`
+- `VV_cases/V4b_3D/results/run006a/figures/run004b_vs_run006a_timestep_partial.png`
+
+### Primary available-window result
+
+Matched window `t = 0.5..2.6 s`:
+
+| Run | maxCo | Cd_mean | Cl_mean | Cl_rms | f_shed | St | T_out | Nu_EB |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| run004b | 0.8 | 3.362091 | 2.513970 | 0.190678 | 3.2459 | 0.15416 | 305.602 +/- 1.046 | 7.7252 +/- 0.7075 |
+| run006a | 0.4 | 3.362270 | 2.513552 | 0.190056 | 3.2436 | 0.15405 | 305.598 +/- 1.046 | 7.7226 +/- 0.7070 |
+
+Differences for `run006a` versus matched `run004b`:
+
+| Quantity | Difference |
+|---|---:|
+| Cd_mean | +0.01% |
+| Cl_rms | -0.33% |
+| St | -0.07% |
+| T_out | -0.004 K |
+| Nu_EB | -0.03% |
+
+### Decision
+
+The partial `maxCo=0.4` run tracks the `maxCo=0.8` reference extremely closely
+for force, shedding, and EB+LMTD heat-transfer metrics over the available
+windows. Because it was stopped before `t = 3 s`, this is an indicative partial
+timestep check, not the final planned `t = 3..6 s` timestep-independence proof.
+It is nevertheless strong evidence that `maxCo=0.8` is not causing an obvious
+time-integration bias in the current setup.
+
+---
+
+## 2026-05-07 | V4b_3D | run006b maxCo=1.0 short smoke test prepared
+
+### Work package
+
+Prepared a short `maxCo=1.0` speed/safety smoke test after the partial
+`maxCo=0.4` check showed no visible timestep bias versus `maxCo=0.8`.
+
+### Purpose
+
+This is not a full timestep-independence proof. It tests whether raising
+`maxCo` above the accepted `0.8` remains stable and gives comparable early
+force signals.
+
+### Actions taken
+
+- added `VV_cases/V4b_3D/_code/prepare_run006b_maxCo10_short.sh`
+- added `VV_cases/V4b_3D/_code/start_run006b_bg.sh`
+- added `VV_cases/V4b_3D/results/run006b/summary.md`
+
+### Planned setup
+
+| Quantity | Value |
+|---|---:|
+| Lin/D | 2 |
+| Lout/D | 8 |
+| mesh | copied from `run004b` |
+| maxCo | 1.0 |
+| endTime | 2 s |
+| MPI ranks | 20 |
+
+---
+
+## 2026-05-07 | V4b_3D | run006b maxCo=1.0 short smoke test launched
+
+### Work package
+
+Generated, checked, and launched the short `maxCo=1.0` speed/safety smoke
+test.
+
+### Actions taken
+
+- generated WSL case:
+  - `/home/hexmachina/of_runs/V4b_3D_run006b`
+- copied the accepted `run004b` mesh
+- set:
+  - `startFrom startTime`
+  - `startTime 0`
+  - `endTime 2`
+  - `maxCo 1.0`
+  - `numberOfSubdomains 20`
+- ran normal `checkMesh`
+- launched the solver on 20 MPI ranks
+
+### Mesh result
+
+Normal `checkMesh`: `Mesh OK`.
+
+| Quantity | Value |
+|---|---:|
+| cells | 407,440 |
+| max non-ortho | 62.84 deg |
+| avg non-ortho | 5.93 deg |
+| max skewness | 3.319 |
+| max aspect ratio | 33.64 |
+
+### Launch
+
+```bash
+NPROCS=20 TAG=20260507_np20_maxCo10 bash /mnt/c/Users/wisie_101/Documents/GitHub/openFoam_MIN9/VV_cases/V4b_3D/_code/start_run006b_bg.sh
+```
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run006b` |
+| MPI ranks | 20 |
+| Parent MPI PID | 1203 |
+| PID file | `logs/solver.20260507_np20_maxCo10.pid` |
+| Solver log | `logs/log.foamRun_parallel.20260507_np20_maxCo10` |
+| Target endTime | 2 s |
+
+### Initial status
+
+- solver entered the time loop
+- all 20 worker processes were active
+- initial `Co_max` stayed below `1.0`
+- residuals and continuity errors were finite
+- no startup crash observed
+
+---
+
+## 2026-05-08 | V4b_3D | run006b maxCo=1.0 smoke test completed
+
+### Work package
+
+Completed and analyzed the short `maxCo=1.0` speed/safety smoke test.
+
+### Solver status
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run006b` |
+| maxCo | 1.0 |
+| Final time | 2.0 s |
+| Final checkpoint | `processor*/2` |
+| Final ClockTime | `8194 s` |
+| Termination | `End` / `Finalising parallel run` |
+
+### Actions taken
+
+- reconstructed `run006b` fields for `t = 0.5..2.0 s`
+- added `VV_cases/V4b_3D/results/run006b/analyse_maxCo10_short_run004b_vs_run006b.py`
+- compared raw force coefficients, `St`, outlet `T_out`, and EB+LMTD `Nu_EB`
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run006b/run004b_vs_run006b_maxCo10_short_compare.csv`
+- `VV_cases/V4b_3D/results/run006b/run004b_vs_run006b_maxCo10_short_compare.json`
+- `VV_cases/V4b_3D/results/run006b/run004b_vs_run006b_maxCo10_short_compare.md`
+
+### Result
+
+Matched early window `t = 0.5..2 s`:
+
+| Run | maxCo | Cd_mean | Cl_mean | Cl_rms | f_shed | St | T_out | Nu_EB |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| run004b | 0.8 | 3.361209 | 2.510763 | 0.176698 | 3.2538 | 0.15453 | 305.615 +/- 0.974 | 7.7331 +/- 0.6558 |
+| run006b | 1.0 | 3.361220 | 2.510802 | 0.176971 | 3.2561 | 0.15464 | 305.616 +/- 0.975 | 7.7339 +/- 0.6562 |
+
+Differences for `run006b` versus matched `run004b`:
+
+| Quantity | Difference |
+|---|---:|
+| Cd_mean | +0.00% |
+| Cl_rms | +0.15% |
+| St | +0.07% |
+| T_out | +0.001 K |
+| Nu_EB | +0.01% |
+
+### Decision
+
+`maxCo=1.0` is stable for this short check and tracks `maxCo=0.8` extremely
+closely over the early common window. It can be used as a speed/safety
+reference, but `maxCo=0.8` remains the more conservative production default.
+
+---
+
+## 2026-05-08 | V4b_3D | run007a variable-property short check completed
+
+### Work package
+
+Completed and analyzed a short variable-property physics check on the accepted
+`Lin=2D`, `Lout=8D` geometry.
+
+### Model
+
+`run007a` uses `incompressiblePerfectGas + sutherland` transport with
+`sensibleInternalEnergy/e`. This gives low-Mach `rho(T)` and `mu(T)` without
+the full pressure-driven compressibility of `perfectGas`.
+
+### Solver status
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run007a` |
+| Final time | 2.0 s |
+| Final checkpoint | `processor*/2` |
+| Final ClockTime | `9932 s` |
+| Termination | `End` / `Finalising parallel run` |
+
+### Result
+
+Matched early window `t = 0.5..2 s`:
+
+| Run | model | Cd_mean | Cl_rms | St | T_out | Q_total | Nu_EB |
+|---|---|---:|---:|---:|---:|---:|---:|
+| run004b | Boussinesq_const | 3.361209 | 0.176698 | 0.15453 | 305.615 +/- 0.974 | 1.4644 +/- 0.0984 | 7.7331 +/- 0.6558 |
+| run007a | incompressiblePerfectGas_sutherland | 3.473619 | 0.178979 | 0.15407 | 308.934 +/- 0.990 | 1.8534 +/- 0.1107 | 10.2249 +/- 0.7272 |
+
+Differences for `run007a` versus matched `run004b`:
+
+| Quantity | Difference |
+|---|---:|
+| Cd_mean | +3.34% |
+| Cl_rms | +1.29% |
+| St | -0.30% |
+| T_out | +3.319 K |
+| Q_total | +26.57% |
+| Nu_EB | +32.22% |
+
+### Decision
+
+The shedding regime is essentially unchanged, but the thermal metrics are not a
+small correction. Because the current window is short and still includes early
+transient behavior, extend the variable-property case to `t = 6 s` before using
+the `Nu` shift as a final production conclusion.
+
+---
+
+## 2026-05-08 | V4b_3D | run007a variable-property extension launched
+
+### Work package
+
+Continue the accepted variable-property case from `t = 2 s` to `t = 6 s` after
+the short-window analysis showed a large `Nu_EB` sensitivity.
+
+### Launch
+
+Used a continuation helper that does not rerun `decomposePar`; it starts from
+the existing decomposed `processor*/2` checkpoint.
+
+```bash
+NPROCS=20 END_TIME=6 TAG=20260508_np20_varProps_to6 bash /mnt/c/Users/wisie_101/Documents/GitHub/openFoam_MIN9/VV_cases/V4b_3D/_code/continue_run007a_bg.sh
+```
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run007a` |
+| Parent MPI PID | 797 |
+| MPI ranks | 20 |
+| Start mode | `latestTime` from `processor*/2` |
+| Target endTime | 6 s |
+| Solver log | `logs/log.foamRun_parallel.20260508_np20_varProps_to6` |
+
+### Initial status
+
+- solver resumed from `Time = 2.0007 s`, not from zero
+- all 20 worker processes were active
+- `Co_max` stayed near `0.799`
+- residuals and continuity errors were finite
+- `forceCoeffs` started appending post-`t=2` samples
+
+### Next step
+
+After completion, reconstruct `t = 3..6 s` and rerun the variable-property
+comparison against `run004b` over the final production window.
+
+---
+
+## 2026-05-08 | V4b_3D | run007b constant-property Cp smoke test prepared
+
+### Work package
+
+Prepared a short constant-property `Cp`/enthalpy smoke test after the heat
+balance check showed that the earlier constant-property `run004b` thermal
+model closes with `Cv=718`, not with the open-flow `m_dot*Cp*dT` balance.
+
+### Purpose
+
+Isolate whether the large `Nu` jump in the variable-property check is mostly a
+property-variation effect, or partly a correction from the old `Cv`-based
+internal-energy formulation to a physically expected `Cp`-based open-flow heat
+balance.
+
+### Actions taken
+
+- added `VV_cases/V4b_3D/_code/prepare_run007b_constCp_short.sh`
+- added `VV_cases/V4b_3D/_code/start_run007b_bg.sh`
+- added `VV_cases/V4b_3D/results/run007b/summary.md`
+- generated WSL case:
+  - `/home/hexmachina/of_runs/V4b_3D_run007b`
+- copied the accepted `run004b` mesh and domain
+- changed only the constant-property thermal model:
+  - `eConst + sensibleInternalEnergy + Cv=718`
+  - to `hConst + sensibleEnthalpy + Cp=1005`
+- kept:
+  - `Boussinesq`
+  - `mu = 1.827e-05 Pa s`
+  - `Pr = 0.713`
+  - `maxCo = 0.8`
+  - `endTime = 2 s`
+- added `div(phi,h)` and changed solver/probe/residual fields from `e` to `h`
+- ran normal `checkMesh`
+
+### Mesh/status
+
+Normal `checkMesh`: `Mesh OK`.
+
+`run007b` is prepared but not launched, because `run007a` is currently using
+the 20 MPI ranks for the `t=2..6 s` variable-property continuation.
+
+### Launch after run007a
+
+```bash
+NPROCS=20 TAG=20260508_np20_constCp_short bash /mnt/c/Users/wisie_101/Documents/GitHub/openFoam_MIN9/VV_cases/V4b_3D/_code/start_run007b_bg.sh
+```
+
+### Planned comparison
+
+Compare `run007b` against `run004b` and `run007a` over the matched early
+window. Key checks:
+
+- force/shedding: `Cd_mean`, `Cl_rms`, `St`
+- air-side heat pickup: `m_dot*Cp*(T_out - T_in)`
+- wall-side heat input: integrated `wallHeatFlux` over `hot_tube`,
+  `hot_fin_z_min`, and `hot_fin_z_max`
+- `Nu_EB` with consistent `Cp` and `k = mu*Cp/Pr`
+
+If `run007b` closes the wall and air heat fluxes while staying near the old
+force regime, use it as the constant-property thermal baseline before making
+final claims about the additional effect of variable `rho(T)` and `mu(T)`.
+
+---
+
+## 2026-05-08 | V4b_3D | run007a interrupted; run007c Cp-capacity smoke test launched
+
+### Work package
+
+Interrupted the active `run007a` variable-property continuation and launched a
+short constant-property heat-capacity smoke test to quickly isolate the
+`Cv=718` versus `Cp=1005` effect.
+
+### Actions taken
+
+- stopped active `run007a` continuation:
+  - case: `/home/hexmachina/of_runs/V4b_3D_run007a`
+  - parent MPI PID: `797`
+  - last observed log time before stop: about `t = 2.35 s`
+- attempted to launch `run007b`:
+  - `hConst + sensibleEnthalpy + Boussinesq`
+  - `Cp = 1005`
+- `run007b` failed during startup with:
+  - `FOAM FATAL ERROR: Maximum number of iterations exceeded`
+  - failing path: thermophysical inversion from enthalpy to temperature
+  - conclusion: `hConst/sensibleEnthalpy + Boussinesq` is not robust in the
+    current OF13 setup and should not be used as the quick smoke-test path
+- added fallback diagnostic case:
+  - `VV_cases/V4b_3D/_code/prepare_run007c_constCp_as_eConst_short.sh`
+  - `VV_cases/V4b_3D/_code/start_run007c_bg.sh`
+  - `VV_cases/V4b_3D/results/run007c/summary.md`
+- generated WSL case:
+  - `/home/hexmachina/of_runs/V4b_3D_run007c`
+- launched `run007c` on 20 MPI ranks:
+
+```bash
+NPROCS=20 TAG=20260508_np20_constCpAsCv_short bash /mnt/c/Users/wisie_101/Documents/GitHub/openFoam_MIN9/VV_cases/V4b_3D/_code/start_run007c_bg.sh
+```
+
+### run007c setup
+
+`run007c` keeps the stable `run004b` model family and changes only the
+constant heat-capacity coefficient:
+
+| Item | run004b | run007c |
+|---|---|---|
+| thermo | `eConst` | `eConst` |
+| energy | `sensibleInternalEnergy` | `sensibleInternalEnergy` |
+| equation of state | `Boussinesq` | `Boussinesq` |
+| capacity coefficient | `Cv = 718` | `Cv = 1005` |
+| interpretation | old baseline | Cp-scale diagnostic |
+
+This is a diagnostic isolation test, not the final production physics model.
+
+### Initial status
+
+- solver entered the time loop
+- 20 MPI workers active
+- `Co_max` about `0.78`
+- solving `e` normally
+- no startup crash observed
+- target `endTime = 2 s`
+
+### Next step
+
+After `run007c` reaches `t=2 s`, compare against `run004b` and the short
+`run007a` window using:
+
+- force/shedding: `Cd_mean`, `Cl_rms`, `St`
+- air-side heat pickup with capacity `1005`
+- integrated `wallHeatFlux` over hot patches
+- `Nu_EB` with `k = mu*1005/Pr`
+
+If `run007c` lands close to the variable-property `Nu` level, then most of the
+previous jump came from using `1005` instead of `718`. If it remains much
+closer to `run004b`, then variable `rho(T)`/`mu(T)` is the larger driver.
+
+---
+
+## 2026-05-08 | V4b_3D | run007c t=0.2 early thermal quick-look
+
+### Work package
+
+Computed a very early `t=0.2 s` smoke comparison between `run004b` and the
+active `run007c` case.
+
+### Actions taken
+
+- reconstructed `t=0.2 s` for `run004b` and `run007c`
+- computed `wallHeatFlux` at `t=0.2 s` using `foamPostProcess -solver fluid`
+- added:
+  - `VV_cases/V4b_3D/results/run007c/compare_run004b_run007c_t02.py`
+  - `VV_cases/V4b_3D/results/run007c/run004b_vs_run007c_t02_quick_compare.csv`
+  - `VV_cases/V4b_3D/results/run007c/run004b_vs_run007c_t02_quick_compare.json`
+  - `VV_cases/V4b_3D/results/run007c/run004b_vs_run007c_t02_quick_compare.md`
+
+### Result
+
+Force window `t=0.1..0.2 s`, thermal instant `t=0.2 s`.
+
+| Run | capacity | Cd | Cl_rms | Q_wall hot total | Nu_wall/k_case |
+|---|---:|---:|---:|---:|---:|
+| run004b | 718 | 3.3518 | 0.1407 | 1.0907 W | 7.0019 |
+| run007c | 1005 | 3.3518 | 0.1407 | 1.5267 W | 7.0019 |
+
+### Interpretation
+
+At `t=0.2 s`, the outlet air is still essentially at inlet temperature, so the
+air-side `m_dot*C*dT` balance is not yet meaningful. The useful signal is the
+wall-side heat flux: switching the case capacity/conductivity scale from `718`
+to `1005` increases absolute wall heat input by about `40%`, almost exactly the
+`1005/718` ratio. But when Nu is normalized by the matching case conductivity
+`k = mu*C/Pr`, the wall-side Nu is unchanged.
+
+This supports the hypothesis that the previously alarming Nu jump is strongly
+affected by inconsistent capacity/conductivity normalization. Continue
+`run007c` toward `t=2 s` to see whether the same conclusion holds once outlet
+temperature and air-side heat pickup become meaningful.
+
+---
+
+## 2026-05-08 | V4b_3D | run007b vs run007c same-window Nu check
+
+### Work package
+
+Checked whether `run007b` and `run007c` can be compared for Nu over the same
+early window used by the `run004b` vs `run007c` quick-look.
+
+### Result
+
+No valid same-window `Nu` comparison exists for `t=0.2 s`:
+
+| Run | status | available thermal time | force samples |
+|---|---|---:|---:|
+| run007b | failed during startup | only `0` | 1 sample at `t=0` |
+| run007c | running normally | `0`, `0.2` | many samples |
+
+The only common instant is the initial condition `t=0`. It gives the same
+initial-condition wall heat flux in both cases:
+
+| Run | Q_wall hot total at t=0 | Nu_wall using `k=mu*1005/Pr` |
+|---|---:|---:|
+| run007b | 138.372 W | 634.63 |
+| run007c | 138.372 W | 634.63 |
+
+This is not a physical heat-transfer result; it is the artificial initial wall
+gradient before the thermal field evolves.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run007c/run007b_vs_run007c_same_window_nu_status.md`
+- `VV_cases/V4b_3D/results/run007c/run007b_vs_run007c_same_window_nu_status.json`
+
+### Decision
+
+Do not use `run007b` for Nu comparison. Treat it only as evidence that
+`hConst/sensibleEnthalpy + Boussinesq` is not viable in this setup. Continue
+using `run007c` as the valid constant-property `1005` diagnostic.
+
+---
+
+## 2026-05-08 | V4b_3D | run007a vs run007c t=0.2 Nu quick-look
+
+### Work package
+
+Computed the intended same-time comparison between the variable-property
+`run007a` and the constant-property `1005` fallback `run007c`.
+
+### Actions taken
+
+- reconstructed `run007a` at `t=0.2 s`
+- computed `run007a` `wallHeatFlux` at `t=0.2 s` using
+  `foamPostProcess -solver fluid`
+- added:
+  - `VV_cases/V4b_3D/results/run007c/compare_run007a_run007c_t02.py`
+  - `VV_cases/V4b_3D/results/run007c/run007a_vs_run007c_t02_quick_compare.csv`
+  - `VV_cases/V4b_3D/results/run007c/run007a_vs_run007c_t02_quick_compare.json`
+  - `VV_cases/V4b_3D/results/run007c/run007a_vs_run007c_t02_quick_compare.md`
+
+### Result
+
+Force window `t=0.1..0.2 s`, thermal instant `t=0.2 s`. Wall-side Nu uses the
+same reference conductivity for both cases:
+`k_ref = mu_ref*Cp_ref/Pr_ref = 0.02575224 W/(m K)`.
+
+| Run | model | Cd | Cl_rms | Q_wall hot total | Nu_wall/k_ref |
+|---|---|---:|---:|---:|---:|
+| run007a | variable props | 3.4687 | 0.1276 | 1.3702 W | 6.2841 |
+| run007c | constant capacity `1005` | 3.3518 | 0.1407 | 1.5267 W | 7.0019 |
+
+### Interpretation
+
+At `t=0.2 s`, the variable-property case is not producing a larger wall-side
+Nu than the constant-property `1005` fallback. `run007c` is about `11.4%`
+higher in wall heat flux and wall-side Nu than `run007a` when both use the
+same reference conductivity. This strengthens the suspicion that the previously
+large apparent `Nu` shift was mainly a consistency/normalization issue around
+`Cv`, `Cp`, and `k`, not a straightforward variable-property amplification.
+
+---
+
+## 2026-05-08 | V4b_3D | partial run004b vs run007a vs run007c comparison
+
+### Work package
+
+Computed a partial early/transient comparison while `run007c` is still running,
+using the latest common reliable checkpoints.
+
+### Window
+
+- force window: `t = 0.5..1.3 s`
+- thermal checkpoints: `t = 0.5, 1.0, 1.3 s`
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run007c/compare_run004b_run007a_run007c_partial.py`
+- `VV_cases/V4b_3D/results/run007c/run004b_run007a_run007c_partial_compare.csv`
+- `VV_cases/V4b_3D/results/run007c/run004b_run007a_run007c_partial_compare.json`
+- `VV_cases/V4b_3D/results/run007c/run004b_run007a_run007c_partial_compare.md`
+
+### Results
+
+| Run | model | Cd | Cl_rms | Q_wall W | Q_air case W | Nu_wall case-k | Nu_wall ref-k |
+|---|---|---:|---:|---:|---:|---:|---:|
+| run004b | baseline `Cv=718` | 3.3594 | 0.1297 | 1.0581 | 0.9700 | 7.7243 | 5.5185 |
+| run007a | variable props | 3.4722 | 0.1436 | 1.3389 | 1.7396 | 7.2813 | 7.2813 |
+| run007c | constant capacity `1005` | 3.3594 | 0.1297 | 1.4810 | 1.3577 | 7.7243 | 7.7243 |
+
+Key differences:
+
+| Comparison | Q_wall | Nu_wall_ref_k | Nu_wall_case_k | Cd |
+|---|---:|---:|---:|---:|
+| run007a vs run004b | +26.54% | +31.94% | -5.73% | +3.36% |
+| run007c vs run004b | +39.97% | +39.97% | +0.00% | +0.00% |
+| run007c vs run007a | +10.61% | +6.08% | +6.08% | -3.25% |
+
+### Interpretation
+
+The partial result strongly supports the normalization hypothesis. With a
+common reference conductivity, both `run007a` and `run007c` sit above old
+`run004b`. But the constant-property `1005` fallback is higher than the
+variable-property case, so the wall-side Nu increase is not primarily driven by
+variable `rho(T)`/`mu(T)`.
+
+The most important consistency result is that `run007c`, when normalized with
+its own matching conductivity `k = mu*1005/Pr`, gives the same wall-side Nu as
+old `run004b` normalized with `k = mu*718/Pr`. This means the earlier large Nu
+jump can be produced simply by changing the heat-capacity/conductivity scale
+without changing the flow regime.
+
+The air-side heat balance is still early-transient and should be treated with
+care until the full `t=0.5..2.0 s` window is available.
+
+---
+
+## 2026-05-08 | V4b_3D | run007c completed; final 0.5..2.0 smoke comparison
+
+### Work package
+
+Completed the constant-property `1005` diagnostic smoke test and compared it
+against the old constant-property baseline and the variable-property case.
+
+### Solver status
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run007c` |
+| Model | `eConst + Boussinesq + sensibleInternalEnergy`, capacity coefficient `1005` |
+| Final time | `2.0 s` |
+| Final checkpoint | `processor*/2` |
+| Final ClockTime | `10209 s` |
+| Termination | `End` / `Finalising parallel run` |
+
+### Actions taken
+
+- reconstructed `run007c` checkpoints for `t = 0.5, 1.0, 1.3, 1.5, 1.7, 2.0 s`
+- ensured matching reconstructed checkpoints exist for `run004b` and `run007a`
+- computed `wallHeatFlux` for all three cases over the same thermal times
+- generated final comparison:
+  - `VV_cases/V4b_3D/results/run007c/run004b_run007a_run007c_final_0p5_2_compare.csv`
+  - `VV_cases/V4b_3D/results/run007c/run004b_run007a_run007c_final_0p5_2_compare.json`
+  - `VV_cases/V4b_3D/results/run007c/run004b_run007a_run007c_final_0p5_2_compare.md`
+
+### Results
+
+Force window `t = 0.5..2.0 s`; thermal checkpoints
+`t = 0.5, 1.0, 1.3, 1.5, 1.7, 2.0 s`.
+
+| Run | model | Cd | Cl_rms | Q_wall W | Q_air case W | Nu_wall case-k | Nu_wall ref-k | wall-air case diff |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| run004b | baseline `Cv=718` | 3.3612 | 0.1767 | 1.0591 | 1.0445 | 7.8217 | 5.5881 | +1.4% |
+| run007a | variable props | 3.4736 | 0.1790 | 1.3396 | 1.8450 | 7.3786 | 7.3786 | -27.4% |
+| run007c | constant capacity `1005` | 3.3612 | 0.1767 | 1.4824 | 1.4621 | 7.8217 | 7.8217 | +1.4% |
+
+### Interpretation
+
+`run007c` is the clean diagnostic: it keeps the old stable `run004b` flow
+model and changes only the heat-capacity/conductivity scale from `718` to
+`1005`. It gives essentially identical force metrics and identical wall-side
+Nu when each case is normalized with its own matching conductivity.
+
+The absolute wall heat flux rises by `~40%`, which follows the `1005/718`
+scale. This means the earlier large apparent Nu increase is primarily a
+`Cv/Cp/k` consistency issue, not evidence that variable properties alone
+strongly increase heat transfer.
+
+`run007a` remains useful as a variable-property experiment, but its short-window
+energy balance is not closed: air-side `m_dot*Cp*dT` is about `27%` larger than
+the integrated wall heat flux. Do not treat the `run007a` air-side Nu as final
+until the variable-property energy balance is made internally consistent.
+
+---
+
+## 2026-05-08 | V4b_3D | run008 production specification prepared
+
+### Work package
+
+Prepared the production-run specification before launching any long solver run.
+
+### Decision
+
+`run008` should use the `run007c` constant-property `1005` setup as the
+production baseline:
+
+- accepted geometry/domain from `run004b`: `Lin=2D`, `Lout=8D`
+- corrected BL mesh, `407,440` cells
+- `eConst + Boussinesq + sensibleInternalEnergy`
+- capacity coefficient `1005`
+- `mu = 1.827e-05`, `Pr = 0.713`
+- `maxCo = 0.8`
+
+Do not use `run007a` as production physics yet because its short-window
+air-side energy balance did not close.
+
+### Specification contents
+
+Specification saved in:
+
+- `VV_cases/V4b_3D/results/run008/production_run_spec.md`
+- `VV_cases/V4b_3D/results/run008/summary.md`
+
+The spec defines:
+
+- `t_end = 10 s`
+- transient rejection: `t < 2 s`
+- useful window: `t = 2..10 s`, about `8 s` or `~26*T_shed`
+- full 3D checkpoint cadence: about `0.08 s` (`T_shed/4`)
+- midspan/POD slice cadence: `0.02 s`
+- probe cadence: fixed `0.005 s` / `200 Hz`
+- surface sampling cadence: `0.005 s`
+- tube output: `q''(theta,z,t)` and `Nu(theta,z,t)`
+- fin output: local/binned `Nu_local(x,t)`
+- force output contract for `forceCoeffs.dat` and raw `forces.dat`, including
+  pressure/viscous decomposition and explicit component totals
+
+### Launch status
+
+No production run was launched in this step. Next step is to review/accept the
+spec, then implement the `run008` case and launch helper.
+## 2026-05-08 20:10:33 +02:00 | V4b_3D | run008 production run launched
+
+### Work package
+
+Launched the production `run008` after preparing the one-page production
+specification and accepting the `run007c` constant-property Cp-capacity setup.
+
+### Setup
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run008` |
+| Parent setup | `run007c` |
+| Model | `eConst + Boussinesq + sensibleInternalEnergy` |
+| Capacity coefficient | `1005` |
+| Geometry | `Lin=2D`, `Lout=8D` |
+| Mesh cells | `407,440` |
+| Target endTime | `10 s` |
+| Useful window | `t = 2..10 s` |
+| MPI ranks | `20` |
+| Launch tag | `20260508_np20_production` |
+| Parent MPI PID | `1202` |
+| Solver log | `logs/log.foamRun_parallel.20260508_np20_production` |
+
+### Sampling
+
+- full 3D fields every `0.08 s`
+- midspan `z=0` slice every `0.02 s`
+- `forceCoeffs`, raw `forces`, wake probes, `wallHeatFlux`, and hot-surface
+  sampling every `0.005 s`
+- hot-surface outputs include `hot_tube_surface` and `hot_fin_surface`
+
+### Initial status
+
+- normal `checkMesh`: `Mesh OK`
+- solver entered the time loop
+- 20 `foamRun` workers active
+- initial `Co_max` stayed below `0.8`
+- residuals and continuity errors finite
+- first `0.005 s` surface/probe/force post-processing directories were created
+- no startup crash observed
+
+### Monitor
+
+```bash
+pgrep -af foamRun
+tail -n 120 /home/hexmachina/of_runs/V4b_3D_run008/logs/log.foamRun_parallel.20260508_np20_production
+```
+
+### Stop safely
+
+```bash
+kill "$(cat /home/hexmachina/of_runs/V4b_3D_run008/logs/solver.20260508_np20_production.pid)"
+```
+
+---
+## 2026-05-09 12:43:48 +02:00 | V4b_3D | run008 production run completed
+
+### Work package
+
+Checked the overnight production `run008` status.
+
+### Solver status
+
+`run008` completed cleanly to `t = 10 s`.
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run008` |
+| Parent setup | `run007c` |
+| MPI ranks | `20` |
+| Solver log | `logs/log.foamRun_parallel.20260508_np20_production` |
+| Final checkpoint | `processor*/10` |
+| Final ClockTime | `50909 s` |
+| Termination | `End` / `Finalising parallel run` |
+| Case size | about `17 GB` |
+
+### Output counts
+
+| Output | Count / size |
+|---|---:|
+| `hot_tube_surface` | `2001` files / about `1.4 GB` |
+| `hot_fin_surface` | `4002` files / about `532 MB` |
+| `midspan_z0` | `501` files / about `645 MB` |
+| `probes_wake` | about `2.4 MB` |
+| `forceCoeffs` | about `196 KB` |
+| `forces_raw` | about `432 KB` |
+
+### Quick status
+
+- no active `mpirun` or `foamRun` process remains
+- all 20 `processor*/10` checkpoints are present
+- no fatal solver error was found in the log
+- final logged instantaneous force coefficients at `t = 10 s`:
+  - `Cd = 3.3516`
+  - `Cl = 2.3625`
+  - `Cm = 0.00979`
+
+### Next step
+
+Reconstruct/post-process the production window `t = 2..10 s`, then compute:
+
+- final `Cd_mean`, `Cl_rms`, `St`
+- EB and wall-flux heat balance
+- `Nu_EB`, `Nu_wall`, and wall-air closure
+- local tube/fin `q''` and `Nu` maps for coherence/transfer-entropy work
+
+---
+## 2026-05-09 | V4b_3D | run008 full production analysis completed
+
+### Work package
+
+Completed the production-window analysis for `run008`, including force
+statistics, shedding frequency, air-side and wall-side heat balance, local
+surface Nu maps, POD, EPOD-style Cl-correlated midspan fields, and Cl-Nu
+coherence.
+
+### Analysis setup
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run008` |
+| Window | `t = 2..10 s` |
+| Analysis script | `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_production.py` |
+| Outlet reconstruction | `T` and `phi`, every `0.08 s` over `2..10 s` |
+| POD input | midspan `z=0`, `Ux`, `Uy`, scaled `T`, `201` snapshots |
+| Surface maps | tube `Nu(theta,z)`, fin `Nu_local(x)` |
+
+### Global results
+
+| Quantity | Value |
+|---|---:|
+| `Cd_mean` | `3.361014` |
+| `Cl_mean` | `2.515349` |
+| `Cl_rms` | `0.176441` |
+| `f_shed` | `3.247970 Hz` |
+| `St` | `0.154261` |
+| `T_out` area mean | `305.667871 K` |
+| `T_out` mass mean | `305.696150 K` |
+| `Q_air = m_dot Cp (T_out - T_in)` | `1.470790 W` |
+| `Q_wall` from `wallHeatFlux` | `1.480659 W` |
+| wall-air closure | `+0.706%` |
+| `Nu_EB` | `7.770004` |
+| `Nu_wall` | `7.816521` |
+
+The production result is consistent with the shorter accepted checks:
+`Cd_mean`, `St`, and `Nu_EB` remain close to the `run004b/run007c` values, and
+the wall/air heat balance closes to within about one percent.
+
+### POD / EPOD
+
+| Quantity | Value |
+|---|---:|
+| POD snapshots | `201` |
+| Midspan points | `13,524` |
+| Mode 1 energy | `40.403%` |
+| Mode 2 energy | `39.887%` |
+| Mode 3 energy | `4.202%` |
+| Modes 1..5 energy | `90.039%` |
+| Modes 1..10 energy | `93.935%` |
+| `corr(a1, Cl)` | `-0.900` |
+| `corr(a2, Cl)` | `+0.411` |
+| `corr(a1, Q_wall)` | `-0.182` |
+| `corr(a2, Q_wall)` | `+0.215` |
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/run008_production_analysis.md`
+- `VV_cases/V4b_3D/results/run008/data/run008_production_analysis.json`
+- `VV_cases/V4b_3D/results/run008/data/run008_force_stats.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_thermal_stats.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_pod_epod_stats.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_force_timeseries_window.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_heat_balance_timeseries_window.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_outlet_thermal_samples.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_tube_nu_theta_z_map.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_fin_nu_x_profile.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_pod_epod_arrays.npz`
+- `VV_cases/V4b_3D/results/run008/data/run008_surface_nu_maps.npz`
+- `VV_cases/V4b_3D/results/run008/figures/run008_force_traces_psd.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_heat_balance_timeseries.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_nu_timeseries.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_pod_energy.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_pod_epod_midspan_maps.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_cl_nu_coherence.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_tube_nu_theta_z_map.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_fin_nu_x_profile.png`
+
+### Decision
+
+`run008` is the current production reference for `V4b_3D` Re=200 on the
+accepted `Lin=2D`, `Lout=8D` domain and `run007c` thermal-capacity setup. The
+dataset is suitable for final force/heat-transfer statistics and for the
+planned Cl-Nu coherence / EPOD novelty analysis.
+
+---
+## 2026-05-09 | V4b_3D | run008 coupling deep dive completed
+
+### Work package
+
+Executed the three high-value follow-up analyses proposed after the initial
+production processing:
+
+1. phase-averaged local `Nu` using `Cl(t)` as the phase reference,
+2. `Cl <-> Nu` coherence maps,
+3. pressure/viscous force decomposition from raw `forces.dat`.
+
+### Analysis setup
+
+| Item | Value |
+|---|---|
+| Case | `/home/hexmachina/of_runs/V4b_3D_run008` |
+| Window | `t = 2..10 s` |
+| Script | `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_coupling_deep_dive.py` |
+| Phase reference | band-passed `Cl(t)`, phase zero aligned with positive `Cl` maxima |
+| Tube bins | `72 theta x 36 z x 16 phase` |
+| Fin bins | `120 x x 16 phase` |
+| Surface input | `1601` tube snapshots and `1601` fin time directories |
+
+### Pressure / viscous decomposition
+
+| Quantity | Value |
+|---|---:|
+| `Cd_pressure_mean` | `2.903582` |
+| `Cd_viscous_mean` | `0.457432` |
+| pressure drag fraction | `86.39%` |
+| viscous drag fraction | `13.61%` |
+| `Cl_pressure_mean` | `2.514626` |
+| `Cl_viscous_mean` | `0.000723` |
+| `Cl_pressure_rms` | `0.163772` |
+| `Cl_viscous_rms` | `0.014542` |
+
+The mean lift and its oscillatory component are overwhelmingly pressure-driven;
+viscous lift is small in mean and RMS. Drag is also pressure-dominated, with a
+non-negligible viscous contribution of about `14%`.
+
+### Phase-averaged Nu
+
+| Quantity | Value |
+|---|---:|
+| tube global phase modulation | `0.147%` |
+| tube mean local phase modulation | `1.871%` |
+| tube max local phase modulation | `9.656%` |
+| fin global phase modulation | `0.428%` |
+| fin mean local phase modulation | `0.507%` |
+| fin max local phase modulation | `3.531%` |
+
+The spatially integrated `Nu` is nearly phase-steady, but local `Nu` is not:
+the tube has localized regions with almost `10%` phase modulation. This means
+global `Nu_EB/Nu_wall` hides significant local unsteadiness.
+
+### Cl-Nu coherence
+
+| Quantity | Value |
+|---|---:|
+| max tube coherence at `f_shed` | `0.999519` |
+| mean tube coherence at `f_shed` | `0.654792` |
+| max fin coherence at `f_shed` | `0.906261` |
+| mean fin coherence at `f_shed` | `0.690615` |
+
+The `Cl <-> Nu` connection is strong at the shedding frequency, especially in
+localized tube regions and near the upstream part of the fin response. This is
+the strongest current evidence for the planned `Cl`-to-local-heat-transfer
+coupling story.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/run008_coupling_deep_analysis.md`
+- `VV_cases/V4b_3D/results/run008/data/run008_coupling_deep_analysis.json`
+- `VV_cases/V4b_3D/results/run008/data/run008_coupling_deep_stats.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_coupling_deep_arrays.npz`
+- `VV_cases/V4b_3D/results/run008/data/run008_force_pressure_viscous_decomp.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_force_pressure_viscous_timeseries.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_tube_cl_nu_coherence_map.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_fin_cl_nu_coherence_x.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_tube_phase_nu_theta_z_phi_summary.csv`
+- `VV_cases/V4b_3D/results/run008/data/run008_fin_phase_nu_x_phi_summary.csv`
+- `VV_cases/V4b_3D/results/run008/figures/run008_force_pressure_viscous_decomp.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_force_pressure_viscous_psd.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_tube_phase_nu_theta_phi.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_tube_phase_nu_selected_maps.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_fin_phase_nu_x_phi.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_tube_cl_nu_coherence_phase_map.png`
+- `VV_cases/V4b_3D/results/run008/figures/run008_fin_cl_nu_coherence_x.png`
+
+### Decision
+
+These three analyses should be treated as the first mechanistic layer on top
+of the production statistics. The next optional layer is either SPOD/DMD on
+the midspan fields or a guarded transfer-entropy/surrogate test using the
+already binned `Nu` signals.
+
+---
+## 2026-05-09 | V4b_3D | run008 analysis reset and foundation audit rebuilt
+
+### Work package
+
+Reset the earlier loose `run008` analysis outputs and rebuilt only the first
+planned layer: data completeness, cadence audit, effective record length,
+cycle-block bootstrap uncertainty, and window sensitivity.
+
+### Cleanup
+
+- cleared generated files from:
+  - `VV_cases/V4b_3D/results/run008/data`
+  - `VV_cases/V4b_3D/results/run008/figures`
+  - `VV_cases/V4b_3D/results/run008/scripts`
+- preserved:
+  - `summary.md`
+  - `production_run_spec.md`
+  - raw WSL case data in `/home/hexmachina/of_runs/V4b_3D_run008`
+- added the new audit script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_audit_uncertainty.py`
+
+### Sampling completeness
+
+| Signal | Target dt | Samples | Missing | Regular |
+|---|---:|---:|---:|---|
+| `forceCoeffs` | `0.005 s` | `2001` | `0` | yes |
+| `forces_raw` | `0.005 s` | `2001` | `0` | yes |
+| `wallHeatFlux` | `0.005 s` | `2001` | `0` | yes |
+| `hot_tube_surface` | `0.005 s` | `2001` | `0` | yes |
+| `hot_fin_surface` | `0.005 s` | `2001` | `0` | yes |
+| `midspan_z0` | `0.020 s` | `501` | `0` | yes |
+| outlet `T/phi` | `0.080 s` | `101` | `0` | yes |
+
+### Primary window result with cycle-block bootstrap uncertainty
+
+Window `t = 2..10 s`:
+
+| Quantity | Value |
+|---|---:|
+| effective shedding cycles | `25.98` |
+| force samples | `1601` |
+| outlet samples | `101` |
+| wall samples | `1601` |
+| `Cd_mean` | `3.361014 +/- 0.000772` |
+| `Cl_rms` | `0.176441 +/- 0.011097` |
+| `St` | `0.154261 +/- 0.009574` |
+| `Nu_EB` | `7.770004 +/- 0.091573` |
+| `Nu_wall` | `7.816521 +/- 0.012286` |
+| wall-air closure | `+0.706 +/- 1.075%` |
+
+### Window sensitivity
+
+| Window | cycles | Cd_mean | Cl_rms | St | Nu_EB | Nu_wall | closure |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `2..10` | `25.98` | `3.361014` | `0.176441` | `0.154261` | `7.770004` | `7.816521` | `+0.706%` |
+| `3..10` | `22.98` | `3.360512` | `0.169254` | `0.155942` | `7.806401` | `7.819670` | `+0.211%` |
+| `4..10` | `19.98` | `3.359978` | `0.161001` | `0.158184` | `7.789356` | `7.813261` | `+0.416%` |
+| `2..6` | `11.99` | `3.362291` | `0.193722` | `0.142306` | `7.768459` | `7.823033` | `+0.946%` |
+| `6..10` | `12.98` | `3.359746` | `0.157070` | `0.154165` | `7.785278` | `7.810126` | `+0.457%` |
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/001/run008_audit_uncertainty.md`
+- `VV_cases/V4b_3D/results/run008/data/001/run008_audit_uncertainty.json`
+- `VV_cases/V4b_3D/results/run008/data/001/run008_audit_sampling_completeness.csv`
+- `VV_cases/V4b_3D/results/run008/data/001/run008_audit_window_uncertainty.csv`
+- `VV_cases/V4b_3D/results/run008/figures/001/run008_audit_sampling_completeness_cadence.png`
+- `VV_cases/V4b_3D/results/run008/figures/001/run008_audit_effective_record_length.png`
+- `VV_cases/V4b_3D/results/run008/figures/001/run008_audit_block_bootstrap_uncertainty.png`
+- `VV_cases/V4b_3D/results/run008/figures/001/run008_audit_window_sensitivity.png`
+
+### Decision
+
+This audit is now the only active analysis layer for `run008`. Higher-order
+analyses should be rebuilt one at a time after reviewing these uncertainty and
+window-sensitivity results.
+
+---
+
+## 2026-05-09 | V4b_3D | run008 aerodynamic layer 002 rebuilt
+
+### Work package
+
+Rebuilt the second `run008` analysis layer after reorganizing results into
+numbered analysis stages.
+
+### Actions taken
+
+- moved audit figures into:
+  - `VV_cases/V4b_3D/results/run008/figures/001`
+- moved audit data into:
+  - `VV_cases/V4b_3D/results/run008/data/001`
+- added aerodynamic analysis script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_aerodynamics.py`
+- generated stage-002 outputs in:
+  - `VV_cases/V4b_3D/results/run008/data/002`
+  - `VV_cases/V4b_3D/results/run008/figures/002`
+
+### Results
+
+Both `forceCoeffs` and `forces_raw` use `patches (hot_tube)`, so the raw
+pressure/viscous decomposition is directly comparable to the force
+coefficients. After using the actual `rhoInf = 1.205`, the raw total and
+`forceCoeffs` match to roundoff.
+
+Primary window: `t = 2..10 s`.
+
+| Quantity | Value |
+|---|---:|
+| `f_shed` from every-second `Cl` peak | `3.2787 Hz` |
+| `St` | `0.15572` |
+| adjacent `Cl` peak component | `6.5574 Hz` |
+| `Cd_p_mean` | `2.9036` |
+| `Cd_v_mean` | `0.4574` |
+| `Cl_p_rms` | `0.1638` |
+| `Cl_v_rms` | `0.0145` |
+
+The PSD is dominated by the adjacent-peak component near `2*f_shed`; the lower
+`f_shed` component is present but much weaker in `Cl`. Mean and fluctuating
+lift/drag are pressure-dominated, while viscosity contributes a visible steady
+drag offset and a smaller phase-shifted lift fluctuation.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/002/run008_002_aerodynamics.md`
+- `VV_cases/V4b_3D/results/run008/data/002/run008_002_aerodynamics.json`
+- `VV_cases/V4b_3D/results/run008/data/002/run008_002_pressure_viscous_stats.csv`
+- `VV_cases/V4b_3D/results/run008/data/002/run008_002_harmonic_peaks.csv`
+- `VV_cases/V4b_3D/results/run008/data/002/run008_002_side_peaks.csv`
+- `VV_cases/V4b_3D/results/run008/data/002/run008_002_phase_conditioned_cycle.csv`
+- `VV_cases/V4b_3D/results/run008/data/002/run008_002_hilbert_phase.npz`
+- `VV_cases/V4b_3D/results/run008/figures/002/run008_002_force_pressure_viscous_decomposition.png`
+- `VV_cases/V4b_3D/results/run008/figures/002/run008_002_force_psd_harmonics.png`
+- `VV_cases/V4b_3D/results/run008/figures/002/run008_002_phase_portraits_hilbert.png`
+- `VV_cases/V4b_3D/results/run008/figures/002/run008_002_phase_conditioned_cycle.png`
+
+---
+
+## 2026-05-09 | V4b_3D | run008 heat-balance layer 003 rebuilt
+
+### Work package
+
+Rebuilt the third `run008` analysis layer: stronger heat-balance closure with
+separate wall patch contributions, instantaneous closure, lag diagnostics, and
+wall-vs-EB Nusselt comparison.
+
+### Actions taken
+
+- added script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_heat_balance.py`
+- generated stage-003 outputs in:
+  - `VV_cases/V4b_3D/results/run008/data/003`
+  - `VV_cases/V4b_3D/results/run008/figures/003`
+- used `wallHeatFlux.dat` patch-integrated `Q [W]` for:
+  - `hot_tube`
+  - `hot_fin_z_min`
+  - `hot_fin_z_max`
+- used reconstructed outlet `T/phi` for EB heat pickup:
+  - `Q_air = m_dot Cp (T_out - T_in)`
+- kept all reported Nu values on the same reference area:
+  - `A_hot_total = 0.002032 m2`
+
+### Results
+
+Primary window: `t = 2..10 s`.
+
+| Quantity | Value |
+|---|---:|
+| `Q_air` | `1.4703 W` |
+| `Q_wall` | `1.4807 W` |
+| ratio-of-means closure | `+0.706%` |
+| instantaneous closure mean/std | `+0.914% / 4.661%` |
+| `Q_tube` | `0.3618 W` |
+| `Q_fins` | `1.1189 W` |
+| tube/fins heat share | `24.43% / 75.57%` |
+| `Nu_tube_wall` | `8.4344` |
+| `Nu_fins_wall` | `7.6357` |
+| `Nu_total_wall` | `7.8165` |
+| `Nu_EB` | `7.7668` |
+| `Nu_wall` vs `Nu_EB` | `+0.640%` |
+
+Lag diagnostic:
+
+| Pair | lag | corr |
+|---|---:|---:|
+| `Q_wall -> Q_air` | `+1.66 s` | `0.1507` |
+| `Q_wall -> T_out` | `+1.66 s` | `0.1519` |
+
+The lag correlation is weak, so the lag should be treated as a diagnostic
+indicator rather than a robust convection-time measurement.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/003/run008_003_heat_balance.md`
+- `VV_cases/V4b_3D/results/run008/data/003/run008_003_heat_balance.json`
+- `VV_cases/V4b_3D/results/run008/data/003/run008_003_heat_balance_summary.csv`
+- `VV_cases/V4b_3D/results/run008/data/003/run008_003_heat_balance_timeseries.csv`
+- `VV_cases/V4b_3D/results/run008/data/003/run008_003_heat_balance_lags.csv`
+- `VV_cases/V4b_3D/results/run008/figures/003/run008_003_heat_balance_timeseries_closure.png`
+- `VV_cases/V4b_3D/results/run008/figures/003/run008_003_heat_balance_lag.png`
+- `VV_cases/V4b_3D/results/run008/figures/003/run008_003_heat_shares_and_nu.png`
+- `VV_cases/V4b_3D/results/run008/figures/003/run008_003_nu_eb_vs_wall_scatter.png`
+
+---
+
+## 2026-05-09 | V4b_3D | run008 local tube Nu layer 004 rebuilt
+
+### Work package
+
+Rebuilt the fourth `run008` analysis layer: local tube Nusselt maps and
+phase-conditioned tube heat-transfer structure.
+
+### Actions taken
+
+- added script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_tube_local_nu.py`
+- generated stage-004 outputs in:
+  - `VV_cases/V4b_3D/results/run008/data/004`
+  - `VV_cases/V4b_3D/results/run008/figures/004`
+- read `hot_tube_surface/*/hot_tube.vtk` over `t = 2..10 s`
+- computed local:
+  - `Nu_mean(theta,z)`
+  - `Nu_rms(theta,z)`
+  - `A1(theta,z)` and phase at `f_shed`
+  - `A2(theta,z)` at `2*f_shed`
+  - phase-averaged `Nu(theta,z,phi)` with 32 phase bins
+  - `Nu(theta)` z-averaged profiles
+  - `Nu(z)` at characteristic angular stations
+  - upper-lower tube asymmetry and relation to `Cl`
+
+### Results
+
+Local definition:
+
+```text
+Nu(theta,z,t) = q''(theta,z,t) D / (k LMTD(t))
+```
+
+Phase reference: `Cl` analytic signal from layer `002`.
+
+| Quantity | Value |
+|---|---:|
+| samples | `1601` |
+| theta/z bins | `96 x 30` |
+| phase bins | `32` |
+| `Nu_mean_area_proxy` | `8.5881` |
+| `Nu_rms_area_proxy` | `0.0978` |
+| `A1_mean / A1_max` | `0.0253 / 0.0630` |
+| `A2_mean / A2_max` | `0.0215 / 0.0596` |
+| peak z-averaged Nu angle | `155.6 deg` |
+| `mean |Nu(theta)-Nu(-theta)|` | `0.2909` |
+| max local asymmetry | `1.3253` |
+| corr upper-lower Nu asymmetry with `Cl` | `+0.900` |
+| best short-lag corr | `+0.922` at `-0.005 s` |
+
+### Interpretation
+
+The local tube heat-transfer field is mostly steady in magnitude, but its
+upper-lower asymmetry is strongly tied to lift. This provides a clean
+mechanistic bridge between the aerodynamic `Cl` signal and local tube cooling
+redistribution.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/004/run008_004_tube_local_nu.md`
+- `VV_cases/V4b_3D/results/run008/data/004/run008_004_tube_nu_summary.csv`
+- `VV_cases/V4b_3D/results/run008/data/004/run008_004_tube_nu_summary.json`
+- `VV_cases/V4b_3D/results/run008/data/004/run008_004_tube_nu_theta_z_maps.csv`
+- `VV_cases/V4b_3D/results/run008/data/004/run008_004_tube_nu_theta_profile.csv`
+- `VV_cases/V4b_3D/results/run008/data/004/run008_004_tube_nu_z_characteristic_angles.csv`
+- `VV_cases/V4b_3D/results/run008/data/004/run008_004_tube_phase_average_summary.csv`
+- `VV_cases/V4b_3D/results/run008/data/004/run008_004_tube_asymmetry_vs_cl.csv`
+- `VV_cases/V4b_3D/results/run008/data/004/run008_004_tube_nu_arrays.npz`
+- `VV_cases/V4b_3D/results/run008/figures/004/run008_004_tube_nu_maps_mean_rms_harmonics.png`
+- `VV_cases/V4b_3D/results/run008/figures/004/run008_004_tube_nu_phase_asymmetry_maps.png`
+- `VV_cases/V4b_3D/results/run008/figures/004/run008_004_tube_phase_averaged_nu_maps.png`
+- `VV_cases/V4b_3D/results/run008/figures/004/run008_004_tube_nu_theta_profiles_asymmetry.png`
+- `VV_cases/V4b_3D/results/run008/figures/004/run008_004_tube_nu_z_characteristic_angles.png`
+- `VV_cases/V4b_3D/results/run008/figures/004/run008_004_tube_asymmetry_vs_cl.png`
+
+---
+
+## 2026-05-09 | V4b_3D | run008 local fin Nu layer 005 rebuilt
+
+### Work package
+
+Rebuilt the fifth `run008` analysis layer: local Nusselt profiles on the two
+hot fin surfaces and their coupling to the lift/shedding signal.
+
+### Actions taken
+
+- added script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_fin_local_nu.py`
+- generated stage-005 outputs in:
+  - `VV_cases/V4b_3D/results/run008/data/005`
+  - `VV_cases/V4b_3D/results/run008/figures/005`
+- read `hot_fin_surface/*/hot_fin_z_min.vtk` and
+  `hot_fin_surface/*/hot_fin_z_max.vtk`
+- computed:
+  - `Nu_local(x,t)` separately for both fin surfaces
+  - mean/RMS `Nu_local(x)`
+  - `A1/A2` harmonic amplitudes and phase relative to `Cl`
+  - fin symmetry/antisymmetry and phase lag
+  - coherence and lag maps for `Cl -> Nu_local(x)`
+  - active coupled zones based on coherence and above-median `A1`
+
+### Results
+
+Primary window: `t = 2..10 s`.
+
+| Quantity | Value |
+|---|---:|
+| samples | `1601` |
+| x bins / valid bins | `80 / 61` |
+| `Nu_mean_z_min` | `4.5669` |
+| `Nu_mean_z_max` | `4.5412` |
+| `Nu_rms_z_min_mean` | `0.0482` |
+| `Nu_rms_z_max_mean` | `0.0498` |
+| `A1_mean z_min/z_max` | `0.0136 / 0.0130` |
+| `A2_mean z_min/z_max` | `0.0095 / 0.0111` |
+| mean antisymmetric component | `0.0148 Nu` |
+| mean fin-pair time correlation | `0.858` |
+| `A1` phase difference `z_max-z_min` | `-3.33 deg` |
+| median lag difference `z_max-z_min` | `+0.0000 s` |
+| mean coherence near `f_shed` z_min/z_max | `0.606 / 0.613` |
+| active coupled zones z_min/z_max | `50.8% / 49.2%` |
+| median lag vs `Cl` z_min/z_max | `-0.075 s / -0.075 s` |
+
+### Interpretation
+
+The fin heat transfer is almost symmetric between the two fin faces, but about
+half of the valid `x` range remains coherently coupled to `Cl` near the
+shedding frequency. The two fin faces are nearly in phase for the Cl-coupled
+component, so the fin response behaves more like a symmetric thermal filter
+than a strong antisymmetric amplifier.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/005/run008_005_fin_local_nu.md`
+- `VV_cases/V4b_3D/results/run008/data/005/run008_005_fin_nu_summary.csv`
+- `VV_cases/V4b_3D/results/run008/data/005/run008_005_fin_nu_summary.json`
+- `VV_cases/V4b_3D/results/run008/data/005/run008_005_fin_nu_x_profiles.csv`
+- `VV_cases/V4b_3D/results/run008/data/005/run008_005_fin_nu_arrays.npz`
+- `VV_cases/V4b_3D/results/run008/figures/005/run008_005_fin_nu_x_profiles.png`
+- `VV_cases/V4b_3D/results/run008/figures/005/run008_005_fin_phase_coherence_lag.png`
+- `VV_cases/V4b_3D/results/run008/figures/005/run008_005_fin_nu_xt_maps.png`
+- `VV_cases/V4b_3D/results/run008/figures/005/run008_005_fin_active_coupled_zones.png`
+
+---
+
+## 2026-05-09 | V4b_3D | run008 modal layer 006 rebuilt
+
+### Work package
+
+Rebuilt the sixth `run008` analysis layer: POD, EPOD/SPOD-like coherent maps,
+and DMD sanity checks from the `midspan_z0` snapshots.
+
+### Actions taken
+
+- added script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_modal_006.py`
+- generated stage-006 outputs in:
+  - `VV_cases/V4b_3D/results/run008/data/006`
+  - `VV_cases/V4b_3D/results/run008/figures/006`
+- read `midspan_z0/*/z0.vtk` over `t = 2..10 s`
+- performed POD for:
+  - `U`
+  - `T`
+  - RMS-scaled joint `U+T`
+- computed:
+  - POD mode energy spectra
+  - `a1-a2` phase portraits
+  - correlations of POD coefficients with `Cl`, `Cd`, `Q_wall`,
+    `Nu_tube`, and `Nu_fins`
+  - EPOD/regression fields conditioned on `Cl`, `Q_wall`, and `Nu_tube`
+  - single-frequency coherent maps at `f_shed` and `2*f_shed`
+  - reduced exact DMD eigenvalues/modes as a frequency sanity check
+
+### Results
+
+Primary window: `t = 2..10 s`.
+
+| Quantity | Value |
+|---|---:|
+| snapshots | `401` |
+| midspan points | `13,524` |
+| `U` POD mode 1 / 2 energy | `40.70% / 40.52%` |
+| `T` POD mode 1 / 2 energy | `39.70% / 38.27%` |
+| joint `U+T` POD mode 1 / 2 energy | `40.22% / 39.76%` |
+| `U` pair 1+2 share of first 8 modes | `87.45%` |
+| `T` pair 1+2 share of first 8 modes | `84.00%` |
+| DMD near `f_shed` | `3.3577 Hz` |
+| DMD near `2*f_shed` | `6.5695 Hz` |
+
+Strongest POD-signal correlations:
+
+| POD set | mode | signal | corr |
+|---|---:|---|---:|
+| `T` | 1 | `Cl` | `-0.9865` |
+| joint `U+T` | 1 | `Cl` | `-0.9781` |
+| `U` | 1 | `Cd` | `-0.8503` |
+| joint `U+T` | 1 | `Cd` | `-0.8500` |
+| `T` | 1 | `Cd` | `-0.8097` |
+| `U` | 2 | `Cl` | `-0.7928` |
+
+### Interpretation
+
+The first two POD modes form a strong shedding-pair candidate in both velocity
+and temperature. DMD independently recovers frequencies close to the expected
+`f_shed` and `2*f_shed`, supporting the modal interpretation. The leading
+temperature mode is very strongly tied to `Cl`, while velocity mode 1 also
+tracks drag strongly.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/006/run008_006_modal_analysis.md`
+- `VV_cases/V4b_3D/results/run008/data/006/run008_006_modal_summary.csv`
+- `VV_cases/V4b_3D/results/run008/data/006/run008_006_modal_summary.json`
+- `VV_cases/V4b_3D/results/run008/data/006/run008_006_pod_energy.csv`
+- `VV_cases/V4b_3D/results/run008/data/006/run008_006_pod_signal_correlations.csv`
+- `VV_cases/V4b_3D/results/run008/data/006/run008_006_dmd_eigenvalues.csv`
+- `VV_cases/V4b_3D/results/run008/data/006/run008_006_modal_arrays.npz`
+- `VV_cases/V4b_3D/results/run008/figures/006/run008_006_pod_energy.png`
+- `VV_cases/V4b_3D/results/run008/figures/006/run008_006_pod_phase_portraits.png`
+- `VV_cases/V4b_3D/results/run008/figures/006/run008_006_pod_mode_maps.png`
+- `VV_cases/V4b_3D/results/run008/figures/006/run008_006_pod_signal_correlations.png`
+- `VV_cases/V4b_3D/results/run008/figures/006/run008_006_epod_spod_maps.png`
+- `VV_cases/V4b_3D/results/run008/figures/006/run008_006_dmd_sanity_modes.png`
+
+---
+
+## 2026-05-09 | V4b_3D | run008 coherence layer 007 rebuilt
+
+### Work package
+
+Rebuilt the seventh `run008` analysis layer: coherence and cross-spectral
+analysis between lift and global/local heat-transfer signals.
+
+### Actions taken
+
+- added script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_coherence_007.py`
+- generated stage-007 outputs in:
+  - `VV_cases/V4b_3D/results/run008/data/007`
+  - `VV_cases/V4b_3D/results/run008/figures/007`
+- computed global coherence/cross-phase for:
+  - `Cl` vs `Q_wall`
+  - `Cl` vs `Q_tube`
+  - `Cl` vs `Q_fins`
+  - `Cl` vs `Nu_tube`
+  - `Cl` vs `Nu_fins`
+- computed spatial coherence and lag maps for:
+  - `Cl` vs `Nu(theta,z)` on the tube
+  - `Cl` vs `Nu_local(x)` on both fin surfaces
+- reported separate metrics at:
+  - `f_shed`
+  - `2*f_shed`
+
+### Results
+
+Global coherence with `Cl`:
+
+| Signal | coherence at `f_shed` | coherence at `2*f_shed` |
+|---|---:|---:|
+| `Q_wall` | `0.571` | `0.906` |
+| `Q_tube` | `0.736` | `0.945` |
+| `Q_fins` | `0.376` | `0.922` |
+| `Nu_tube` | `0.561` | `0.950` |
+| `Nu_fins` | `0.436` | `0.991` |
+
+Spatial coherence:
+
+| Region | mean coherence at `f_shed` | mean coherence at `2*f_shed` |
+|---|---:|---:|
+| tube `Nu(theta,z)` | `0.454` | `0.977` |
+| fin `z_min` `Nu_local(x)` | `0.393` | `0.967` |
+| fin `z_max` `Nu_local(x)` | `0.430` | `0.980` |
+
+Tube active fraction with coherence > 0.5 at `f_shed`: `23.2%`.
+
+Lag diagnostics:
+
+| Diagnostic | Value |
+|---|---:|
+| tube median cross-phase lag at `f_shed` | `-0.0996 s` |
+| tube median cross-correlation lag at `f_shed` | `+0.0000 s` |
+
+### Interpretation
+
+The heat-transfer response is much more coherent with `Cl` at the second
+harmonic than at the fundamental. This agrees with the force PSD and local Nu
+analyses: a large part of the thermal response is organized around the
+half-cycle/two-sided shedding component, while fundamental coherence is more
+spatially localized.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/007/run008_007_coherence_analysis.md`
+- `VV_cases/V4b_3D/results/run008/data/007/run008_007_coherence_summary.json`
+- `VV_cases/V4b_3D/results/run008/data/007/run008_007_global_coherence.csv`
+- `VV_cases/V4b_3D/results/run008/data/007/run008_007_tube_coherence_maps.csv`
+- `VV_cases/V4b_3D/results/run008/data/007/run008_007_fin_coherence_profiles.csv`
+- `VV_cases/V4b_3D/results/run008/data/007/run008_007_coherence_arrays.npz`
+- `VV_cases/V4b_3D/results/run008/figures/007/run008_007_global_coherence_crossphase.png`
+- `VV_cases/V4b_3D/results/run008/figures/007/run008_007_tube_coherence_lag_maps.png`
+- `VV_cases/V4b_3D/results/run008/figures/007/run008_007_fin_coherence_lag_profiles.png`
+
+---
+
+## 2026-05-09 | V4b_3D | run008 transfer-entropy layer 008 rebuilt
+
+### Work package
+
+Rebuilt the eighth `run008` analysis layer: exploratory transfer entropy and
+directionality screening between lift, heat-transfer signals, reduced fin
+`Nu_local(x)` bins, and selected POD modal coefficients.
+
+### Actions taken
+
+- added script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_transfer_entropy_008.py`
+- generated stage-008 outputs in:
+  - `VV_cases/V4b_3D/results/run008/data/008`
+  - `VV_cases/V4b_3D/results/run008/figures/008`
+- used quantile-discretized TE with:
+  - 4 bins
+  - multiple tested lags
+  - circular-shift source surrogates
+  - 250 surrogates for global/modal signals
+  - 160 surrogates for reduced fin x-bins
+
+### Results
+
+Strongest global `Cl -> heat` directions above surrogate 95%:
+
+| Direction | TE | lag | surrogate95 |
+|---|---:|---:|---:|
+| `Cl -> Q_wall` | `0.2368 bits` | `0.240 s` | `0.1345` |
+| `Cl -> Q_tube` | `0.3769 bits` | `0.080 s` | `0.1922` |
+| `Cl -> Q_fins` | `0.4519 bits` | `0.240 s` | `0.1810` |
+| `Cl -> Nu_tube` | `0.1413 bits` | `0.240 s` | `0.0671` |
+| `Cl -> Nu_fins` | `0.1739 bits` | `0.240 s` | `0.0639` |
+| `Cl -> Nu_EB` | `0.2602 bits` | `0.060 s` | `0.1484` |
+
+Reduced fin-bin result:
+
+| Region | significant `Cl -> Nu_local(x)` bins |
+|---|---:|
+| `hot_fin_z_min` | `16/16` |
+| `hot_fin_z_max` | `16/16` |
+
+Strongest reduced fin-bin TE values are around `0.38 bits`, especially near
+`x ~= 3.8..11.8 mm`.
+
+### Interpretation
+
+This layer should be treated as an exploratory directionality screen, not a
+standalone causal proof. The dominant physical reading remains consistent with
+the safer coherence/cross-phase layer: lift/shedding phase organizes the
+thermal response. Weaker reverse-direction TE appears for some global and modal
+pairs, likely because all signals are projections of the same low-dimensional
+periodic shedding oscillator.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/008/run008_008_transfer_entropy_analysis.md`
+- `VV_cases/V4b_3D/results/run008/data/008/run008_008_transfer_entropy_summary.json`
+- `VV_cases/V4b_3D/results/run008/data/008/run008_008_transfer_entropy_global_modal.csv`
+- `VV_cases/V4b_3D/results/run008/data/008/run008_008_transfer_entropy_fin_xbins.csv`
+- `VV_cases/V4b_3D/results/run008/data/008/run008_008_transfer_entropy_lag_curves.csv`
+- `VV_cases/V4b_3D/results/run008/figures/008/run008_008_global_transfer_entropy.png`
+- `VV_cases/V4b_3D/results/run008/figures/008/run008_008_global_te_lag_sensitivity.png`
+- `VV_cases/V4b_3D/results/run008/figures/008/run008_008_fin_te_x_profiles.png`
+- `VV_cases/V4b_3D/results/run008/figures/008/run008_008_modal_te_heatmap.png`
+
+---
+
+## 2026-05-09 | V4b_3D | run008 phase-averaging layer 009 rebuilt
+
+### Work package
+
+Rebuilt the ninth `run008` analysis layer: phase-averaged physical story using
+the shedding phase from `Cl`.
+
+### Actions taken
+
+- added script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_phase_averaging_009.py`
+- generated stage-009 outputs in:
+  - `VV_cases/V4b_3D/results/run008/data/009`
+  - `VV_cases/V4b_3D/results/run008/figures/009`
+- used Hilbert phase from layer `002`
+- used 16 phase bins over `t = 2..10 s`
+- phase-averaged:
+  - `Cl`, `Cd`, `Cm`
+  - `Q_wall`, `Q_tube`, `Q_fins`
+  - `Nu_tube_wall`, `Nu_fins_wall`, `Nu_EB`
+  - tube `Nu(theta,z)`
+  - fin `Nu_local(x)`
+  - midspan `U` and `T`
+
+### Results
+
+Key phase events:
+
+| Event | phase | lag from max `abs(Cl)` |
+|---|---:|---:|
+| max `abs(Cl)` / `Cl_min` | `236.25 deg` | `0.0000 s` |
+| `Cl_max` | `281.25 deg` | `+0.0381 s` |
+| `Q_tube_max` | `236.25 deg` | `+0.0000 s` |
+| `Q_fins_max` | `303.75 deg` | `+0.0572 s` |
+| `Q_wall_max` | `303.75 deg` | `+0.0572 s` |
+| `Nu_tube_wall_max` | `123.75 deg` | `-0.0953 s` |
+| `Nu_fins_wall_max` | `123.75 deg` | `-0.0953 s` |
+| `Nu_EB_max` | `123.75 deg` | `-0.0953 s` |
+
+### Interpretation
+
+The phase-averaging layer gives a clean physical narrative: the tube integrated
+heat pickup peaks with maximum `abs(Cl)`, while the fins and total wall heat
+pickup peak later by about `67.5 deg` or `0.057 s`. The local/wall Nusselt
+maxima are phase-locked but not identical to the integrated heat-flux maxima,
+so the full story should be told using both `Q(t)` and local `Nu(theta,z,phi)`
+/ `Nu_local(x,phi)` maps.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/009/run008_009_phase_averaging_analysis.md`
+- `VV_cases/V4b_3D/results/run008/data/009/run008_009_phase_averaging_summary.json`
+- `VV_cases/V4b_3D/results/run008/data/009/run008_009_phase_global_cycle.csv`
+- `VV_cases/V4b_3D/results/run008/data/009/run008_009_phase_events.csv`
+- `VV_cases/V4b_3D/results/run008/data/009/run008_009_fin_phase_profiles.csv`
+- `VV_cases/V4b_3D/results/run008/data/009/run008_009_midspan_phase_summary.csv`
+- `VV_cases/V4b_3D/results/run008/data/009/run008_009_phase_arrays.npz`
+- `VV_cases/V4b_3D/results/run008/figures/009/run008_009_phase_global_cycle.png`
+- `VV_cases/V4b_3D/results/run008/figures/009/run008_009_tube_nu_phase_grid.png`
+- `VV_cases/V4b_3D/results/run008/figures/009/run008_009_fin_nu_phase_map.png`
+- `VV_cases/V4b_3D/results/run008/figures/009/run008_009_midspan_wake_speed_phase_grid.png`
+- `VV_cases/V4b_3D/results/run008/figures/009/run008_009_midspan_temperature_phase_grid.png`
+- `VV_cases/V4b_3D/results/run008/figures/009/run008_009_phase_story_key_frames.png`
+
+---
+
+## 2026-05-09 | V4b_3D | run008 wake-probe layer 010 rebuilt
+
+### Work package
+
+Rebuilt the tenth `run008` analysis layer: wake-probe dynamics and linkage
+between probe signals, lift, wall heat transfer, outlet temperature, and local
+fin `Nu`.
+
+### Actions taken
+
+- added script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_wake_probes_010.py`
+- generated stage-010 outputs in:
+  - `VV_cases/V4b_3D/results/run008/data/010`
+  - `VV_cases/V4b_3D/results/run008/figures/010`
+- parsed 13 wake probes from:
+  - `postProcessing/probes_wake/0/U`
+  - `postProcessing/probes_wake/0/T`
+- computed:
+  - PSD of `Uy`
+  - coherence near `f_shed` and `2*f_shed`
+  - cross-correlation lag `Uy -> Cl`
+  - cross-correlation lag `Uy -> Q_wall`
+  - lag from wake probes to outlet `T_out`
+  - ranking of probe `Uy` coherence with local fin `Nu_local(x)`
+
+### Results
+
+| Diagnostic | Best probe / value |
+|---|---|
+| strongest `Uy` RMS | probe `2`, `(x,y)=(30,0) mm`, RMS `0.11429 m/s` |
+| highest `Uy-Cl` coherence near `f_shed` | probe `2`, coherence `0.883`, lag `-0.0500 s` |
+| highest `Uy-Q_wall` coherence near `f_shed` | probe `6`, coherence `0.905`, lag `+0.4200 s` |
+| highest `Uy-local Nu` coherence at `f_shed` | probe `9`, `fin_z_max`, `x=6.06 mm`, coherence `0.985` |
+| highest `Uy-local Nu` coherence at `2f_shed` | probe `2`, `fin_z_max`, `x=3.64 mm`, coherence `0.994` |
+
+Top probes by `Uy-Cl` coherence:
+
+| Probe | x [mm] | y [mm] | coherence | lag `Uy -> Cl` |
+|---:|---:|---:|---:|---:|
+| `2` | `30` | `0` | `0.883` | `-0.0500 s` |
+| `8` | `40` | `6` | `0.766` | `-0.0200 s` |
+| `9` | `60` | `6` | `0.568` | `-0.0300 s` |
+| `6` | `100` | `0` | `0.462` | `-0.0600 s` |
+
+### Interpretation
+
+The probe ranking separates two useful reduced sensors. Probe `2` is the best
+near-wake/lift sensor, while probe `9` best tracks local fin heat-transfer
+coupling. The wake-probe PSD is dominated by the `2f_shed` / adjacent lift-peak
+component near the Welch bin `6.64 Hz`, matching the earlier force and thermal
+coherence analyses.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/010/run008_010_wake_probes_analysis.md`
+- `VV_cases/V4b_3D/results/run008/data/010/run008_010_wake_probes_summary.json`
+- `VV_cases/V4b_3D/results/run008/data/010/run008_010_probe_metrics.csv`
+- `VV_cases/V4b_3D/results/run008/data/010/run008_010_probe_local_nu_coherence_rank.csv`
+- `VV_cases/V4b_3D/results/run008/figures/010/run008_010_probe_layout_coherence.png`
+- `VV_cases/V4b_3D/results/run008/figures/010/run008_010_probe_uy_psd.png`
+- `VV_cases/V4b_3D/results/run008/figures/010/run008_010_probe_cross_correlation_lags.png`
+- `VV_cases/V4b_3D/results/run008/figures/010/run008_010_probe_to_local_nu_coherence_rank.png`
+
+---
+
+## 2026-05-09 | V4b_3D | run008 campaign comparison layer 011 rebuilt
+
+### Work package
+
+Rebuilt the eleventh `run008` analysis layer: comparison against earlier
+campaign runs and final production-reference decision.
+
+### Actions taken
+
+- added script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_campaign_comparison_011.py`
+- generated stage-011 outputs in:
+  - `VV_cases/V4b_3D/results/run008/data/011`
+  - `VV_cases/V4b_3D/results/run008/figures/011`
+- compared:
+  - `run004b`
+  - `run005`
+  - `run007c`
+  - `run008`
+- added short-window context for:
+  - `run004b`
+  - `run007a`
+  - `run007c`
+
+### Results
+
+Global regime table:
+
+| Run | Window | Cd | Cl_rms | St | Nu | Closure |
+|---|---:|---:|---:|---:|---:|---:|
+| `run004b` | `3..6 s` | `3.361490` | `0.184056` | `0.15517` | `7.777953` | N/A |
+| `run005` | `3..6 s` | `3.359275` | `0.184616` | `0.15519` | `7.775975` | N/A |
+| `run007c` | `0.5..2 s` | `3.361209` | `0.176698` | N/A | `7.821736` | `+1.39%` |
+| `run008` | `2..10 s` | `3.361014` | `0.176441` | `0.15426` | `7.770004` | `+0.706%` |
+
+Differences relative to `run008`:
+
+| Run | Cd | Cl_rms | Nu |
+|---|---:|---:|---:|
+| `run004b` | `+0.014%` | `+4.315%` | `+0.102%` |
+| `run005` | `-0.052%` | `+4.633%` | `+0.077%` |
+| `run007c` smoke | `+0.006%` | `+0.145%` | `+0.666%` |
+
+Short-window context:
+
+| Run | Cd | Cl_rms | Q_wall | Q_air | Nu_wall_case_k | wall-air diff |
+|---|---:|---:|---:|---:|---:|---:|
+| `run004b` | `3.361209` | `0.176698` | `1.0591 W` | `1.0445 W` | `7.8217` | `+1.4%` |
+| `run007a` | `3.473619` | `0.178979` | `1.3396 W` | `1.8450 W` | `7.3786` | `-27.4%` |
+| `run007c` | `3.361209` | `0.176698` | `1.4824 W` | `1.4621 W` | `7.8217` | `+1.4%` |
+
+### Decision
+
+Production reference is `run008`.
+
+Rationale:
+
+- it matches the established aerodynamic regime from `run004b/run005`
+- it inherits the Cp-consistent constant-property setup validated by `run007c`
+- it uses the production `2..10 s` record with about 26 shedding cycles
+- it has closed heat balance (`Q_wall-Q_air ~= +0.706%`)
+- it contains the measurement-rich sampling needed for the POD/EPOD,
+  coherence, phase-averaging, local Nu, and wake-probe analyses
+
+`run007a` remains a useful variable-property diagnostic, but not a production
+reference because the short-window wall-air closure is about `-27.4%` and drag
+is shifted by about `+3.34%`.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/011/run008_011_campaign_comparison.md`
+- `VV_cases/V4b_3D/results/run008/data/011/run008_011_campaign_decision.json`
+- `VV_cases/V4b_3D/results/run008/data/011/run008_011_campaign_regime_table.csv`
+- `VV_cases/V4b_3D/results/run008/data/011/run008_011_short_window_table.csv`
+- `VV_cases/V4b_3D/results/run008/figures/011/run008_011_campaign_global_regime.png`
+- `VV_cases/V4b_3D/results/run008/figures/011/run008_011_differences_vs_production.png`
+- `VV_cases/V4b_3D/results/run008/figures/011/run008_011_short_vs_production.png`
+- `VV_cases/V4b_3D/results/run008/figures/011/run008_011_run007a_diagnostic_status.png`
+
+---
+
+## 2026-05-09 | V4b_3D | run008 final paper-grade figures layer 012 rebuilt
+
+### Work package
+
+Rebuilt the twelfth `run008` analysis layer: a curated final figure set for
+paper/manuscript planning.
+
+### Actions taken
+
+- ran script:
+  - `VV_cases/V4b_3D/results/run008/scripts/build_run008_paper_figures_012.py`
+- generated final figure outputs in:
+  - `VV_cases/V4b_3D/results/run008/figures/012`
+- generated figure captions and summary metadata in:
+  - `VV_cases/V4b_3D/results/run008/data/012`
+- updated:
+  - `VV_cases/V4b_3D/results/run008/summary.md`
+
+### Figure set
+
+| Figure | Content |
+|---|---|
+| 1 | geometry, domain, and sampling layout |
+| 2 | `Cd(t)`, `Cl(t)`, and `PSD(Cl)` |
+| 3 | heat balance `Q_air` vs `Q_wall`, plus `Nu_EB` vs `Nu_wall` |
+| 4 | mean and RMS `Nu(theta,z)` on the tube |
+| 5 | phase-averaged `Nu(theta)` over the shedding cycle |
+| 6 | fin `Nu_local(x)` mean/RMS/coherence |
+| 7 | POD energy and mode 1/2 maps |
+| 8 | EPOD / lift-correlated thermal structure |
+| 9 | coherence maps between `Cl` and local `Nu` |
+| 10 | summary mechanism schematic |
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/012/run008_012_final_figure_captions.md`
+- `VV_cases/V4b_3D/results/run008/data/012/run008_012_final_figure_captions.csv`
+- `VV_cases/V4b_3D/results/run008/data/012/run008_012_final_figures_summary.json`
+- `VV_cases/V4b_3D/results/run008/figures/012/fig01_geometry_domain_sampling.png`
+- `VV_cases/V4b_3D/results/run008/figures/012/fig02_forces_cl_psd.png`
+- `VV_cases/V4b_3D/results/run008/figures/012/fig03_heat_balance_nu_closure.png`
+- `VV_cases/V4b_3D/results/run008/figures/012/fig04_tube_nu_mean_rms.png`
+- `VV_cases/V4b_3D/results/run008/figures/012/fig05_phase_averaged_tube_nu_theta.png`
+- `VV_cases/V4b_3D/results/run008/figures/012/fig06_fin_nu_mean_rms_coherence.png`
+- `VV_cases/V4b_3D/results/run008/figures/012/fig07_pod_energy_modes.png`
+- `VV_cases/V4b_3D/results/run008/figures/012/fig08_epod_cl_thermal_structure.png`
+- `VV_cases/V4b_3D/results/run008/figures/012/fig09_cl_nu_coherence_maps.png`
+- `VV_cases/V4b_3D/results/run008/figures/012/fig10_mechanism_schematic.png`
+- matching PDF versions for all ten figures
+
+### Interpretation
+
+Layer `012` is a curated visual synthesis of validated layers `001..011`, not
+a new physics calculation. It collects the production-domain geometry,
+global force/heat-balance metrics, local tube/fin Nusselt behavior, modal
+structure, coherence, and mechanism summary into one article-ready figure set.
+
+---
+## 2026-05-12 | VV_cases | canonical V4b/V2 documentation sync after run008 review
+
+### Work package
+
+Reviewed the Markdown state of the repository after the completed V4b `run008`
+production analysis, clarified the `run008` physical-property model, and synced
+the canonical study documents with the accepted current state.
+
+### Actions taken
+
+- Verified that `run008` inherited the `run007c` constant-property
+  `eConst + Boussinesq + sensibleInternalEnergy` setup with capacity coefficient
+  `1005`.
+- Confirmed that the true variable-property diagnostic is `run007a`
+  (`incompressiblePerfectGas + Sutherland`), not `run008`.
+- Updated `V4b_3D/doc/V4b_3D.md` with the accepted `Lin=2D`, `Lout=8D`
+  production domain, `run008` result table, and current mechanism statement.
+- Updated `V2_thermal/doc/V2_thermal.md` so the accepted O-grid validation
+  run-004 supersedes the older snappy/Boussinesq diagnostic narrative.
+- Added `V4b_3D/results/run008/q_lambda2_structure_plan.md` as the next
+  post-processing plan for vortical-structure identification.
+
+### Decisions made
+
+- Treat `run008` as the accepted constant-property, Cp-consistent production
+  reference.
+- Keep `run007a` as a variable-property diagnostic until a production-quality
+  energy balance is closed.
+- Treat V2 run-004 O-grid results as the current thermal validation reference.
+- Use `Q`/`lambda2` as the next targeted post-processing step if the manuscript
+  needs a stronger named-structure figure.
+
+### Next step
+
+Run a lightweight `Q`/`lambda2` visual pass on representative `run008` phases,
+then decide whether to promote it into a formal analysis layer.

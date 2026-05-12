@@ -1,0 +1,15 @@
+metric,value
+n_snapshots,401.0
+n_points,13524.0
+U_mode1_energy_pct,40.69660741749009
+U_mode2_energy_pct,40.52293526677542
+T_mode1_energy_pct,39.703995817946414
+T_mode2_energy_pct,38.27311251057722
+joint_mode1_energy_pct,40.22077323452644
+joint_mode2_energy_pct,39.75756174787363
+U_pair12_share_of_first8,0.8745211616889303
+T_pair12_share_of_first8,0.840012987113221
+DMD_near_f_shed_hz,3.3576678066756998
+DMD_near_2f_shed_hz,6.569508372267634
+joint_scale_U_rms,0.06679715947634587
+joint_scale_T_rms,2.707149947705751

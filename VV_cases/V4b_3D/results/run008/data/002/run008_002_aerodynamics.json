@@ -1,0 +1,418 @@
+{
+  "window": [
+    2.0,
+    10.0
+  ],
+  "f0_hz": 3.278688524590167,
+  "adjacent_peak_frequency_hz": 6.557377049180334,
+  "n_detected_cl_peaks": 53,
+  "St": 0.15572018639706328,
+  "pressure_viscous_stats": [
+    {
+      "component": "Cd_p",
+      "mean": 2.9035821020249952,
+      "rms": 0.0060537301060992095,
+      "rms_fraction_total_pct": 89.7436592500185,
+      "phase_vs_total_deg": 2.7941401882434813,
+      "corr_vs_total": 0.9988914715503998
+    },
+    {
+      "component": "Cd_v",
+      "mean": 0.4574316950854014,
+      "rms": 0.0007544478030162294,
+      "rms_fraction_total_pct": 11.184328565886675,
+      "phase_vs_total_deg": -22.904478508758757,
+      "corr_vs_total": 0.9259227398788837
+    },
+    {
+      "component": "Cl_p",
+      "mean": 2.514626013060744,
+      "rms": 0.1638228537404199,
+      "rms_fraction_total_pct": 92.81929518565785,
+      "phase_vs_total_deg": 0.8899664684379675,
+      "corr_vs_total": 0.9991185085787591
+    },
+    {
+      "component": "Cl_v",
+      "mean": 0.0007232349795598421,
+      "rms": 0.014546400239859468,
+      "rms_fraction_total_pct": 8.24174763730849,
+      "phase_vs_total_deg": -10.423175622888488,
+      "corr_vs_total": 0.881187406648829
+    },
+    {
+      "component": "Cm_p",
+      "mean": 8.53131610655903e-09,
+      "rms": 1.4646026560418641e-08,
+      "rms_fraction_total_pct": 0.0009305369968999362,
+      "phase_vs_total_deg": 50.09794818863997,
+      "corr_vs_total": 0.28480279994830765
+    },
+    {
+      "component": "Cm_v",
+      "mean": 0.008023542132236458,
+      "rms": 0.0015739285804821908,
+      "rms_fraction_total_pct": 99.99973498443617,
+      "phase_vs_total_deg": -0.00016897088769534248,
+      "corr_vs_total": 0.9999999999602165
+    }
+  ],
+  "harmonics": [
+    {
+      "signal_name": "Cd",
+      "target": "f0",
+      "target_hz": 3.278688524590167,
+      "peak_hz": 3.3203125000000706,
+      "strouhal": 0.15769710282593546,
+      "relative_power_db": -16.019276268651595
+    },
+    {
+      "signal_name": "Cd",
+      "target": "2f0",
+      "target_hz": 6.557377049180334,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cd",
+      "target": "3f0",
+      "target_hz": 9.836065573770501,
+      "peak_hz": 9.765625000000208,
+      "strouhal": 0.46381500831157485,
+      "relative_power_db": -24.396079209461732
+    },
+    {
+      "signal_name": "Cl",
+      "target": "f0",
+      "target_hz": 3.278688524590167,
+      "peak_hz": 3.3203125000000706,
+      "strouhal": 0.15769710282593546,
+      "relative_power_db": -39.9101527997881
+    },
+    {
+      "signal_name": "Cl",
+      "target": "2f0",
+      "target_hz": 6.557377049180334,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cl",
+      "target": "3f0",
+      "target_hz": 9.836065573770501,
+      "peak_hz": 9.765625000000208,
+      "strouhal": 0.46381500831157485,
+      "relative_power_db": -38.229678861598735
+    },
+    {
+      "signal_name": "Cm",
+      "target": "f0",
+      "target_hz": 3.278688524590167,
+      "peak_hz": 3.3203125000000706,
+      "strouhal": 0.15769710282593546,
+      "relative_power_db": -34.902842886514485
+    },
+    {
+      "signal_name": "Cm",
+      "target": "2f0",
+      "target_hz": 6.557377049180334,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cm",
+      "target": "3f0",
+      "target_hz": 9.836065573770501,
+      "peak_hz": 9.765625000000208,
+      "strouhal": 0.46381500831157485,
+      "relative_power_db": -42.362163027381655
+    },
+    {
+      "signal_name": "Cl_pressure",
+      "target": "f0",
+      "target_hz": 3.278688524590167,
+      "peak_hz": 3.3203125000000706,
+      "strouhal": 0.15769710282593546,
+      "relative_power_db": -39.98539565468076
+    },
+    {
+      "signal_name": "Cl_pressure",
+      "target": "2f0",
+      "target_hz": 6.557377049180334,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cl_pressure",
+      "target": "3f0",
+      "target_hz": 9.836065573770501,
+      "peak_hz": 9.765625000000208,
+      "strouhal": 0.46381500831157485,
+      "relative_power_db": -38.142776060752794
+    },
+    {
+      "signal_name": "Cl_viscous",
+      "target": "f0",
+      "target_hz": 3.278688524590167,
+      "peak_hz": 3.1250000000000666,
+      "strouhal": 0.14842080265970398,
+      "relative_power_db": -38.97612898616058
+    },
+    {
+      "signal_name": "Cl_viscous",
+      "target": "2f0",
+      "target_hz": 6.557377049180334,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cl_viscous",
+      "target": "3f0",
+      "target_hz": 9.836065573770501,
+      "peak_hz": 9.765625000000208,
+      "strouhal": 0.46381500831157485,
+      "relative_power_db": -39.17342357422561
+    },
+    {
+      "signal_name": "Cm_pressure",
+      "target": "f0",
+      "target_hz": 3.278688524590167,
+      "peak_hz": 3.3203125000000706,
+      "strouhal": 0.15769710282593546,
+      "relative_power_db": -37.29124780919064
+    },
+    {
+      "signal_name": "Cm_pressure",
+      "target": "2f0",
+      "target_hz": 6.557377049180334,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cm_pressure",
+      "target": "3f0",
+      "target_hz": 9.836065573770501,
+      "peak_hz": 9.765625000000208,
+      "strouhal": 0.46381500831157485,
+      "relative_power_db": -39.95986633412495
+    }
+  ],
+  "side_peaks": [
+    {
+      "signal_name": "Cd",
+      "rank": 1,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cd",
+      "rank": 2,
+      "peak_hz": 3.3203125000000706,
+      "strouhal": 0.15769710282593546,
+      "relative_power_db": -16.019276268651595
+    },
+    {
+      "signal_name": "Cd",
+      "rank": 3,
+      "peak_hz": 13.085937500000279,
+      "strouhal": 0.6215121111375103,
+      "relative_power_db": -22.61727102423722
+    },
+    {
+      "signal_name": "Cd",
+      "rank": 4,
+      "peak_hz": 9.765625000000208,
+      "strouhal": 0.46381500831157485,
+      "relative_power_db": -24.396079209461732
+    },
+    {
+      "signal_name": "Cd",
+      "rank": 5,
+      "peak_hz": 2.734375000000058,
+      "strouhal": 0.12986820232724097,
+      "relative_power_db": -24.523837887108794
+    },
+    {
+      "signal_name": "Cl",
+      "rank": 1,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cl",
+      "rank": 2,
+      "peak_hz": 5.468750000000116,
+      "strouhal": 0.25973640465448194,
+      "relative_power_db": -30.14727140912555
+    },
+    {
+      "signal_name": "Cl",
+      "rank": 3,
+      "peak_hz": 7.812500000000167,
+      "strouhal": 0.3710520066492599,
+      "relative_power_db": -35.73286265836636
+    },
+    {
+      "signal_name": "Cl",
+      "rank": 4,
+      "peak_hz": 1.1718750000000249,
+      "strouhal": 0.05565780099738898,
+      "relative_power_db": -37.64229748353456
+    },
+    {
+      "signal_name": "Cl",
+      "rank": 5,
+      "peak_hz": 9.765625000000208,
+      "strouhal": 0.46381500831157485,
+      "relative_power_db": -38.229678861598735
+    },
+    {
+      "signal_name": "Cm",
+      "rank": 1,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cm",
+      "rank": 2,
+      "peak_hz": 5.468750000000116,
+      "strouhal": 0.25973640465448194,
+      "relative_power_db": -28.788527997566575
+    },
+    {
+      "signal_name": "Cm",
+      "rank": 3,
+      "peak_hz": 3.3203125000000706,
+      "strouhal": 0.15769710282593546,
+      "relative_power_db": -34.902842886514485
+    },
+    {
+      "signal_name": "Cm",
+      "rank": 4,
+      "peak_hz": 7.812500000000167,
+      "strouhal": 0.3710520066492599,
+      "relative_power_db": -37.88403090235046
+    },
+    {
+      "signal_name": "Cm",
+      "rank": 5,
+      "peak_hz": 2.734375000000058,
+      "strouhal": 0.12986820232724097,
+      "relative_power_db": -41.92759621942747
+    },
+    {
+      "signal_name": "Cl_pressure",
+      "rank": 1,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cl_pressure",
+      "rank": 2,
+      "peak_hz": 5.468750000000116,
+      "strouhal": 0.25973640465448194,
+      "relative_power_db": -30.183601647396223
+    },
+    {
+      "signal_name": "Cl_pressure",
+      "rank": 3,
+      "peak_hz": 7.812500000000167,
+      "strouhal": 0.3710520066492599,
+      "relative_power_db": -35.701997837512685
+    },
+    {
+      "signal_name": "Cl_pressure",
+      "rank": 4,
+      "peak_hz": 1.1718750000000249,
+      "strouhal": 0.05565780099738898,
+      "relative_power_db": -37.81326640340588
+    },
+    {
+      "signal_name": "Cl_pressure",
+      "rank": 5,
+      "peak_hz": 9.765625000000208,
+      "strouhal": 0.46381500831157485,
+      "relative_power_db": -38.142776060752794
+    },
+    {
+      "signal_name": "Cl_viscous",
+      "rank": 1,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cl_viscous",
+      "rank": 2,
+      "peak_hz": 5.468750000000116,
+      "strouhal": 0.25973640465448194,
+      "relative_power_db": -29.752248710685052
+    },
+    {
+      "signal_name": "Cl_viscous",
+      "rank": 3,
+      "peak_hz": 7.812500000000167,
+      "strouhal": 0.3710520066492599,
+      "relative_power_db": -36.15006156670439
+    },
+    {
+      "signal_name": "Cl_viscous",
+      "rank": 4,
+      "peak_hz": 1.1718750000000249,
+      "strouhal": 0.05565780099738898,
+      "relative_power_db": -36.872229887739024
+    },
+    {
+      "signal_name": "Cl_viscous",
+      "rank": 5,
+      "peak_hz": 3.1250000000000666,
+      "strouhal": 0.14842080265970398,
+      "relative_power_db": -38.97612898616058
+    },
+    {
+      "signal_name": "Cm_pressure",
+      "rank": 1,
+      "peak_hz": 6.640625000000141,
+      "strouhal": 0.31539420565187093,
+      "relative_power_db": 0.0
+    },
+    {
+      "signal_name": "Cm_pressure",
+      "rank": 2,
+      "peak_hz": 5.468750000000116,
+      "strouhal": 0.25973640465448194,
+      "relative_power_db": -29.156613392301804
+    },
+    {
+      "signal_name": "Cm_pressure",
+      "rank": 3,
+      "peak_hz": 13.085937500000279,
+      "strouhal": 0.6215121111375103,
+      "relative_power_db": -35.47702122818001
+    },
+    {
+      "signal_name": "Cm_pressure",
+      "rank": 4,
+      "peak_hz": 7.812500000000167,
+      "strouhal": 0.3710520066492599,
+      "relative_power_db": -37.05559763331587
+    },
+    {
+      "signal_name": "Cm_pressure",
+      "rank": 5,
+      "peak_hz": 3.3203125000000706,
+      "strouhal": 0.15769710282593546,
+      "relative_power_db": -37.29124780919064
+    }
+  ]
+}

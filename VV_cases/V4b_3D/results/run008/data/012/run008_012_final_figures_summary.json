@@ -1,0 +1,74 @@
+{
+  "figures": [
+    {
+      "figure": "Figure 1",
+      "file_png": "figures\\012\\fig01_geometry_domain_sampling.png",
+      "file_pdf": "figures\\012\\fig01_geometry_domain_sampling.pdf",
+      "title": "Geometry, domain, and sampling layout",
+      "caption": "Production domain Lin=2D, Lout=8D with heated tube/fins, wake probes, and high-cadence sampling used for force, heat-transfer, POD, and coherence analyses."
+    },
+    {
+      "figure": "Figure 2",
+      "file_png": "figures\\012\\fig02_forces_cl_psd.png",
+      "file_pdf": "figures\\012\\fig02_forces_cl_psd.pdf",
+      "title": "Cd(t), Cl(t), and PSD(Cl)",
+      "caption": "Production-window force histories and lift spectrum show the established periodic regime with shedding near St=0.154 and a strong second-harmonic/adjacent-peak component."
+    },
+    {
+      "figure": "Figure 3",
+      "file_png": "figures\\012\\fig03_heat_balance_nu_closure.png",
+      "file_pdf": "figures\\012\\fig03_heat_balance_nu_closure.pdf",
+      "title": "Heat balance and Nusselt closure",
+      "caption": "Wall-integrated and air-side heat rates close within about one percent, while Nu_EB and wall-side Nu provide independent, consistent heat-transfer estimates."
+    },
+    {
+      "figure": "Figure 4",
+      "file_png": "figures\\012\\fig04_tube_nu_mean_rms.png",
+      "file_pdf": "figures\\012\\fig04_tube_nu_mean_rms.pdf",
+      "title": "Mean and RMS Nu(theta,z) on the tube",
+      "caption": "Mean and RMS maps expose the circumferential/spanwise organization of tube heat transfer and identify where unsteady shedding modulates local Nu."
+    },
+    {
+      "figure": "Figure 5",
+      "file_png": "figures\\012\\fig05_phase_averaged_tube_nu_theta.png",
+      "file_pdf": "figures\\012\\fig05_phase_averaged_tube_nu_theta.pdf",
+      "title": "Phase-averaged Nu(theta)",
+      "caption": "Eight phase-conditioned tube profiles show how the circumferential heat-transfer peak moves and changes intensity over the shedding cycle."
+    },
+    {
+      "figure": "Figure 6",
+      "file_png": "figures\\012\\fig06_fin_nu_mean_rms_coherence.png",
+      "file_pdf": "figures\\012\\fig06_fin_nu_mean_rms_coherence.pdf",
+      "title": "Nu_local(x) on fins",
+      "caption": "Mean, RMS, and lift-coherence profiles on the two heated fin surfaces identify streamwise regions actively coupled to vortex shedding."
+    },
+    {
+      "figure": "Figure 7",
+      "file_png": "figures\\012\\fig07_pod_energy_modes.png",
+      "file_pdf": "figures\\012\\fig07_pod_energy_modes.pdf",
+      "title": "POD energy and mode 1/2 maps",
+      "caption": "The first two modes form the dominant shedding pair in velocity and temperature; the spatial mode maps show the coherent wake/thermal structures."
+    },
+    {
+      "figure": "Figure 8",
+      "file_png": "figures\\012\\fig08_epod_cl_thermal_structure.png",
+      "file_pdf": "figures\\012\\fig08_epod_cl_thermal_structure.pdf",
+      "title": "EPOD / Cl-correlated thermal structure",
+      "caption": "EPOD regression fields and single-frequency coherent amplitudes expose the midspan thermal structures correlated with lift and heat-transfer metrics."
+    },
+    {
+      "figure": "Figure 9",
+      "file_png": "figures\\012\\fig09_cl_nu_coherence_maps.png",
+      "file_pdf": "figures\\012\\fig09_cl_nu_coherence_maps.pdf",
+      "title": "Coherence Cl <-> local Nu",
+      "caption": "Spatial coherence maps reveal localized fundamental coupling and nearly global second-harmonic organization of the local heat-transfer response."
+    },
+    {
+      "figure": "Figure 10",
+      "file_png": "figures\\012\\fig10_mechanism_schematic.png",
+      "file_pdf": "figures\\012\\fig10_mechanism_schematic.pdf",
+      "title": "Summary mechanism schematic",
+      "caption": "Conceptual mechanism distilled from the production run: shedding phase drives coherent wake probes, local tube/fin Nu redistribution, and a delayed fin-dominated heat-transfer response while maintaining global heat-balance closure."
+    }
+  ]
+}

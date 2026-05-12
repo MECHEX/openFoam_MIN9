@@ -1,0 +1,127 @@
+{
+  "global": [
+    {
+      "signal": "Q_wall",
+      "band": "f_shed",
+      "frequency_hz": 3.1250000000000666,
+      "coherence": 0.5713193331301739,
+      "cross_phase_deg": -55.65991399875532,
+      "phase_lag_s": -0.04715615098019482,
+      "xcorr_lag_s": 0.009999999999999787,
+      "xcorr_corr": 0.3471143605214815
+    },
+    {
+      "signal": "Q_wall",
+      "band": "2f_shed",
+      "frequency_hz": 6.640625000000141,
+      "coherence": 0.9057663519762974,
+      "cross_phase_deg": -24.43998966632376,
+      "phase_lag_s": -0.010353014942543183,
+      "xcorr_lag_s": 0.009999999999999787,
+      "xcorr_corr": 0.3471143605214815
+    },
+    {
+      "signal": "Q_tube",
+      "band": "f_shed",
+      "frequency_hz": 3.1250000000000666,
+      "coherence": 0.7358285518375851,
+      "cross_phase_deg": -55.92192839880411,
+      "phase_lag_s": -0.04737813462551563,
+      "xcorr_lag_s": 0.08499999999999819,
+      "xcorr_corr": 0.3421450238836787
+    },
+    {
+      "signal": "Q_tube",
+      "band": "2f_shed",
+      "frequency_hz": 6.640625000000141,
+      "coherence": 0.9445045634052373,
+      "cross_phase_deg": 165.3454668534845,
+      "phase_lag_s": 0.07004193178422873,
+      "xcorr_lag_s": 0.08499999999999819,
+      "xcorr_corr": 0.3421450238836787
+    },
+    {
+      "signal": "Q_fins",
+      "band": "f_shed",
+      "frequency_hz": 3.1250000000000666,
+      "coherence": 0.37608132631411373,
+      "cross_phase_deg": -55.454812394182035,
+      "phase_lag_s": -0.04698238495116801,
+      "xcorr_lag_s": 0.009999999999999787,
+      "xcorr_corr": 0.5751115819987535
+    },
+    {
+      "signal": "Q_fins",
+      "band": "2f_shed",
+      "frequency_hz": 6.640625000000141,
+      "coherence": 0.9216032956107368,
+      "cross_phase_deg": -21.902268232690712,
+      "phase_lag_s": -0.009278011708862723,
+      "xcorr_lag_s": 0.009999999999999787,
+      "xcorr_corr": 0.5751115819987535
+    },
+    {
+      "signal": "Nu_tube",
+      "band": "f_shed",
+      "frequency_hz": 3.1250000000000666,
+      "coherence": 0.5607744138930741,
+      "cross_phase_deg": -100.52436911091493,
+      "phase_lag_s": -0.08516618130400169,
+      "xcorr_lag_s": -0.004999999999999893,
+      "xcorr_corr": 0.33029322292422847
+    },
+    {
+      "signal": "Nu_tube",
+      "band": "2f_shed",
+      "frequency_hz": 6.640625000000141,
+      "coherence": 0.9495152577285509,
+      "cross_phase_deg": 15.188542894754331,
+      "phase_lag_s": 0.006434013012760109,
+      "xcorr_lag_s": -0.004999999999999893,
+      "xcorr_corr": 0.33029322292422847
+    },
+    {
+      "signal": "Nu_fins",
+      "band": "f_shed",
+      "frequency_hz": 3.1250000000000666,
+      "coherence": 0.4361333924274939,
+      "cross_phase_deg": -109.50993198482011,
+      "phase_lag_s": -0.0927789232053525,
+      "xcorr_lag_s": 0.0,
+      "xcorr_corr": 0.5062238018144981
+    },
+    {
+      "signal": "Nu_fins",
+      "band": "2f_shed",
+      "frequency_hz": 6.640625000000141,
+      "coherence": 0.9905705762292298,
+      "cross_phase_deg": 0.4323344524302823,
+      "phase_lag_s": 0.00018314103677197698,
+      "xcorr_lag_s": 0.0,
+      "xcorr_corr": 0.5062238018144981
+    }
+  ],
+  "tube": {
+    "mean_coh_f1": 0.4541769073411072,
+    "mean_coh_f2": 0.9769043275504536,
+    "active_fraction_f1_coh_gt_0p5": 0.23203125,
+    "median_phase_lag_f1_s": -0.09960067312638712,
+    "median_xcorr_lag_f1_s": 0.0
+  },
+  "fin": {
+    "fin_z_min": {
+      "mean_coh_f1": 0.3929525578635833,
+      "mean_coh_f2": 0.9672686716935723,
+      "active_fraction_f1_coh_gt_0p5": 0.0875,
+      "median_phase_lag_f1_s": -0.09915039283704823,
+      "median_xcorr_lag_f1_s": -0.0749999999999984
+    },
+    "fin_z_max": {
+      "mean_coh_f1": 0.43026865249999546,
+      "mean_coh_f2": 0.979718287545216,
+      "active_fraction_f1_coh_gt_0p5": 0.1625,
+      "median_phase_lag_f1_s": -0.10021580948021919,
+      "median_xcorr_lag_f1_s": -0.0749999999999984
+    }
+  }
+}

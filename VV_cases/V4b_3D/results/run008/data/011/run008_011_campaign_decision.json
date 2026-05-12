@@ -1,0 +1,19 @@
+{
+  "production_reference": "run008",
+  "reason": [
+    "matches established aerodynamic regime from run004b/run005",
+    "inherits run007c Cp-consistent constant-property setup",
+    "uses 2..10 s production record with 25.98 shedding cycles",
+    "has closed heat balance: Q_wall-Q_air about +0.706%",
+    "contains measurement-rich sampling needed for POD/EPOD/coherence/local Nu story"
+  ],
+  "run007a_status": "variable-property experiment, not production reference because short-window wall-air closure was about -27.4%",
+  "run008_production": {
+    "Cd_mean": 3.361013797095566,
+    "Cl_rms": 0.1764414206817274,
+    "St": 0.15426122150265295,
+    "Nu_EB": 7.770003747254776,
+    "Nu_wall": "7.816520943152269",
+    "closure_pct": 0.7062132749826138
+  }
+}
