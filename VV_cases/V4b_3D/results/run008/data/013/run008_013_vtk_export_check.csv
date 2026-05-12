@@ -1,0 +1,7 @@
+label,time_s,vtk_file_count,vtk_size_MB,export_dir
+cl_zero_down,2.72,240,67.009,\\wsl$\Ubuntu-24.04\home\hexmachina\of_runs\V4b_3D_run008_q_lambda2_013
+cl_zero_up,7.44,240,67.009,\\wsl$\Ubuntu-24.04\home\hexmachina\of_runs\V4b_3D_run008_q_lambda2_013
+nu_global_max,6.88,240,67.009,\\wsl$\Ubuntu-24.04\home\hexmachina\of_runs\V4b_3D_run008_q_lambda2_013
+cl_min_qtube_max,3.84,240,67.009,\\wsl$\Ubuntu-24.04\home\hexmachina\of_runs\V4b_3D_run008_q_lambda2_013
+cl_max,2.16,240,67.009,\\wsl$\Ubuntu-24.04\home\hexmachina\of_runs\V4b_3D_run008_q_lambda2_013
+qfins_qwall_max,5.04,240,67.009,\\wsl$\Ubuntu-24.04\home\hexmachina\of_runs\V4b_3D_run008_q_lambda2_013

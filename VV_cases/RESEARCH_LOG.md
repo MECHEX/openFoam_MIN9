@@ -6003,3 +6003,75 @@ the canonical study documents with the accepted current state.
 
 Run a lightweight `Q`/`lambda2` visual pass on representative `run008` phases,
 then decide whether to promote it into a formal analysis layer.
+
+---
+
+## 2026-05-12 | V4b_3D | run008 Q/lambda2 structure pass
+
+### Work package
+
+Executed the planned first-pass vortical-structure identification for `run008`
+using `Q`, `Lambda2`, and `vorticity` on representative full-field checkpoints.
+
+### Actions taken
+
+- Added `scripts/analyse_run008_q_lambda2_013.py`.
+- Selected six full-field checkpoints from the layer-002 Hilbert phase:
+  `cl_zero_down`, `cl_zero_up`, `nu_global_max`, `cl_min_qtube_max`,
+  `cl_max`, and `qfins_qwall_max`.
+- Generated and executed `scripts/run008_q_lambda2_013_wsl.sh`.
+- Ran OpenFOAM `foamPostProcess` in parallel for:
+  - `Q`
+  - `Lambda2`
+  - `vorticity`
+- Exported decomposed VTK files outside Git.
+- Added first-pass cell-count proxy metrics for `Q > 0`, `Lambda2 < 0`, and
+  vorticity magnitude.
+
+### Outputs
+
+- `VV_cases/V4b_3D/results/run008/data/013/run008_013_selected_q_lambda2_times.csv`
+- `VV_cases/V4b_3D/results/run008/data/013/run008_013_q_lambda2_structure_metrics.csv`
+- `VV_cases/V4b_3D/results/run008/data/013/run008_013_q_lambda2_structure_pass.md`
+- `VV_cases/V4b_3D/results/run008/figures/013/run008_013_selected_q_lambda2_phases.png`
+- `VV_cases/V4b_3D/results/run008/figures/013/run008_013_q_lambda2_structure_metrics.png`
+- heavy VTK export outside Git:
+  `/home/hexmachina/of_runs/V4b_3D_run008_q_lambda2_013/vtk_processors`
+
+### Results
+
+The selected checkpoints hit the intended phases well:
+
+| label | selected t [s] | phase error [deg] |
+|---|---:|---:|
+| `cl_zero_down` | 2.720 | +0.23 |
+| `cl_zero_up` | 7.440 | -0.08 |
+| `nu_global_max` | 6.880 | -0.19 |
+| `cl_min_qtube_max` | 3.840 | +4.83 |
+| `cl_max` | 2.160 | +0.14 |
+| `qfins_qwall_max` | 5.040 | +1.22 |
+
+Each selected time exported 240 VTK files, about `67 MB` per time. Total heavy
+export size is about `408 MB`.
+
+First-pass global cell-count metrics are broadly phase-stable:
+
+- `Q > 0` cell fraction: about `0.462..0.484`
+- `Lambda2 < 0` cell fraction: about `0.418..0.439`
+- `Q p99`: about `2.19e4..2.22e4`
+- `|omega| p99`: about `991..994 1/s`
+
+### Interpretation
+
+The global cell-count proxies do not yet isolate the heat-transfer mechanism;
+they are too coarse and dominated by the whole flow volume. The useful product
+of this pass is the phase-targeted VTK export for visual inspection and the
+reproducible runner. The next meaningful step is spatial restriction: near
+wake, tube-fin junction, and fin-surface sweeping regions.
+
+### Next step
+
+Inspect `Q > 0` and `Lambda2 < 0` iso-surfaces in ParaView for the six exported
+phases. If the structures are visually clean, add a second-pass quantitative
+metric based on region-limited positive-`Q` volume or circulation proxy near
+the wake and fin junctions.

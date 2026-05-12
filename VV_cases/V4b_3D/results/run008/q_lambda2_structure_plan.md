@@ -75,3 +75,41 @@ This is worth doing. It is the most direct next post-processing step if the
 manuscript needs a stronger physical-structure figure. It should be kept
 separate from the accepted `001..012` layers until the first visual pass proves
 that the structures are clean enough to cite.
+
+## Execution status
+
+Executed as layer `013`.
+
+Repository outputs:
+
+- `data/013/run008_013_selected_q_lambda2_times.csv`
+- `data/013/run008_013_selected_q_lambda2_times.json`
+- `data/013/run008_013_q_lambda2_structure_metrics.csv`
+- `data/013/run008_013_q_lambda2_structure_metrics.json`
+- `data/013/run008_013_vtk_export_check.csv`
+- `data/013/run008_013_q_lambda2_structure_pass.md`
+- `figures/013/run008_013_selected_q_lambda2_phases.png`
+- `figures/013/run008_013_q_lambda2_structure_metrics.png`
+- `scripts/analyse_run008_q_lambda2_013.py`
+- `scripts/run008_q_lambda2_013_wsl.sh`
+
+Heavy outputs outside Git:
+
+```text
+/home/hexmachina/of_runs/V4b_3D_run008_q_lambda2_013/vtk_processors
+```
+
+The first pass computed `Q`, `Lambda2`, and `vorticity` for six representative
+full-field checkpoints:
+
+| label | selected t [s] | phase error [deg] |
+|---|---:|---:|
+| `cl_zero_down` | 2.720 | +0.23 |
+| `cl_zero_up` | 7.440 | -0.08 |
+| `nu_global_max` | 6.880 | -0.19 |
+| `cl_min_qtube_max` | 3.840 | +4.83 |
+| `cl_max` | 2.160 | +0.14 |
+| `qfins_qwall_max` | 5.040 | +1.22 |
+
+The exported VTK set is about `408 MB` and is intended for ParaView inspection
+of `Q > 0` iso-surfaces and `Lambda2 < 0` vortex cores.

@@ -1,0 +1,62 @@
+[
+  {
+    "label": "cl_zero_down",
+    "reason": "lift zero-crossing, descending branch",
+    "target_phase_deg": 11.25,
+    "selected_time_s": 2.72,
+    "selected_phase_deg": 11.480889108231402,
+    "phase_error_deg": 0.23088910823139486,
+    "cl_bandpassed": 0.022275058519800238,
+    "dcl_dt": -0.24175024562441827
+  },
+  {
+    "label": "cl_zero_up",
+    "reason": "lift zero-crossing, ascending branch",
+    "target_phase_deg": 78.75,
+    "selected_time_s": 7.44,
+    "selected_phase_deg": 78.67187366614066,
+    "phase_error_deg": -0.07812633385935897,
+    "cl_bandpassed": 0.0011026278966903324,
+    "dcl_dt": -0.09187554422903209
+  },
+  {
+    "label": "nu_global_max",
+    "reason": "maximum Nu_tube/Nu_fins/Nu_EB phase",
+    "target_phase_deg": 123.75,
+    "selected_time_s": 6.88,
+    "selected_phase_deg": 123.56236733673705,
+    "phase_error_deg": -0.1876326632629457,
+    "cl_bandpassed": -0.00228594600787637,
+    "dcl_dt": -0.06543946880192564
+  },
+  {
+    "label": "cl_min_qtube_max",
+    "reason": "Cl minimum and Q_tube maximum phase",
+    "target_phase_deg": 236.25,
+    "selected_time_s": 3.84,
+    "selected_phase_deg": 241.0837452874401,
+    "phase_error_deg": 4.8337452874401095,
+    "cl_bandpassed": -0.003376764373236533,
+    "dcl_dt": 0.10808696263205353
+  },
+  {
+    "label": "cl_max",
+    "reason": "Cl maximum phase",
+    "target_phase_deg": 281.25,
+    "selected_time_s": 2.16,
+    "selected_phase_deg": 281.3945742246654,
+    "phase_error_deg": 0.14457422466540493,
+    "cl_bandpassed": 0.028885317127244334,
+    "dcl_dt": 2.3206820556725427
+  },
+  {
+    "label": "qfins_qwall_max",
+    "reason": "Q_fins and Q_wall maximum phase",
+    "target_phase_deg": 303.75,
+    "selected_time_s": 5.04,
+    "selected_phase_deg": 304.9738314139337,
+    "phase_error_deg": 1.2238314139336808,
+    "cl_bandpassed": 0.0012416621147639403,
+    "dcl_dt": 0.016264824867577868
+  }
+]
