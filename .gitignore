@@ -41,3 +41,11 @@ spatial_mode_*.csv
 
 # ── toolkit_test raw input snapshots ────────────────────────────────────────
 toolkit_test/data/
+
+# Generated CFD analysis artifacts. Keep scripts and markdown summaries in Git;
+# regenerate dense tables/figures from local OpenFOAM outputs when needed.
+VV_cases/V4b_3D/results/run*/data/**/*.csv
+VV_cases/V4b_3D/results/run*/data/**/*.json
+VV_cases/V4b_3D/results/run*/data/**/*.txt
+VV_cases/V4b_3D/results/run*/figures/**/*.png
+VV_cases/V4b_3D/results/run*/figures/**/*.pdf

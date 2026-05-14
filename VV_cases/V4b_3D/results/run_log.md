@@ -13,6 +13,8 @@
 | run007a | 2026-05-08 | 200 | BL lvl-2 varProps | SHORT | 3.474 | 0.179 | 0.1541 | 308.934 | 10.225 | completed to t=2 s; incompressiblePerfectGas+Sutherland vs run004b over 0.5..2 s: Cd +3.34%, St -0.30%, Nu +32.22%; extend to t=6 before final production conclusion |
 | run007c | 2026-05-08 | 200 | BL lvl-2 Cp-scale const | SHORT | 3.361 | 0.177 | N/A | 305.594 | 7.731 | completed to t=2 s; eConst+Boussinesq with capacity 1005; force matches run004b; Q_air=1.462W, Q_wall=1.482W, wall-air closure +1.4%; Nu_wall_case=7.822; confirms apparent Nu jump is mainly Cv/Cp/k consistency |
 | run008 | 2026-05-09 | 200 | BL lvl-2 production | ANALYZED | 3.361 | 0.176 | 0.1543 | 305.668 | 7.770 | completed to t=10 s on 20 ranks from run007c; ClockTime=50909s; production window t=2..10s; Q_air=1.471W Q_wall=1.481W closure +0.706%; POD modes 1+2 capture 80.29%; local tube/fin Nu maps and Cl-Nu coherence figures generated |
+| run009 | 2026-05-13 | 200 | BL lvl-2 varProps Cv movie | REMOVED | 3.474 | 0.169 | 0.1557 | TBD | TBD | completed but deleted from WSL storage on 2026-05-14; used eConst+sensibleInternalEnergy with Cv=718, which was the wrong heat capacity for the intended Cp-consistent comparison |
+| run010 | 2026-05-14 | 200 | BL lvl-2 varProps cp | RUNNING | TBD | TBD | TBD | TBD | TBD | launched as `/home/hexmachina/of_runs/V4b_3D_run010_varprops_cp`; incompressiblePerfectGas+Sutherland with eConst+sensibleInternalEnergy and Cv=1005; stopped cleanly at t=5.935 s for partial 48-phase layer-015, then at t~7.526 s for uniform layer-017 lag/surrogate analysis, then resumed from latestTime in tmux |
 
 ## run003 Note
 

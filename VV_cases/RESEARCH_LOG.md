@@ -6093,6 +6093,40 @@ representative phases.
 - Rendered `Q = 3000` iso-surfaces in orange.
 - Rendered `Lambda2 = -1000` iso-surfaces in blue.
 - Added translucent hot tube and fin geometry as context.
+- Corrected the context-geometry render after visual inspection: boundary patch
+  VTK files for `hot_tube`, `hot_fin_z_min`, and `hot_fin_z_max` are now read
+  per processor and appended explicitly. This fixes the earlier ambiguity where
+  the tube was effectively hidden by an empty/partial decomposed patch read.
+- Re-rendered the figures with explicit solid-body colors: red hot tube, beige
+  hot fins, black patch edges, amber `Q`, and blue `Lambda2`.
+- Added close-up screenshots focused on the tube-fin junction for each selected
+  phase.
+- Reworked the render style after inspection: removed visible mesh edges from
+  the tube/fin patches, changed the solid geometry to translucent grey, rotated
+  the camera to an axonometric view where the tube axis is mostly horizontal,
+  and rendered multiple iso-thresholds on one image.
+- Current multi-threshold color convention:
+  `Q = 1200/3000/8000` as yellow/orange/red and
+  `Lambda2 = -500/-1000/-3000` as cyan/blue/violet.
+- Adjusted the camera to the requested construction from an `X-Y` view:
+  `+x` projects to the right, `+y` projects upward, and the camera is tilted
+  about `20 deg` toward `+x` and about `20 deg` toward `-y` so the outlet side
+  of the inter-fin volume is visible on the right. Current overview camera:
+  `CameraPosition = [0.02427, -0.02427, 0.06668]`,
+  `CameraViewUp = [0.11068, 0.94619, 0.30410]`.
+- Updated the camera to match the annotated outlet-depth sketch more closely:
+  `+x` projects almost horizontally right, `+y` almost vertically up, and the
+  depth/tube axis `+z` projects toward the upper-right. Current overview
+  camera:
+  `CameraPosition = [-0.01657, -0.00881, 0.07261]`,
+  `CameraViewUp = [-0.00988, 0.99294, 0.11818]`. Projected axis angles:
+  `+x ~= -0.6 deg`, `+y ~= 91.0 deg`, `+z ~= 28.2 deg`.
+- Reversed the outlet-depth tilt to match the revised sketch: `+z` now projects
+  toward the lower-right while `+x` remains rightward and `+y` remains upward.
+  Current overview camera:
+  `CameraPosition = [-0.01932, 0.01036, 0.07172]`,
+  `CameraViewUp = [0.02466, 0.99034, -0.13641]`. Projected axis angles:
+  `+x ~= 1.5 deg`, `+y ~= 89.3 deg`, `+z ~= -27.8 deg`.
 
 ### Outputs
 
@@ -6100,14 +6134,597 @@ representative phases.
 - `VV_cases/V4b_3D/results/run008/data/014/run008_014_q_lambda2_isosurface_render.csv`
 - `VV_cases/V4b_3D/results/run008/data/014/run008_014_q_lambda2_isosurface_render.json`
 - `VV_cases/V4b_3D/results/run008/figures/014/run008_014_iso_Q_Lambda2_*.png`
+- `VV_cases/V4b_3D/results/run008/figures/014/run008_014_iso_Q_Lambda2_*_closeup.png`
 
 ### Interpretation
 
-The iso-surfaces are readable at the chosen thresholds and show coherent
-near-tube and wake structures at the selected phases. The pass is diagnostic:
-it demonstrates that the exported fields are suitable for structural
-inspection, but it does not by itself quantify local heat-transfer control.
+The corrected render now makes the hot geometry explicit without visual mesh
+clutter. The grey translucent tube and fins confirm the spatial relation between
+the solid surfaces and the multi-colored vortical structures. The pass remains
+diagnostic: it demonstrates that the exported fields are suitable for
+structural inspection, but it does not by itself quantify local heat-transfer
+control.
 
 The next useful analysis is to measure `Q`/`Lambda2` only in restricted regions:
 near wake, tube-fin junctions, and fin-surface sweeping zones, then correlate
 those metrics with local tube and fin `Nu`.
+
+---
+
+## 2026-05-13 11:54:19 +02:00 | V4b_3D | run008 ParaView state for Q/lambda2 inspection
+
+### Work package
+
+Prepared interactive ParaView state files for visually inspecting the existing
+layer-013 `Q`/`Lambda2` VTK exports without manually loading processor files.
+
+### Actions taken
+
+- Added generator script:
+  - `VV_cases/V4b_3D/results/run008/scripts/build_run008_q_lambda2_paraview_state.py`
+- Generated ParaView state files in:
+  - `VV_cases/V4b_3D/results/run008/paraview/run008_Q_Lambda2_six_phases.pvsm`
+  - `VV_cases/V4b_3D/results/run008/paraview/run008_Q_Lambda2_six_phases_windows_unc.pvsm`
+- Added a short usage note:
+  - `VV_cases/V4b_3D/results/run008/paraview/README.md`
+- Verified that the WSL/Linux-path `.pvsm` loads successfully with `pvpython`.
+
+### Decisions made
+
+- Keep the state files lightweight: they reference the existing heavy VTK export
+  outside Git rather than embedding or copying the data.
+- Provide both Linux-path and Windows UNC-path state files because ParaView may
+  be launched either from WSL/Linux or from Windows.
+
+### Next step
+
+Use the ParaView state for manual structure inspection, then decide whether to
+build a quantitative region-limited `Q`/`Lambda2` metric layer.
+
+---
+
+## 2026-05-13 14:41:37 +02:00 | V4b_3D | run009 variable-property movie run launched
+
+### Work package
+
+Prepared and launched a run008-style rerun with variable air properties and
+dense field output for smooth vortex-shedding movie post-processing.
+
+### Actions taken
+
+- Added preparation script:
+  - `VV_cases/V4b_3D/_code/prepare_run009_varprops_movie.sh`
+- Added solver launch helpers:
+  - `VV_cases/V4b_3D/_code/start_run009_varprops_movie_bg.sh`
+  - `VV_cases/V4b_3D/_code/run009_varprops_movie_foreground.sh`
+- Created working case outside Git:
+  - `/home/hexmachina/of_runs/V4b_3D_run009_varprops_movie`
+- Copied the `run008` setup and changed thermophysics to:
+  - `incompressiblePerfectGas + Sutherland + sensibleInternalEnergy`
+- Set dense movie-oriented sampling:
+  - full fields every `0.02 s`
+  - midspan VTK every `0.01 s`
+  - force/probe/wall-surface outputs every `0.005 s`
+- Ran `checkMesh`: `Mesh OK`.
+- Ran `decomposePar` for `20` ranks.
+- Launched solver inside tmux session:
+  - `run009_varprops_movie`
+- Added run documentation and post-processing helper:
+  - `VV_cases/V4b_3D/results/run009/summary.md`
+  - `VV_cases/V4b_3D/results/run009/run009_q_lambda2_movie_wsl.sh`
+- Updated:
+  - `VV_cases/V4b_3D/results/run_log.md`
+
+### Current status
+
+The solver has entered the time loop and is writing outputs. Initial sampled
+files exist for forces, probes, wall heat flux, hot surfaces, and the midspan
+slice.
+
+### Decisions made
+
+- Keep `run008` as the accepted production reference.
+- Treat `run009` as a variable-property diagnostic/production candidate until
+  heat-balance closure and global statistics are checked.
+- Use `tmux` for the long run because short non-interactive WSL sessions killed
+  detached `mpirun` jobs.
+
+### Next step
+
+Monitor `run009` to completion, then compute `Q`, `Lambda2`, and `vorticity`
+over the post-transient movie window and compare force/thermal statistics
+against `run008`.
+
+---
+
+## 2026-05-13 16:47:04 +02:00 | V4b_3D | run008 layer 015 region-limited structure/heat diagnostic
+
+### Work package
+
+Executed a small layer-015 post-processing analysis for the accepted `run008`
+case, using existing layer-013 `Q`/`Lambda2` VTK checkpoints and layer-009
+phase/local-Nu arrays. No new CFD was run.
+
+### Actions taken
+
+- Added analysis script:
+  - `VV_cases/V4b_3D/results/run008/scripts/analyse_run008_region_structure_heat_015.py`
+- Computed region-limited vortex metrics for six selected phase checkpoints:
+  - `R_sep`
+  - `R_near_wake`
+  - `R_fin_junction`
+  - `R_fin_sweep`
+  - `R_far_wake`
+  - `R_global_control`
+- Used thresholds:
+  - `Q_thr = 3000`
+  - `Lambda2_thr = -3000`
+- Paired each volume region with a physically corresponding local heat-transfer
+  region from the existing Nu phase arrays.
+- Wrote result tables:
+  - `VV_cases/V4b_3D/results/run008/data/015/run008_015_region_q_lambda2_metrics.csv`
+  - `VV_cases/V4b_3D/results/run008/data/015/run008_015_region_heat_metrics.csv`
+  - `VV_cases/V4b_3D/results/run008/data/015/run008_015_region_structure_heat_merged.csv`
+  - `VV_cases/V4b_3D/results/run008/data/015/run008_015_region_structure_heat_correlations.csv`
+  - `VV_cases/V4b_3D/results/run008/data/015/run008_015_region_structure_heat_metrics.md`
+- Wrote diagnostic figure:
+  - `VV_cases/V4b_3D/results/run008/figures/015/run008_015_region_structure_heat_phase.png`
+  - `VV_cases/V4b_3D/results/run008/figures/015/run008_015_region_structure_heat_phase.pdf`
+
+### Current interpretation
+
+The six-phase screen is useful as a diagnostic, but it is not yet a causal lag
+analysis. Region-limited `Lambda2` intensity is much stronger near the tube-fin
+junction and separation shell than in the global control. The strongest
+six-phase structure/heat correlation by magnitude appears in `R_fin_sweep`
+(`corr(I_Lambda2*, Nu) ~= -0.87`), while global and far-wake correlations are
+weak and positive (`~0.17`). This should be treated as a candidate signal until
+more snapshots are processed.
+
+### Next step
+
+For a paper-grade mechanism claim, export/process many more `run008` snapshots
+over the post-transient window and compute lagged correlations between
+region-limited `Q`/`Lambda2` intensity and local `Nu` or wall heat flux.
+
+---
+
+## 2026-05-14 09:35:29 +02:00 | V4b_3D | run009 completed and 48-phase snapshot selection prepared
+
+### Work package
+
+Checked the variable-property `run009` movie run and prepared a phase-resolved
+snapshot selection for dense `Q`/`Lambda2` post-processing.
+
+### Status checked
+
+- Solver process is no longer running.
+- The final solver log reaches `Time = 10s` and ends with `End` /
+  `Finalising parallel run`.
+- Case size is about `57 GB`.
+- Available storage on the WSL filesystem is about `794 GB`.
+- Decomposed full-field directories exist for `20` processors.
+
+### Snapshot availability
+
+- Full `U/T/p/rho` OpenFOAM fields are available every `0.02 s`, giving `501`
+  full-field times from `0..10 s`.
+- In the post-transient analysis window `2..10 s`, there are `401` full-field
+  snapshots.
+- Force coefficients and wall/surface outputs are available every `0.005 s`.
+- Midspan VTK slices are available every `0.01 s`.
+
+### Actions taken
+
+- Added phase-selection script:
+  - `VV_cases/V4b_3D/results/run009/scripts/select_run009_48_phase_snapshots.py`
+- Wrote selected 48-phase outputs:
+  - `VV_cases/V4b_3D/results/run009/data/001/run009_001_48_phase_snapshot_selection.csv`
+  - `VV_cases/V4b_3D/results/run009/data/001/run009_001_48_phase_times.txt`
+  - `VV_cases/V4b_3D/results/run009/data/001/run009_001_48_phase_snapshot_selection.md`
+- Updated:
+  - `VV_cases/V4b_3D/results/run009/summary.md`
+  - `VV_cases/V4b_3D/results/run009/run009_q_lambda2_movie_wsl.sh`
+
+### Current metrics
+
+- `Cl` phase window: `t = 2..10 s`.
+- Detected `Cl` peaks: `53`.
+- Mean shedding period: `0.1525 s`.
+- Mean shedding frequency: `6.557 Hz`.
+- 48 phase-bin coverage on full-field times: no empty bins.
+- Selected unique full-field snapshots: `48`.
+- Mean/max phase error: `0.505 deg` / `2.120 deg`.
+
+### Next step
+
+Run the updated `run009_q_lambda2_movie_wsl.sh` helper to compute `Q`,
+`Lambda2`, and `vorticity` for the 48 selected phase snapshots, then reuse the
+region-limited layer-015 style metric workflow on `run009`.
+
+---
+
+## 2026-05-14 10:24:57 +02:00 | V4b_3D | run009 global comparison against run008
+
+### Work package
+
+Computed the same-window global comparison requested before proceeding to
+48-phase `Q`/`Lambda2` post-processing.
+
+### Actions taken
+
+- Added comparison script:
+  - `VV_cases/V4b_3D/results/run009/scripts/compare_run008_run009_global_metrics.py`
+- Wrote comparison outputs:
+  - `VV_cases/V4b_3D/results/run009/data/002/run009_002_vs_run008_global_metrics.csv`
+  - `VV_cases/V4b_3D/results/run009/data/002/run009_002_global_metric_by_run.csv`
+  - `VV_cases/V4b_3D/results/run009/data/002/run009_002_heat_timeseries_massT.csv`
+  - `VV_cases/V4b_3D/results/run009/data/002/run009_002_vs_run008_global_metrics.md`
+- Updated:
+  - `VV_cases/V4b_3D/results/run009/summary.md`
+
+### Current comparison, `t = 2..10 s`
+
+- `Cd_mean`: run009 `3.47390` vs run008 `3.36101` (`+3.36%`).
+- `Cl_mean`: run009 `2.52778` vs run008 `2.51417` (`+0.54%`).
+- `Cl_rms`: run009 `0.16879` vs run008 `0.17644` (`-4.34%`).
+- Physical shedding frequency: unchanged at `3.27869 Hz` using the same
+  every-second-`Cl`-peak convention.
+- `St`: unchanged at `0.15572` using `St = f_shed D / U_ref`.
+- Wall-side `Nu_total`: run009 `7.38417` vs run008 `7.81652` (`-5.53%`).
+- Wall-side `Nu_tube`: run009 `7.73470` vs run008 `8.43441` (`-8.30%`).
+- Wall-side `Nu_fins`: run009 `7.28156` vs run008 `7.63566` (`-4.64%`).
+- Diagnostic mass-outlet energy balance does not close for run009:
+  `Q_wall = 1.337 W`, `Q_air = 1.870 W`, closure about `-28.5%`.
+
+### Decision
+
+Do not treat `run009` as an accepted replacement for `run008` yet. It is still
+useful for visual/diagnostic 48-phase vortex post-processing, but heat-transfer
+interpretation should prioritize wall-side `Nu` until the variable-property
+heat balance is audited more deeply.
+
+---
+
+## 2026-05-14 10:37:31 +02:00 | V4b_3D | run009 removed and run010 varprops cp launched
+
+### Work package
+
+Removed the incorrect variable-property `run009` working case and prepared a
+replacement `run010` named simply `varprops_cp`.
+
+### Actions taken
+
+- Deleted the heavy WSL case directory:
+  - `/home/hexmachina/of_runs/V4b_3D_run009_varprops_movie`
+- Freed storage:
+  - available WSL space increased from about `794 GB` to about `850 GB`
+- Replaced the run009 summary with a short historical note:
+  - `VV_cases/V4b_3D/results/run009/summary.md`
+- Added run010 preparation/start helpers:
+  - `VV_cases/V4b_3D/_code/prepare_run010_varprops_cp.sh`
+  - `VV_cases/V4b_3D/_code/start_run010_varprops_cp_bg.sh`
+  - `VV_cases/V4b_3D/_code/run010_varprops_cp_foreground.sh`
+- Added run010 docs/post-processing helper:
+  - `VV_cases/V4b_3D/results/run010/summary.md`
+  - `VV_cases/V4b_3D/results/run010/run010_q_lambda2_movie_wsl.sh`
+- Updated:
+  - `VV_cases/V4b_3D/results/run_log.md`
+
+### Correction
+
+Run009 used:
+
+```text
+eConst + sensibleInternalEnergy
+Cv = 718 J/(kg K)
+incompressiblePerfectGas + Sutherland
+```
+
+That was the wrong heat capacity for the intended Cp-consistent comparison.
+Run010 keeps the same stable internal-energy formulation but sets:
+
+```text
+Cv = 1005 J/(kg K)
+```
+
+This is named `cp` because the capacity is set to the Cp value used in the
+accepted run008 thermal scaling.
+
+### Run010 launch status
+
+- Prepared WSL case:
+  - `/home/hexmachina/of_runs/V4b_3D_run010_varprops_cp`
+- `checkMesh`: `Mesh OK`
+- `decomposePar`: completed for `20` ranks
+- Solver launched in background:
+  - log: `/home/hexmachina/of_runs/V4b_3D_run010_varprops_cp/logs/log.foamRun_parallel.20260514_103614_np20_varprops_cp`
+  - mpirun PID: `1781`
+- Early solver status:
+  - entered time loop
+  - `Co_max` below `0.8`
+  - finite residuals/continuity errors
+
+### Next step
+
+Monitor run010 to completion, then redo the global `run008` vs `run010`
+comparison before computing the 48-phase `Q`/`Lambda2` layer.
+
+---
+
+## 2026-05-14 19:22:16 +02:00 | V4b_3D | run010 partial 48-phase layer 015 analysis
+
+### Work package
+
+Stopped `run010_varprops_cp` cleanly for a partial analysis before travel,
+computed 48 phase-selected `Q`/`Lambda2` fields, and ran a region-limited
+structure/heat diagnostic analogous to `run008_015`.
+
+### Actions taken
+
+- Stopped solver with `stopAt writeNow`.
+- Solver ended cleanly at `t = 5.935 s` with `End` / `Finalising parallel run`.
+- Reset case for continuation:
+  - `startFrom latestTime`
+  - `stopAt endTime`
+- Refreshed partial 48-phase selection:
+  - `VV_cases/V4b_3D/results/run010/data/001/run010_001_partial_48_phase_snapshot_selection.csv`
+  - `VV_cases/V4b_3D/results/run010/data/001/run010_001_partial_48_phase_times.txt`
+- Computed `Q`, `Lambda2`, and `vorticity` for the 48 selected snapshots:
+  - `/home/hexmachina/of_runs/V4b_3D_run010_varprops_cp_q_lambda2_partial48/vtk_processors`
+- Added analysis script:
+  - `VV_cases/V4b_3D/results/run010/scripts/analyse_run010_partial_region_structure_heat_015.py`
+- Wrote outputs:
+  - `VV_cases/V4b_3D/results/run010/data/015_partial/run010_015_partial_region_q_lambda2_metrics.csv`
+  - `VV_cases/V4b_3D/results/run010/data/015_partial/run010_015_partial_heat_metrics.csv`
+  - `VV_cases/V4b_3D/results/run010/data/015_partial/run010_015_partial_region_structure_heat_merged.csv`
+  - `VV_cases/V4b_3D/results/run010/data/015_partial/run010_015_partial_region_structure_heat_correlations.csv`
+  - `VV_cases/V4b_3D/results/run010/data/015_partial/run010_015_partial_region_structure_heat_metrics.md`
+  - `VV_cases/V4b_3D/results/run010/figures/015_partial/run010_015_partial_region_structure_heat_phase.png`
+- Updated:
+  - `VV_cases/V4b_3D/results/run010/summary.md`
+
+### Partial result
+
+- Partial window: `t = 2..5.935 s`.
+- Estimated physical cycles: about `12.5`.
+- 48 phase bins selected with no empty phase bins.
+- Mean/max phase error: `0.773 deg` / `2.171 deg`.
+- Selected-phase heat balance:
+  - `Q_wall_mean = 1.77061 W`
+  - `Q_air_mean = 1.77256 W`
+  - mean instantaneous closure `+0.2605%`
+  - `Nu_wall_mean = 9.66997`
+  - `Nu_EB_mean = 9.68796`
+- Region-limited `Lambda2` intensity remains strongest in:
+  - `R_fin_junction`: mean `I_Lambda2* = 4.73`
+  - `R_sep`: mean `I_Lambda2* = 3.76`
+  - `R_fin_sweep`: mean `I_Lambda2* = 1.26`
+
+### Interpretation
+
+The partial 48-phase result is much stronger than the earlier six-phase
+run008 screen, but it is still not final. Integrated `Lambda2` intensity varies
+weakly with phase, while `Nu` and `Q_air` show stronger phase structure. This
+suggests that the final mechanism should include vortex position/convection and
+wall interaction, not just region-integrated vortex intensity.
+
+### Next step
+
+Resume run010 from `latestTime` and let it continue to `t = 10 s`. After
+completion, repeat the global comparison and rebuild the 48-phase layer 015
+from the full `t = 2..10 s` window.
+
+---
+
+## 2026-05-14 19:26:24 +02:00 | V4b_3D | run010 resumed after partial analysis
+
+### Status
+
+`run010_varprops_cp` was resumed from `latestTime` after the partial 48-phase
+layer-015 analysis.
+
+### Runtime details
+
+- tmux session: `run010_varprops_cp_resume`
+- ranks: `20`
+- resume log:
+  `/home/hexmachina/of_runs/V4b_3D_run010_varprops_cp/logs/log.foamRun_parallel.20260514_resume_np20_varprops_cp`
+- verified live at `t = 5.9376 s`
+
+### Next step
+
+Let the solver continue to `t = 10 s`, then regenerate the final 48-phase
+selection and repeat the layer-015 structure/heat coupling analysis on the full
+post-transient window.
+
+---
+
+## 2026-05-14 19:40:00 +02:00 | V4b_3D | run010 partial layer 016 lag/surrogate diagnostic
+
+### Work package
+
+Added a sparse lag-scan diagnostic for the incomplete `run010` using the
+available 48 phase-selected layer-015 snapshots.
+
+### Actions taken
+
+- Added script:
+  - `VV_cases/V4b_3D/results/run010/scripts/analyse_run010_partial_lag_surrogates_016.py`
+- Read:
+  - `VV_cases/V4b_3D/results/run010/data/015_partial/run010_015_partial_region_structure_heat_merged.csv`
+- Interpolated the 48 selected samples to `dt = 0.02 s`.
+- Scanned lags over `+-T_shed`, with positive lag meaning structure leads heat.
+- Used `1000` cyclic-shift surrogates for each tested signal pair.
+- Wrote:
+  - `VV_cases/V4b_3D/results/run010/data/016_partial_lag_surrogates/run010_016_partial_lag_surrogate_summary.csv`
+  - `VV_cases/V4b_3D/results/run010/data/016_partial_lag_surrogates/run010_016_partial_lag_surrogate_curves.csv`
+  - `VV_cases/V4b_3D/results/run010/data/016_partial_lag_surrogates/run010_016_partial_lag_surrogate_analysis.md`
+  - `VV_cases/V4b_3D/results/run010/figures/016_partial_lag_surrogates/run010_016_partial_lag_surrogate_lambda2_nu.png`
+- Updated:
+  - `VV_cases/V4b_3D/results/run010/summary.md`
+
+### Result
+
+The partial sparse diagnostic does not yet give a clean causal/convection-lag
+result. The strongest apparent relationships are mainly zero-lag or
+wrong-direction:
+
+- `R_sep -> Nu_tube_wall`, `I_Lambda2* -> Nu`:
+  `rho* = -0.465`, `tau* = 0.000 s`
+- `R_near_wake -> Nu_tube_wall`, `I_Lambda2* -> Nu`:
+  `rho* = -0.480`, `tau* = 0.000 s`
+- `R_fin_junction -> Nu_wall`, `I_Q* -> Nu`:
+  `rho* = -0.827`, `tau* = 0.000 s`
+- `R_far_wake -> Nu_fins_wall`, `I_Lambda2* -> Nu`:
+  `rho* = -0.398`, `tau* = +0.280 s`, but this is longer than `T_shed/2` and
+  should be treated as likely alias/phase-wrap rather than a clean convection
+  delay.
+
+### Interpretation
+
+Because the input is 48 phase-selected snapshots rather than a complete
+uniformly sampled `I_R(t)` time series, the surrogate p-values are screening
+metrics only. The diagnostic says that the partial data are not enough to claim
+that regional vortex activity precedes local heat-transfer response. The final
+layer should be repeated after run010 reaches `t = 10 s`, using uniformly
+sampled vortex metrics over the production window.
+
+---
+
+## 2026-05-14 21:56:48 +02:00 | V4b_3D | run010 layer 017 available-time uniform lag/surrogate diagnostic
+
+### Work package
+
+Stopped the incomplete `run010` cleanly again, rebuilt the vortex/heat lag
+analysis from the currently available uniform time series, then resumed the
+solver.
+
+### Actions taken
+
+- Stopped solver with `stopAt writeNow` at about `t = 7.526 s`.
+- Computed `Q` and `Lambda2` over the available decomposed time directories:
+  `t = 2..7.526 s`.
+- Added script:
+  - `VV_cases/V4b_3D/results/run010/scripts/analyse_run010_available_uniform_lag_surrogates_017.py`
+- Computed region-limited `I_Q^R(t)` and `I_Lambda2^R(t)` directly from
+  decomposed OpenFOAM fields on a uniform `dt = 0.02 s` grid.
+- Used `277` samples over `t = 2.000..7.520 s`.
+- Used `1000` cyclic-shift surrogates per tested signal pair.
+- Wrote:
+  - `VV_cases/V4b_3D/results/run010/data/017_available_uniform_lag_surrogates/run010_017_available_uniform_region_q_lambda2_timeseries.csv`
+  - `VV_cases/V4b_3D/results/run010/data/017_available_uniform_lag_surrogates/run010_017_available_uniform_heat_timeseries.csv`
+  - `VV_cases/V4b_3D/results/run010/data/017_available_uniform_lag_surrogates/run010_017_available_uniform_lag_surrogate_summary.csv`
+  - `VV_cases/V4b_3D/results/run010/data/017_available_uniform_lag_surrogates/run010_017_available_uniform_lag_surrogate_curves.csv`
+  - `VV_cases/V4b_3D/results/run010/data/017_available_uniform_lag_surrogates/run010_017_available_uniform_lag_surrogate_analysis.md`
+  - `VV_cases/V4b_3D/results/run010/figures/017_available_uniform_lag_surrogates/run010_017_available_uniform_lag_surrogate_lambda2_nu.png`
+- Reset continuation controls:
+  - `startFrom latestTime`
+  - `stopAt endTime`
+- Resumed solver in tmux:
+  - `run010_varprops_cp_resume`
+  - log: `/home/hexmachina/of_runs/V4b_3D_run010_varprops_cp/logs/log.foamRun_parallel.20260514_resume2_np20_varprops_cp`
+- Verified live continuation at about `t = 7.53 s` with `20` foamRun ranks.
+
+### Heat balance on layer-017 grid
+
+- `Q_wall_mean = 1.76956 W`
+- `Q_air_mean = 1.76760 W`
+- `closure_mean = +0.4789%`
+- `Nu_wall_mean = 9.65838`
+- `Nu_EB_mean = 9.65495`
+
+### Main lag-screen result
+
+Layer 017 is stronger than layer 016 because it uses a uniform time series
+instead of 48 phase-selected samples. It still does not produce a clean
+"increased vortex intensity precedes increased local Nu" mechanism.
+
+Selected `I_Lambda2* -> Nu` results:
+
+- `R_near_wake -> Nu_tube_wall`:
+  `rho* = +0.839`, `tau* = -0.080 s`; strong but wrong direction for
+  structure-leading heat.
+- `R_sep -> Nu_tube_wall`:
+  `rho* = -0.514`, `tau* = +0.160 s`; significant, but lag is slightly above
+  `T_shed/2` and the sign is anticorrelated.
+- `R_fin_sweep -> Nu_fins_wall`:
+  `rho* = +0.745`, `tau* = +0.220 s`; significant, but lag is above
+  `T_shed/2`.
+- `R_far_wake -> Nu_fins_wall`:
+  `rho* = +0.297`, `tau* = +0.160 s`; weak and beyond the accepted lag window.
+
+The strongest screened structure/heat pair was `R_fin_sweep -> Nu_fins_wall`
+using `I_Q* -> Nu`: `rho* = -0.785`, `tau* = +0.020 s`. This is statistically
+strong and positive-lag, but it is an anticorrelation rather than a
+"more-vortex-more-Nu" effect.
+
+### Interpretation
+
+The available incomplete run010 data show robust phase-locked structure/heat
+coupling, but the sign and lag structure remain complex. The evidence supports
+local coupling and wall-interaction dynamics, not a simple monotonic causal
+statement. Repeat layer 017 after `t = 10 s` for the final paper-grade version.
+
+---
+
+## 2026-05-14 22:12:00 +02:00 | V4b_3D | run010 layer 018 decycling/envelope/phase-consistency diagnostic
+
+### Work package
+
+Applied three follow-up tests to the layer-017 uniform signals to separate
+true structure/heat coupling from common periodic shedding rhythm.
+
+### Actions taken
+
+- Added script:
+  - `VV_cases/V4b_3D/results/run010/scripts/analyse_run010_available_signal_decycling_018.py`
+- Reused layer-017 time series:
+  - `run010_017_available_uniform_region_q_lambda2_timeseries.csv`
+  - `run010_017_available_uniform_heat_timeseries.csv`
+- Tested:
+  - raw lag correlation,
+  - least-squares decycled residuals after removing `f_shed` and `2*f_shed`,
+  - analytic-signal envelope lag correlation,
+  - phase consistency between `f_shed` and `2*f_shed`.
+- Used `1000` cyclic-shift surrogates per pair/method.
+- Wrote:
+  - `VV_cases/V4b_3D/results/run010/data/018_available_signal_decycling/run010_018_decycling_envelope_phase_summary.csv`
+  - `VV_cases/V4b_3D/results/run010/data/018_available_signal_decycling/run010_018_decycling_envelope_phase_curves.csv`
+  - `VV_cases/V4b_3D/results/run010/data/018_available_signal_decycling/run010_018_decycling_envelope_phase_analysis.md`
+  - `VV_cases/V4b_3D/results/run010/figures/018_available_signal_decycling/run010_018_decycled_envelope_lambda2_nu.png`
+
+### Main result
+
+Decycled residual correlations often remain, so the layer-017 signal is not
+purely an artifact of the raw periodic waveform. However, the surviving
+relations are generally not clean positive-lag positive-correlation mechanisms.
+
+Selected `I_Lambda2* -> Nu` examples:
+
+- `R_sep -> Nu_tube_wall`:
+  after decycling, strongest signed relation `rho = -0.554` at
+  `tau = +0.160 s`; envelope test is not significant.
+- `R_near_wake -> Nu_tube_wall`:
+  after decycling, `rho = +0.731` at `tau = -0.080 s`; strong but wrong
+  direction for structure-leading heat.
+- `R_fin_junction -> Nu_wall`:
+  envelope `rho = +0.653` at `tau = +0.300 s`; too long for a clean
+  convection-delay claim.
+- `R_fin_sweep -> Nu_fins_wall`:
+  decycled residual `rho = +0.701` at `tau = -0.240 s`, envelope
+  `rho = +0.680` at `tau = -0.080 s`; both wrong direction.
+- `R_far_wake -> Nu_fins_wall`:
+  envelope is not significant.
+
+The harmonic phase-consistency test generally shows nonzero mismatch between
+`phase(2f)` and `2*phase(f)`, so a single true time delay is not supported
+strongly. The coupling is better described as mode-specific phase locking.
+
+### Interpretation
+
+Layer 018 supports a careful claim: regional vortex metrics and heat transfer
+are coupled in a phase-locked, region-dependent way, but not through a simple
+monotonic "more vortex activity precedes higher Nu" mechanism. The likely
+mechanism remains local wall interaction, structure position, and mode-specific
+phase relation.
