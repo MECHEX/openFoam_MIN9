@@ -1,0 +1,55 @@
+FoamFile
+{
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+
+dimensions      [0 1 -1 0 0 0 0];
+internalField   uniform (0.151600000 0.000151600 0);
+
+boundaryField
+{
+    inlet
+    {
+        type            codedFixedValue;
+        name            poiseuilleInlet;
+        value           uniform (0 0 0);
+        code
+        #{
+            vectorField v(this->patch().size(), vector::zero);
+            const vectorField& cf = this->patch().Cf();
+            forAll(v, i)
+            {
+                const scalar y = cf[i].y();
+                v[i].x() = 0.151600000*(1.0 - sqr(2.0*y/0.032000000));
+            }
+            operator==(v);
+        #};
+    }
+    outlet
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform (0.151600000 0 0);
+    }
+    top
+    {
+        type            noSlip;
+    }
+    bottom
+    {
+        type            noSlip;
+    }
+    cylinder
+    {
+        type            noSlip;
+    }
+    front
+    {
+        type            symmetryPlane;
+    }
+    back
+    {
+        type            symmetryPlane;
+    }
+}

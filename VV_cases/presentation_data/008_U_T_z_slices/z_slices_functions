@@ -1,0 +1,45 @@
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      functions;
+}
+
+zSlices
+{
+    type                surfaces;
+    libs                ("libsampling.so");
+    executeControl      timeStep;
+    writeControl        timeStep;
+    writeInterval       1;
+    surfaceFormat       vtk;
+    fields              (U T Q Lambda2);
+    interpolationScheme cellPoint;
+    surfaces
+    {
+        z20
+        {
+            type        cutPlane;
+            interpolate true;
+            planeType   pointAndNormal;
+            point       (0 0 -0.0036);
+            normal      (0 0 1);
+        }
+        z50
+        {
+            type        cutPlane;
+            interpolate true;
+            planeType   pointAndNormal;
+            point       (0 0 0);
+            normal      (0 0 1);
+        }
+        z80
+        {
+            type        cutPlane;
+            interpolate true;
+            planeType   pointAndNormal;
+            point       (0 0 0.0036);
+            normal      (0 0 1);
+        }
+    }
+}

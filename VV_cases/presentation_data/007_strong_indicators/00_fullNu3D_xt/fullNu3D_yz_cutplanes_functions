@@ -1,0 +1,238 @@
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      functions;
+}
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0140,
+    point=(-0.014 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0130,
+    point=(-0.013 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0120,
+    point=(-0.012 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0110,
+    point=(-0.011 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0100,
+    point=(-0.01 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0090,
+    point=(-0.009 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0080,
+    point=(-0.008 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0070,
+    point=(-0.007 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0060,
+    point=(-0.006 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0050,
+    point=(-0.005 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0040,
+    point=(-0.004 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0030,
+    point=(-0.003 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0020,
+    point=(-0.002 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_m0010,
+    point=(-0.001 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0000,
+    point=(-1.21430643e-17 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0010,
+    point=(0.001 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0020,
+    point=(0.002 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0030,
+    point=(0.003 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0040,
+    point=(0.004 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0050,
+    point=(0.005 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0060,
+    point=(0.006 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0070,
+    point=(0.007 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0080,
+    point=(0.008 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0090,
+    point=(0.009 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0100,
+    point=(0.01 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0110,
+    point=(0.011 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0120,
+    point=(0.012 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0130,
+    point=(0.013 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlane_p0140,
+    point=(0.014 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)

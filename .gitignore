@@ -49,3 +49,10 @@ VV_cases/V4b_3D/results/run*/data/**/*.json
 VV_cases/V4b_3D/results/run*/data/**/*.txt
 VV_cases/V4b_3D/results/run*/figures/**/*.png
 VV_cases/V4b_3D/results/run*/figures/**/*.pdf
+*.png
+*.csv
+*.pdf
+*.vtk
+*.log
+*.wslpid
+*.pid

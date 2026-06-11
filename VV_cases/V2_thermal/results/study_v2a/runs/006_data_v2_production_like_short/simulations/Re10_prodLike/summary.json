@@ -1,0 +1,18 @@
+{
+  "case": "Re10_prodLike",
+  "old_key": "Re10_ogrid",
+  "Re": 10,
+  "cells": 27478,
+  "latest_time_s": 18.00168383,
+  "Nu_old": 1.880652032516138,
+  "Nu_new": 2.2312849920202065,
+  "Nu_ref": 1.8623,
+  "Nu_new_vs_old_pct": 18.64422303763201,
+  "Nu_new_vs_ref_pct": 19.81340235301543,
+  "Cd_old": 2.925892225804564,
+  "Cd_new": 3.028675858444444,
+  "St_old": null,
+  "St_new": null,
+  "T_min_K": 293.15115,
+  "T_max_K": 303.1007
+}

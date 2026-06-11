@@ -1,0 +1,14 @@
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      functions;
+}
+
+#includeFunc cutPlaneSurface
+(
+    name=xPlaneTestNu3D,
+    point=(0 0 0),
+    normal=(1 0 0),
+    fields=(U T rho)
+)

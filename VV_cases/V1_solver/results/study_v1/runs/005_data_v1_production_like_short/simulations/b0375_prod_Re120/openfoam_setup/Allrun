@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+export ZSH_NAME="${ZSH_NAME-}"
+source /opt/openfoam13/etc/bashrc
+set -euo pipefail
+cd "$(dirname "$0")"
+mkdir -p logs
+blockMesh | tee logs/log.blockMesh
+snappyHexMesh -overwrite | tee logs/log.snappyHexMesh
+checkMesh -allTopology -allGeometry | tee logs/log.checkMesh
+postProcess -func writeCellCentres -time 0 | tee logs/log.writeCellCentres
+decomposePar -force | tee logs/log.decomposePar
+mpirun --use-hwthread-cpus -np 6 foamRun -solver fluid -parallel | tee logs/log.foamRun

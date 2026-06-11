@@ -1,0 +1,18 @@
+{
+  "case": "Re40_ogrid",
+  "Re": 40,
+  "cells": 10240,
+  "latest_time_s": 45.00063926,
+  "Nu_old": 3.3045409684503424,
+  "Nu_new": 3.405709248227931,
+  "Nu_ref": 3.2825,
+  "Nu_new_vs_old_pct": 3.061492677605726,
+  "Nu_new_vs_ref_pct": 3.75351860557291,
+  "Cd_old": 1.5712531,
+  "Cd_new": null,
+  "St_old": null,
+  "St_new": null,
+  "T_min_K": 293.15,
+  "T_max_K": 303.02912,
+  "cylinder_owner_above_Tw_pct": 0.0
+}

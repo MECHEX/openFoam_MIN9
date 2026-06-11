@@ -1,0 +1,18 @@
+{
+  "case": "b050_medium_Re135",
+  "beta": 0.5,
+  "Re": 135.0,
+  "cells": 38746,
+  "regime_new": "steady-or-weakly-unsteady",
+  "Cd_old": null,
+  "Cd_new": 2.7608281524444442,
+  "Cl_rms_old": null,
+  "Cl_rms_new": 7.88106653910911e-06,
+  "St_old": null,
+  "St_new": null,
+  "St_ref": 0.3393,
+  "dSt_old_vs_ref_pct": null,
+  "dSt_new_vs_ref_pct": null,
+  "dSt_new_vs_old_pct": null,
+  "status": "ok"
+}

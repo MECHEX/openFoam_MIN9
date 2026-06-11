@@ -1,0 +1,11 @@
+{
+  "case_dir": "\\\\wsl.localhost\\Ubuntu-24.04\\home\\hexmachina\\of_runs\\V4b_3D_run008",
+  "t_start_s": 2.0,
+  "t_stop_s": 10.0,
+  "dt_s": 0.08,
+  "n_times": 101,
+  "conductivity_wmk": 0.025752244039270688,
+  "wall_temperature_k": 343.15,
+  "phase_bins": 16,
+  "method": "near-wall first-cell estimate with direct wallHeatFlux comparison"
+}

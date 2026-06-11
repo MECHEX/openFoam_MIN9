@@ -6728,3 +6728,582 @@ are coupled in a phase-locked, region-dependent way, but not through a simple
 monotonic "more vortex activity precedes higher Nu" mechanism. The likely
 mechanism remains local wall interaction, structure position, and mode-specific
 phase relation.
+
+---
+
+## 2026-05-27 15:00:02 +02:00 | V1_solver + V2_thermal | OF13 fluid consistency rerun bootstrap
+
+### Work package
+
+Started the solver-consistency rerun campaign for `V1` and `V2` on the same
+OpenFOAM 13 `foamRun -solver fluid` path used by the accepted `V4b` workflow.
+
+### Actions taken
+
+- Added new study drivers:
+  - `VV_cases/V1_solver/_code/V1FluidConsistencyStudy.py`
+  - `VV_cases/V2_thermal/_code/V2FluidConsistencyStudy.py`
+- Standardised both studies to:
+  - `solver fluid`,
+  - `heRhoThermo + eConst + Boussinesq + sensibleInternalEnergy`,
+  - dynamic pressure dimensions for both `p` and `p_rgh`,
+  - laminar `momentumTransport`,
+  - thin-3D `symmetryPlane` front/back treatment where needed for OF13.
+- For `V1`:
+  - replaced the earlier 2D `empty` extrusion with thin-3D front/back
+    `symmetryPlane`,
+  - removed dependence on `setExprFields`,
+  - fixed post-processing parser to accept `forceCoeffs.dat` from OF13.
+- For `V2`:
+  - copied the accepted O-grid setups from the previous validation campaign,
+  - rewrote `alphat`, `p`, `p_rgh`, `physicalProperties`,
+    `momentumTransport`, and solver dictionaries for OF13 `fluid`,
+  - fixed the `empty -> symmetryPlane` patch migration using regex replacement
+    to handle original formatting consistently.
+- Added WSL launchers for unattended batch execution:
+  - `VV_cases/start_v1_of13_consistency.sh`
+  - `VV_cases/start_v2_of13_consistency.sh`
+
+### Current status
+
+- Smoke tests confirm that both `V1` and `V2` now pass solver initialisation
+  on OF13 `fluid`; the earlier pressure-dimension mismatch is resolved.
+- A first analyzable `V2` consistency point is available:
+  - `Re40_ogrid`: `Nu_new = 3.4057`,
+    `Nu_old = 3.3045` (`+3.06%`),
+    `Nu_ref = 3.2825` (`+3.75%` vs reference).
+- A first `V1` smoke run exists for `b050_medium_Re135`, but at the current
+  partial runtime it remains effectively steady and is not yet long enough for
+  a meaningful `St` extraction.
+- Full shortened rerun batches have been launched in background logs:
+  - `VV_cases/_batch_logs/V1_of13_all.log`
+  - `VV_cases/_batch_logs/V2_of13_all.log`
+
+### Interpretation
+
+The methodological bridge to `V4b` is now in place: `V1` and `V2` can be
+rerun on the same OF13 `fluid` branch, and the first `V2` point already shows
+promising consistency with the previous validated campaign. Final judgement for
+presentation use should be based on the completed shortened matrices and their
+old-vs-new comparison plots.
+
+---
+
+## 2026-06-03 | V1/V2/V4b | benchmark-vs-production interpretation decision
+
+### Work package
+
+Clarified the presentation and defence strategy after testing `V1`/`V2`
+production-like variants on compact `V4b`-style domains.
+
+### Decision
+
+`V1` and `V2` should remain benchmark-geometry studies for the main
+verification/validation story. They are used to check the solver and thermal
+path against literature where the geometry and boundary conditions match the
+reference problem.
+
+`V4b` is presented as the production application: a real exchanger-like
+geometry where confinement and local heat-transfer paths are intentionally
+different from the benchmark cases. Therefore, `V4b` is not expected to recover
+the same `Cd`, `St`, or `Nu` values as the isolated/benchmark cylinder cases.
+
+### Rationale
+
+The production-like smoke tests were useful diagnostically because they showed
+that compact `V4b`-style geometry changes the physical response. This supports
+the interpretation that disagreement with benchmark numbers after changing the
+domain is not a solver validation failure; it is a consequence of solving a
+different physical problem.
+
+### Presentation rule
+
+- `V1`: hydrodynamic verification on benchmark geometry.
+- `V2`: thermal validation on benchmark geometry.
+- `V4b`: production application supported by V1/V2 and internal quality checks.
+
+Avoid saying that `V4b` is directly literature-validated by `V1`/`V2`. The
+defensible claim is that `V4b` uses a solver path supported by benchmark
+verification/validation, then adds production-specific checks such as sensitivity
+tests, heat-balance closure, signal stability, and mechanistic consistency.
+
+### Material prepared
+
+- `VV_cases/BENCHMARK_TO_PRODUCTION_DEFENSE_20260603.md`
+
+---
+
+## 2026-06-04 17:14:18 +02:00 | V4b_3D | run008 wall-heat-flux tendency budget proof of concept
+
+### Work package
+
+Build and run a first proof-of-concept analysis that moves from
+`vortex-versus-Nu` screening toward a local wall-heat-flux tendency budget for
+the accepted constant-property production case `run008`.
+
+### Actions taken
+
+- reviewed the existing `V4b` documentation and analysis layers to identify
+  which raw fields still existed outside Git and which processed arrays were
+  already available in-repo
+- confirmed that the archived WSL case paths still exist for:
+  - `run008`
+  - `run010`
+  - the layer-013 / layer-015 vortex-structure exports
+- created a new repo-level proof-of-concept area:
+  - `poc/README.md`
+  - `poc/run008_wall_heat_flux_tendency_budget.py`
+- implemented a near-wall first-cell budget estimate for `run008` using:
+  - direct local `wallHeatFlux` patch values on the hot tube and hot fins
+  - owner-cell `T`, `U`, and `grad(T)`
+  - face-to-owner normal distance `d_n`
+  - the accepted constant-property `run008` conductivity
+- used OpenFOAM 13 `foamPostProcess` to generate missing `grad(T)` fields for
+  the selected full-field output times
+- computed region-wise budget signals for:
+  - `tube_separation`
+  - `tube_rear`
+  - `tube_junction`
+  - `fin_near_tube`
+  - `fin_sweep`
+  - `fin_control`
+- wrote compact CSV / NPZ / Markdown outputs and two summary figures under:
+  - `poc/run008_wall_heat_flux_tendency_budget/`
+
+### Outputs created
+
+- `poc/README.md`
+- `poc/run008_wall_heat_flux_tendency_budget.py`
+- `poc/run008_wall_heat_flux_tendency_budget/README.md`
+- `poc/run008_wall_heat_flux_tendency_budget/run008_budget_face_catalog.csv`
+- `poc/run008_wall_heat_flux_tendency_budget/run008_budget_region_timeseries.csv`
+- `poc/run008_wall_heat_flux_tendency_budget/run008_budget_region_summary.csv`
+- `poc/run008_wall_heat_flux_tendency_budget/run008_budget_region_phase_average.csv`
+- `poc/run008_wall_heat_flux_tendency_budget/run008_budget_raw_arrays.npz`
+- `poc/run008_wall_heat_flux_tendency_budget/figures/run008_budget_phase_regions.png`
+- `poc/run008_wall_heat_flux_tendency_budget/figures/run008_budget_rms_summary.png`
+
+### Main PoC result
+
+The proof of concept is numerically feasible on the existing `run008` data.
+Using the first-cell estimate, the strongest direct wall-flux tendency RMS
+appears in `tube_rear`, while most regions show a diffusion-dominated budget
+when compared by RMS:
+
+- `tube_rear`: `RMS(P_q) = 43.01`, `RMS(P_adv) = 5.22`,
+  `RMS(P_diff) = 43.53`
+- `tube_junction`: `RMS(P_q) = 3.87`, `RMS(P_adv) = 0.30`,
+  `RMS(P_diff) = 3.79`
+- `tube_separation`: `RMS(P_q) = 2.65`, `RMS(P_adv) = 1.80`,
+  `RMS(P_diff) = 2.99`
+- `fin_sweep`: `RMS(P_q) = 15.64`, `RMS(P_adv) = 15.84`,
+  `RMS(P_diff) = 23.77`
+
+`fin_control` is a useful cautionary region: it shows large advective and
+diffusive terms that almost cancel, producing a very small direct tendency.
+This supports the idea that looking only at a vortex-strength proxy can miss
+the local balance structure.
+
+### Decisions made
+
+- the best first PoC target is `run008`, not `run010`, because the proposed
+  budget is much cleaner to interpret on the accepted constant-property case
+- for now the method is stored outside the main `VV_cases` run folders as a
+  repo-level PoC rather than an accepted production analysis layer
+- the current PoC should be described explicitly as a near-wall first-cell
+  estimate, not yet as the final wall-normal derivative budget
+
+### Next step
+
+If this direction is promoted from PoC to paper-grade analysis:
+
+- repeat the same idea with a more explicit near-wall gradient reconstruction
+  for `P_adv` / `P_diff`
+- test sensitivity of the budget itself to time step / sampling / mesh
+- decide whether to elevate the strongest regions into a formal new `V4b`
+  analysis layer and figure set
+
+---
+
+## 2026-06-04 17:25:00 +02:00 | V4b_3D | enhanced PoC budget visualisation
+
+### Work package
+
+Strengthen the visual interpretation of the `run008` wall-heat-flux tendency
+budget PoC so that the figures communicate mechanism rather than only plotting
+raw budget curves.
+
+### Actions taken
+
+- added an enhanced plotting helper:
+  - `poc/run008_wall_heat_flux_tendency_budget_enhanced_figures.py`
+- generated four additional figures from the existing PoC CSV outputs:
+  - region layout figure
+  - attribution dashboard
+  - normalized phase fingerprint
+  - term-tracking scatter plot
+- changed the scatter diagnostic to use region-wise anomalies, so the plot
+  tests whether a term tracks changes in `P_q` rather than being dominated by
+  static offsets.
+
+### Outputs created
+
+- `poc/run008_wall_heat_flux_tendency_budget/figures/run008_budget_region_layout.png`
+- `poc/run008_wall_heat_flux_tendency_budget/figures/run008_budget_attribution_dashboard.png`
+- `poc/run008_wall_heat_flux_tendency_budget/figures/run008_budget_phase_fingerprint.png`
+- `poc/run008_wall_heat_flux_tendency_budget/figures/run008_budget_term_tracking_scatter.png`
+
+### Decision
+
+For communication, the strongest current figure is the attribution dashboard,
+supported by the term-tracking scatter. The raw phase curves should be kept as
+secondary evidence, not as the main explanatory slide.
+
+---
+
+## 2026-06-05 to 2026-06-11 | V4b_3D | post-review verification, Re-onset scan and presentation-data expansion
+
+### Work package
+
+Extended the post-review evidence base for the V4b production model. The main
+objective was to move from a single accepted `Re=200` production run toward a
+defensible narrative covering:
+
+- grid and numerical sensitivity,
+- onset of vortex shedding around the production geometry,
+- local heat-transfer redistribution,
+- stronger local `Nu` definitions,
+- early velocity-structure to heat-transfer indicators,
+- and a control run with temperature-dependent air properties.
+
+### Post-review and professor-meeting documentation
+
+Prepared and/or updated the main defence documents used to explain the
+methodological chain:
+
+- `VV_cases/BENCHMARK_TO_PRODUCTION_DEFENSE_20260603.md`
+- `VV_cases/POST_REVIEW_EXTERNAL_PLAN_20260604.md`
+- `VV_cases/rev_answers_v1.md`
+- `VV_cases/PRESENTATION_CLAUDE_OPUS_20260603/`
+
+Key methodological position:
+
+`V1` and `V2` remain benchmark-geometry verification/validation cases, while
+`V4b` is the production geometry. The production case is not expected to match
+isolated-cylinder benchmark values directly; it is defended through a verified
+solver path plus production-specific checks such as heat-balance closure,
+domain/numerics sensitivity, sampling completeness, GCI checks and mechanistic
+consistency.
+
+### GCI and numerical sensitivity work
+
+Added and ran post-review mesh/numerical analysis tooling:
+
+- `VV_cases/V4b_3D/_code/prepare_run011_gci_meshes.sh`
+- `VV_cases/V4b_3D/_code/analyse_run011_gci.py`
+- `VV_cases/V4b_3D/_code/analyse_run011_thermal_gci.py`
+- `VV_cases/V4b_3D/results/run011_gci_analysis/run011_gci_report.md`
+- `VV_cases/V4b_3D/results/run011_gci_thermal_analysis/run011_thermal_gci_report.md`
+
+Decision from the mesh study:
+
+- the current medium mesh remains the production compromise;
+- the thermal GCI layer is more important for the heat-transfer story than a
+  hydrodynamic-only mesh argument;
+- `checkMesh passed` must not be used as a substitute for grid convergence.
+
+### Reynolds-number onset scan
+
+Prepared and launched additional V4b production-like cases to locate the onset
+region and compare steady vs shedding regimes:
+
+- `run012_re100`
+- `run013_re150`
+- `run014_re175`
+- `run015_re160`
+- `run016_re155`
+- `run017_re158`
+- `run018_re159`
+
+Supporting scripts created under `VV_cases/V4b_3D/_code/` include:
+
+- `prepare_run012_re100_production.sh`
+- `prepare_run013_re150_production.sh`
+- `prepare_run014_re175_production.sh`
+- `prepare_run015_re160_production.sh`
+- `prepare_run016_re155_production.sh`
+- `prepare_run017_re158_production.sh`
+- `prepare_run018_re159_production.sh`
+
+Interpretation developed during the scan:
+
+- `Re=100` and `Re=150` behave as steady/no-shedding references for the
+  production geometry;
+- `Re=160`, `Re=175` and `Re=200` are shedding cases;
+- `Re=155`, `Re=158`, `Re=159` were introduced to refine the critical/onset
+  region;
+- for global heat transfer, increasing `Re` naturally increases `Q` and `Nu`;
+  claims about shedding must therefore focus on local redistribution, phase
+  relation, coherence or modal coupling rather than a naive global increase.
+
+### Presentation-data folders 002-006
+
+Expanded the presentation-data layer for understanding heat transfer versus
+vorticity/structures:
+
+- `VV_cases/presentation_data/002_Nu_and_vorticity/`
+- `VV_cases/presentation_data/003_top_view_y_strips/`
+- `VV_cases/presentation_data/004_x_strip_Nu_vorticity/`
+- `VV_cases/presentation_data/005_x_strip_robustness_analysis/`
+- `VV_cases/presentation_data/006_full3D_x_strip_1mm/`
+
+Main methodological corrections made:
+
+- renamed the old "excess" interpretation mentally from local heat-transfer
+  enhancement to local sensitivity relative to `Re=150`;
+- added absolute `Delta Nu`, `Delta Q`, strip heat shares and spatial-lag
+  diagnostics so that relative normalization does not create false hotspots;
+- separated near-wall vorticity-like indicators from bulk/no-wall vortex
+  indicators, because near-wall shear and separated vortex cores have different
+  physical meanings;
+- tested strip-width sensitivity and decided that `1 mm` strips are the most
+  interpretable production level. The `0.1 mm` strips were too spiky because
+  they were strongly affected by surface discretization, small local areas and
+  patch/geometry crossings.
+
+### Strong-indicator pipeline 007
+
+Created a publication/defence-oriented indicator pipeline:
+
+- `VV_cases/presentation_data/007_strong_indicators/README.md`
+- `00_fullNu3D_xt`
+- `00_1_wall_local_Nu`
+- `01_full3D_Tbulk_Nu_1mm`
+- `02_frequency_coherence_phase`
+- `03_EPOD_velocity_to_Nu`
+
+The most important technical upgrade is that local heat transfer is now based
+on full hot-surface `wallHeatFlux` and full y-z plane bulk temperature:
+
+```text
+Nu_3D(x,t) = Q_strip(x,t) * D_ref /
+             (A_strip(x,t) * k_air * DeltaT_lm_yz(x,t))
+```
+
+and a stronger wall-local layer was added:
+
+```text
+Nu_wall_local(s,t) = q''_w(s,t) * D_ref /
+                     [k_air * (T_wall(s,t) - T_bulk_yz(x_s,t))]
+```
+
+Current limitation:
+
+- the available full-field sampling has only `26` full snapshots per Re in the
+  `8..10 s` window;
+- frequency-domain coherence and EPOD-like indicators are useful as mechanism
+  screening, but publication-grade Welch/SPOD/coherence needs denser snapshots.
+
+### Dense snapshot campaign
+
+Prepared and launched the dense follow-up campaign:
+
+- `VV_cases/V4b_3D/_code/start_dense_snapshots_re159_160_175_200_t10_14_np5.sh`
+- `VV_cases/V4b_3D/_code/restart_dense_re160_re175_np5.sh`
+
+Target:
+
+- `Re = 159, 160, 175, 200`
+- `t = 10..14 s`
+- `writeInterval = 0.005 s`
+- `5` MPI processes per case
+- objective: enough snapshots for stronger POD/EPOD/coherence/phase analysis.
+
+Status observed on 2026-06-11:
+
+| case | Re | WSL path | status |
+|---|---:|---|---|
+| `run019` | 159 | `/home/hexmachina/of_runs/V4b_3D_run019_re159_dense_t10_14_np5` | completed to `t=14 s` |
+| `run020` | 160 | `/home/hexmachina/of_runs/V4b_3D_run020_re160_dense_t10_14_np5` | running, last observed around `t=13.355 s` |
+| `run021` | 175 | `/home/hexmachina/of_runs/V4b_3D_run021_re175_dense_t10_14_np5` | running, last observed around `t=13.026 s` |
+| `run022` | 200 | `/home/hexmachina/of_runs/V4b_3D_run022_re200_dense_t10_14_np5` | running, last observed around `t=12.567 s` |
+
+### U/T/Q/Lambda2 z-slice visualisation 008
+
+Created qualitative slice figures for velocity, temperature and vortex
+criteria:
+
+- `VV_cases/presentation_data/008_U_T_z_slices/README.md`
+- `raw_vtk/`
+- `csv/`
+- `figures/`
+
+Planes:
+
+- `z20`, `z50`, `z80`
+
+Fields visualised:
+
+- velocity magnitude,
+- temperature,
+- streamlines,
+- `Q` criterion,
+- `Lambda2`.
+
+Interpretation rule:
+
+`Q` and `Lambda2` are used as qualitative structure indicators together with
+streamlines and temperature. They should not be presented as standalone proof
+of heat-transfer causality.
+
+### Temperature-dependent air-properties control run
+
+Reviewed whether the constant-property Boussinesq assumption is sufficient for
+the `293..343 K` operating range. Approximate property changes over this range:
+
+- dynamic viscosity `mu` increases by about `12.7%`;
+- conductivity estimated from constant `Pr` increases by about `12.7%`;
+- Sutherland-like conductivity estimate gives about `14.9%`;
+- ideal-gas density decrease is about `14.6%`;
+- Boussinesq density decrease for the chosen `beta` is about `17.1%`;
+- the local kinematic viscosity can therefore change much more strongly than
+  the dynamic viscosity alone.
+
+Conclusion:
+
+The constant-property Boussinesq model is still useful as a controlled
+production baseline, but a temperature-dependent air-properties control case is
+needed for an honest uncertainty/assumption check.
+
+Created setup scripts:
+
+- `VV_cases/V4b_3D/_code/setup_re200_full_air_props_T_np5.sh`
+- `VV_cases/V4b_3D/_code/setup_re200_full_air_props_T_from_t10_np5.sh`
+- `VV_cases/V4b_3D/_code/start_run024_full_air_props_T_to14_np5.sh`
+
+The fully compressible-style `perfectGas + janaf + sutherland` attempt was not
+stable for this low-Mach setup. The stable control uses:
+
+```text
+OpenFOAM Foundation v13
+foamRun -solver fluid
+transport       sutherland
+thermo          janaf
+equationOfState incompressiblePerfectGas
+energy          sensibleInternalEnergy
+```
+
+Running control case:
+
+```text
+/home/hexmachina/of_runs/V4b_3D_run024_re200_fullAirPropsT_from_t10_np5
+```
+
+Smoke test:
+
+- restarted from the accepted `Re=200` state at `t=10 s`;
+- stable to `t=10.005 s`;
+- then launched to `t=14 s` on `5` MPI processes.
+
+Preliminary comparison against the constant-property dense `Re=200` run on the
+short common window `10.005..10.110 s`:
+
+| metric | constant-property mean | airProps(T) mean | relative difference |
+|---|---:|---:|---:|
+| `Cd` | `3.35827` | `3.31781` | `-1.20%` |
+| `Cl` | `2.50172` | `2.53030` | `+1.14%` |
+| `Q_tube` | `0.36227 W` | `0.34529 W` | `-4.69%` |
+| `Q_fins` | `1.04373 W` | `1.00611 W` | `-3.60%` |
+| `Q_total` | `1.40600 W` | `1.35140 W` | `-3.88%` |
+| `Nu_proxy` | `6.55893` | `6.30423` | `-3.88%` |
+
+For the short tail window `10.08..10.11 s`, the apparent heat-transfer
+difference was closer to `-8..-9%`, but this must remain explicitly
+preliminary because the control case is still relaxing after the change in
+thermophysical model and has not yet reached a statistically useful window.
+
+The compact comparison table is stored in:
+
+- `VV_cases/presentation_data/009_air_props_comparison/preliminary_run024_vs_run022_summary.csv`
+
+### Repository hygiene observations
+
+The repository now contains many valuable analysis products, but it is in a
+dirty working-tree state with many untracked files. No cleanup was performed
+automatically. Recommended cleanup before a handoff or commit:
+
+- keep `VV_cases/presentation_data/002..009` as curated lightweight outputs;
+- keep setup/analysis scripts in `VV_cases/V4b_3D/_code`;
+- add a README to any result folder that contains standalone CSV/figures;
+- do not commit heavy OpenFOAM time directories, `processor*` directories, raw
+  VTK volume dumps or large snapshot databases;
+- review the apparent deletion of `VV_cases/V2_confined/...` before committing,
+  because those deletions were pre-existing in the working tree and should be a
+  conscious decision.
+
+---
+
+## 2026-06-11 | V4b_3D | simulations stopped for system restart, resume note
+
+### Work package
+
+Stopped the active long-running OpenFOAM jobs before a planned system restart
+and recorded the exact restart plan.
+
+### Processes stopped
+
+The following MPI parent processes were mapped to their working directories and
+then stopped:
+
+| MPI PID | case | WSL path |
+|---:|---|---|
+| `1403` | `re160_dense` | `/home/hexmachina/of_runs/V4b_3D_run020_re160_dense_t10_14_np5` |
+| `1406` | `re175_dense` | `/home/hexmachina/of_runs/V4b_3D_run021_re175_dense_t10_14_np5` |
+| `764` | `re200_dense` | `/home/hexmachina/of_runs/V4b_3D_run022_re200_dense_t10_14_np5` |
+| `19922` | `re200_airPropsT` | `/home/hexmachina/of_runs/V4b_3D_run024_re200_fullAirPropsT_from_t10_np5` |
+
+After stopping, no `foamRun`/`mpirun` processes remained active.
+
+### Last observed times
+
+Log tail before stopping:
+
+| case | last logged time |
+|---|---:|
+| `re160_dense` | about `t = 13.6244 s` |
+| `re175_dense` | about `t = 13.2672 s` |
+| `re200_dense` | about `t = 12.7691 s` |
+
+Latest written processor time directories after stopping:
+
+| case | latest `processor0` time |
+|---|---:|
+| `re160_dense` | `13.62` |
+| `re175_dense` | `13.265` |
+| `re200_dense` | `12.765` |
+| `re200_airPropsT` | `10.335` |
+
+`run019` / `Re159 dense` was already complete to `t = 14 s` and should not be
+restarted.
+
+### Resume procedure after reboot
+
+Use the dedicated resume helper:
+
+```bash
+cd /mnt/c/Users/wisie_101/Documents/GitHub/openFoam_MIN9
+bash VV_cases/V4b_3D/_code/resume_after_reboot_20260611_np5.sh
+```
+
+The helper:
+
+- resumes only unfinished cases `run020`, `run021`, `run022`, and `run024`;
+- sets `startFrom latestTime`;
+- sets `endTime = 14`;
+- keeps `purgeWrite = 0`;
+- starts each case on `5` MPI processes;
+- writes new tagged logs and PID files into each case `logs/` directory.
+
+Do not rerun `start_dense_snapshots_re159_160_175_200_t10_14_np5.sh` for this
+restart, because that script is the original campaign launcher and includes the
+already completed `Re159` case. The restart should use the resume helper above.

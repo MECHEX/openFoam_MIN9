@@ -1,0 +1,18 @@
+{
+  "case": "Re40_prodLike",
+  "old_key": "Re40_ogrid",
+  "Re": 40,
+  "cells": 27478,
+  "latest_time_s": 17.99994577,
+  "Nu_old": 3.3045409684503424,
+  "Nu_new": 4.5370443466385115,
+  "Nu_ref": 3.2825,
+  "Nu_new_vs_old_pct": 37.29726427831667,
+  "Nu_new_vs_ref_pct": 38.21917278411306,
+  "Cd_old": 1.5712531,
+  "Cd_new": 3.8035995636111113,
+  "St_old": null,
+  "St_new": null,
+  "T_min_K": 293.15,
+  "T_max_K": 303.0276
+}

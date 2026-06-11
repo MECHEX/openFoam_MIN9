@@ -1,0 +1,17 @@
+{
+  "case": "b0375_prod_Re105",
+  "old_key": "b0375_medium_Re105",
+  "beta": 0.375,
+  "Re": 105.0,
+  "cells": null,
+  "regime_new": "steady-or-weakly-unsteady",
+  "Cd_old": null,
+  "Cd_new": 1.8616380324896264,
+  "Cl_rms_old": null,
+  "Cl_rms_new": 1.5432277520747245e-05,
+  "St_old": null,
+  "St_new": null,
+  "St_ref": 0.2578625,
+  "dSt_new_vs_old_pct": null,
+  "status": "ok"
+}

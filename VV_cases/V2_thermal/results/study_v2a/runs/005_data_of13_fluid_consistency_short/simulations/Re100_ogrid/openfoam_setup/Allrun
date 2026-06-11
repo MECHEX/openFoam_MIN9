@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+export ZSH_NAME="${ZSH_NAME-}"
+source /opt/openfoam13/etc/bashrc
+set -euo pipefail
+cd "$(dirname "$0")"
+mkdir -p logs
+blockMesh | tee logs/log.blockMesh
+checkMesh | tee logs/log.checkMesh
+postProcess -func writeCellCentres -time 0 | tee logs/log.writeCellCentres
+if [ -f system/setExprFieldsDict ] && command -v setExprFields >/dev/null 2>&1; then
+    setExprFields | tee logs/log.setExprFields
+fi
+decomposePar -force | tee logs/log.decomposePar
+mpirun --use-hwthread-cpus -np 8 foamRun -solver fluid -parallel | tee logs/log.foamRun

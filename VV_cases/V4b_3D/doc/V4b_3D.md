@@ -495,3 +495,38 @@ Two follow-up directions are technically ready:
 - Use the existing full 3D snapshots to compute `Q`-criterion or `lambda2`
   structures and connect named vortical structures with local `Nu(theta,z,t)`
   and fin `Nu_local(x,t)`.
+
+## 2026-06-11 follow-up status
+
+The two directions above have now moved from planning into execution.
+
+Reynolds-number scan:
+
+- production-like cases were added for `Re=100, 150, 155, 158, 159, 160, 175`
+  and `200`;
+- `Re=159, 160, 175, 200` were selected for dense `t=10..14 s` follow-up
+  sampling around the onset/shedding region;
+- the dense `Re=159` case has completed to `t=14 s`;
+- dense `Re=160`, `Re=175` and `Re=200` were still running at the latest
+  status check.
+
+Local heat-transfer and structure analysis:
+
+- `VV_cases/presentation_data/007_strong_indicators/` now contains the stronger
+  `Nu_3D(x,t)` and wall-local `Nu_wall_local(s,t)` pipelines;
+- `VV_cases/presentation_data/008_U_T_z_slices/` contains qualitative
+  velocity, temperature, streamline, `Q` and `Lambda2` z-slice figures;
+- the existing `Q`, `Lambda2`, vorticity and strip diagnostics should be used
+  as mechanism indicators, not as standalone proof of causality.
+
+Thermophysical-model control:
+
+- a new `Re=200` temperature-dependent air-properties control case was launched:
+  `/home/hexmachina/of_runs/V4b_3D_run024_re200_fullAirPropsT_from_t10_np5`;
+- the stable control model uses OpenFOAM Foundation v13 `foamRun -solver fluid`
+  with `sutherland + janaf + incompressiblePerfectGas +
+  sensibleInternalEnergy`;
+- the first short-window comparison suggests that heat-transfer metrics may
+  shift by several percent relative to the constant-property Boussinesq model,
+  but the control run must reach a longer stable window before it can be used
+  as a final uncertainty statement.
